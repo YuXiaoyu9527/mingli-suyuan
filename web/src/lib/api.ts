@@ -108,6 +108,15 @@ export async function checkAnswer(id: string, answer: number) {
   });
 }
 
+// ===== 历史命例 =====
+
+export async function getMingli(pattern?: string, search?: string) {
+  return fetchAPI("/api/mingli", {
+    method: "POST",
+    body: JSON.stringify({ pattern: pattern || null, search: search || null }),
+  });
+}
+
 // ===== 古籍来源列表 =====
 
 export async function getSources() {

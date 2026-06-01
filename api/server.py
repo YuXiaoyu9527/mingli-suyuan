@@ -64,6 +64,11 @@ class MentorRequest(BaseModel):
     correct_answer: str
 
 
+class MingliRequest(BaseModel):
+    pattern: Optional[str] = None  # 按格局筛选
+    search: Optional[str] = None   # 搜索关键词
+
+
 class QuizRequest(BaseModel):
     chapter: Optional[str] = None  # 按章节筛选
 
@@ -179,6 +184,54 @@ def api_mentor(req: MentorRequest):
     hint = ai.mentor(req.question, req.student_answer, req.correct_answer, refs)
 
     return {"hint": hint, "refs": refs}
+
+
+@app.post("/api/mingli")
+def api_mingli(req: MingliRequest):
+    """历史命例检索"""
+    import json
+    from pathlib import Path
+
+    cases_file = Path(__file__).parent.parent / "data" / "mingli_cases.jsonl"
+    if not cases_file.exists():
+        return {"total": 0, "cases": []}
+
+    cases = []
+    with open(cases_file, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                c = json.loads(line)
+                # 筛选
+                if req.pattern and c.get("pattern") != req.pattern:
+                    continue
+                if req.search:
+                    search_lower = req.search.lower()
+                    match = (
+                        search_lower in c.get("name", "").lower()
+                        or search_lower in c.get("pattern", "").lower()
+                        or search_lower in c.get("bazi", "").lower()
+                        or search_lower in c.get("rishu", "").lower()
+                        or any(search_lower in t.lower() for t in c.get("tags", []))
+                    )
+                    if not match:
+                        continue
+                cases.append(c)
+
+    # 统计格局分布
+    patterns = {}
+    for c in cases:
+        p = c.get("pattern", "未知")
+        patterns[p] = patterns.get(p, 0) + 1
+
+    return {
+        "total": len(cases),
+        "patterns": [
+            {"name": p, "count": cnt}
+            for p, cnt in sorted(patterns.items(), key=lambda x: -x[1])
+        ],
+        "cases": cases,
+    }
 
 
 @app.get("/api/sources")

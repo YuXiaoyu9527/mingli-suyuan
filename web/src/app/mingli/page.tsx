@@ -1,109 +1,214 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BottomNav from "@/components/BottomNav";
-import { searchAncient } from "@/lib/api";
-import { Search, Star, Loader2 } from "lucide-react";
+import { getMingli } from "@/lib/api";
+import { Search, Star, Loader2, FilterX } from "lucide-react";
 
 export default function MingliPage() {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [cases, setCases] = useState<any[]>([]);
+  const [patterns, setPatterns] = useState<any[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [patternFilter, setPatternFilter] = useState("");
+  const [selectedCase, setSelectedCase] = useState<any>(null);
 
-  const handleSearch = async () => {
-    if (!query.trim()) return;
+  const loadCases = async (p?: string, s?: string) => {
     setLoading(true);
     try {
-      const data = await searchAncient(query, 10);
-      setResults(data.results || []);
-    } catch (e) {
-      console.error(e);
-    }
+      const data = await getMingli(p || undefined, s || undefined);
+      setCases(data.cases || []);
+      setPatterns(data.patterns || []);
+      setTotal(data.total || 0);
+    } catch (e) { console.error(e); }
     setLoading(false);
+  };
+
+  useEffect(() => { loadCases(); }, []);
+
+  const handleSearch = () => {
+    loadCases(patternFilter, search);
+  };
+
+  const clearFilters = () => {
+    setSearch("");
+    setPatternFilter("");
+    loadCases();
   };
 
   return (
     <div className="flex flex-col min-h-dvh pb-20">
       <header className="px-5 pt-10 pb-4">
-        <h1 className="text-2xl text-vermillion font-[family-name:var(--font-display)] tracking-wider">
-          古籍检索
+        <h1 className="text-2xl text-dao-ink font-[family-name:var(--font-display)] tracking-wider">
+          历史命例
         </h1>
-        <p className="text-aged text-sm mt-1">
-          搜索4,879条古籍原文 · 四库全书底本
+        <p className="text-dao-aged text-sm mt-1">
+          {total}位历史人物 · 格局溯源 · 验案考据
         </p>
       </header>
 
       {/* 搜索栏 */}
-      <div className="px-5 mb-4">
+      <div className="px-5 mb-3">
         <div className="flex gap-2">
           <div className="relative flex-1">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-aged" />
-            <input type="text" value={query} onChange={e => setQuery(e.target.value)}
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-dao-aged" />
+            <input type="text" value={search} onChange={e => setSearch(e.target.value)}
               onKeyDown={e => e.key === "Enter" && handleSearch()}
-              placeholder="输入关键词：格局/神煞/干支/人名…"
-              className="w-full bg-parchment-dark border border-parchment-darker rounded-lg pl-10 pr-4 py-2.5 text-ink text-sm focus:outline-none focus:border-gold" />
+              placeholder="搜索人名、格局、干支…"
+              className="w-full bg-dao-paper-dark border border-dao-paper-darker rounded-lg
+                         pl-9 pr-3 py-2 text-dao-ink text-sm
+                         focus:outline-none focus:border-dao-gold placeholder:text-dao-aged-light" />
           </div>
           <button onClick={handleSearch} disabled={loading}
-            className="bg-vermillion text-white px-4 rounded-lg tap-active">
-            {loading ? <Loader2 size={18} className="animate-spin" /> : "搜索"}
+            className="bg-dao-red text-white px-3 rounded-lg tap-active text-xs">
+            {loading ? <Loader2 size={16} className="animate-spin" /> : "搜索"}
           </button>
         </div>
       </div>
 
-      {/* 结果列表 */}
+      {/* 格局筛选瓷片 */}
+      <div className="px-5 mb-4">
+        <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+          <button onClick={clearFilters}
+            className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs border transition-colors tap-active
+              ${!patternFilter ? "bg-dao-red text-white border-dao-red" : "bg-dao-paper-dark text-dao-ink-light border-dao-paper-darker"}`}>
+            全部({total})
+          </button>
+          {patterns.slice(0, 8).map(({ name, count }) => (
+            <button key={name}
+              onClick={() => { setPatternFilter(name); loadCases(name, search); }}
+              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs border transition-colors tap-active
+                ${patternFilter === name ? "bg-dao-gold/20 text-dao-gold-dark border-dao-gold/50"
+                                              : "bg-dao-paper-dark text-dao-ink-light border-dao-paper-darker"}`}>
+              {name}({count})
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 命例卡片列表 */}
       <div className="px-5 flex-1 space-y-3">
-        {results.map((r, i) => (
-          <div key={i} className="dao-card">
+        {loading && (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 size={28} className="animate-spin text-dao-gold" />
+          </div>
+        )}
+
+        {!loading && cases.length === 0 && (
+          <p className="text-center text-dao-aged text-sm py-12">无匹配命例</p>
+        )}
+
+        {cases.map((mingli) => (
+          <div key={mingli.id} className="dao-card tap-active"
+            onClick={() => setSelectedCase(mingli)}>
+            {/* 姓名 + 格局 + 可信度 */}
             <div className="flex items-start justify-between mb-2">
               <div>
-                <span className="text-xs font-bold text-vermillion font-[family-name:var(--font-display)]">
-                  {r.source_name}
-                </span>
-                <span className="text-[11px] text-aged ml-2">{r.volume} · {r.section}</span>
+                <h3 className="text-base font-bold text-dao-ink font-[family-name:var(--font-display)]">
+                  {mingli.name}
+                </h3>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-xs text-dao-aged">{mingli.era}</span>
+                  <span className="text-xs font-mono text-dao-ink-light">{mingli.bazi}</span>
+                </div>
               </div>
-              <span className="text-[11px] text-gold">{Math.round(r.score * 100)}%</span>
+              <div className="flex flex-col items-end gap-1">
+                <span className="px-2 py-0.5 bg-dao-red/10 text-dao-red text-[10px]
+                                rounded-full border border-dao-red/20">
+                  {mingli.pattern}
+                </span>
+                <span className="flex items-center gap-1 text-[10px] text-dao-aged">
+                  <Star size={9} className={`${mingli.reliability === "正史记载" ? "fill-dao-gold text-dao-gold" : "text-dao-aged-light"}`} />
+                  {mingli.reliability}
+                </span>
+              </div>
             </div>
-            <p className="text-sm text-ink-light leading-relaxed line-clamp-4">{r.content}</p>
-            <div className="flex gap-1.5 mt-2">
-              {(r.tags || []).filter((t:string) => t !== "其他").slice(0, 4).map((t:string) => (
-                <span key={t} className="text-[10px] px-1.5 py-0.5 bg-gold/10 text-aged rounded">{t}</span>
-              ))}
+
+            {/* 日主 */}
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-[10px] text-dao-aged">日主</span>
+              <span className="text-sm font-bold text-dao-red font-[family-name:var(--font-display)]">
+                {mingli.rishu}
+              </span>
+            </div>
+
+            {/* 断语 */}
+            <p className="text-xs text-dao-ink-light leading-relaxed line-clamp-3">
+              {mingli.commentary}
+            </p>
+
+            {/* 出处 + 标签 */}
+            <div className="flex items-center justify-between mt-2">
+              <span className="text-[10px] text-dao-aged-light">
+                {mingli.source}
+              </span>
+              <div className="flex gap-1">
+                {(mingli.tags || []).slice(0, 3).map((t: string) => (
+                  <span key={t} className="text-[9px] px-1.5 py-0.5 bg-dao-paper-dark text-dao-aged rounded">
+                    {t}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         ))}
+      </div>
 
-        {results.length === 0 && !loading && query && (
-          <p className="text-center text-aged text-sm py-8">未找到匹配的古籍段落。试试其他关键词？</p>
-        )}
+      {/* 详情弹窗 */}
+      {selectedCase && (
+        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-dao-ink/40 backdrop-blur-sm"
+          onClick={() => setSelectedCase(null)}>
+          <div className="w-full max-w-[430px] bg-dao-paper rounded-t-2xl p-6 max-h-[70vh] overflow-y-auto anim-enter"
+            onClick={e => e.stopPropagation()}>
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h2 className="text-xl font-[family-name:var(--font-display)] text-dao-ink">
+                  {selectedCase.name}
+                </h2>
+                <p className="text-xs text-dao-aged">{selectedCase.era} · {selectedCase.pattern} · {selectedCase.rishu}日主</p>
+              </div>
+              <button onClick={() => setSelectedCase(null)}
+                className="text-dao-aged text-xl">&times;</button>
+            </div>
 
-        {results.length === 0 && !loading && !query && (
-          <div className="text-center text-aged text-sm py-8 space-y-4">
-            <p className="text-dao-gold tracking-widest text-xs">— 热门搜索 —</p>
-            <div className="grid grid-cols-2 gap-2 text-left max-w-xs mx-auto">
-              {[
-                { q: "正官格", icon: "官" },
-                { q: "七杀格", icon: "杀" },
-                { q: "五行相生相克", icon: "行" },
-                { q: "天乙贵人", icon: "贵" },
-                { q: "桃花咸池", icon: "桃" },
-                { q: "嫁娶吉日", icon: "嫁" },
-                { q: "建除十二神", icon: "建" },
-                { q: "纳音取象", icon: "音" },
-              ].map(({ q, icon }) => (
-                <button key={q}
-                  onClick={() => { setQuery(q); handleSearch(); }}
-                  className="flex items-center gap-2 px-3 py-2 bg-dao-paper-dark rounded-lg
-                             text-xs text-dao-ink-light tap-active border border-dao-paper-darker
-                             hover:border-dao-gold/30 transition-colors text-left">
-                  <span className="jing-seal flex-shrink-0">{icon}</span>
-                  <span>{q}</span>
-                </button>
+            {/* 八字柱式 */}
+            <div className="grid grid-cols-4 gap-2 text-center mb-4">
+              {selectedCase.bazi.split(" ").map((gz: string, i: number) => {
+                const labels = ["年柱", "月柱", "日柱", "时柱"];
+                return (
+                  <div key={i} className="pillar-block py-2">
+                    <p className="text-[9px] text-dao-aged">{labels[i]}</p>
+                    <p className="text-base font-[family-name:var(--font-display)] text-dao-ink">{gz[0]}</p>
+                    <p className="text-base font-[family-name:var(--font-display)] text-dao-red">{gz[1]}</p>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* 断语 */}
+            <div className="classical-quote text-sm mb-3">
+              {selectedCase.commentary}
+            </div>
+
+            <div className="flex items-center gap-4 text-xs text-dao-aged mb-2">
+              <span>来源: {selectedCase.source}</span>
+              <span className="flex items-center gap-1">
+                <Star size={10} className={selectedCase.reliability === "正史记载" ? "fill-dao-gold text-dao-gold" : ""} />
+                {selectedCase.reliability}
+              </span>
+            </div>
+
+            <div className="flex flex-wrap gap-1">
+              {(selectedCase.tags || []).map((t: string) => (
+                <span key={t} className="px-2 py-0.5 bg-dao-paper-dark text-dao-aged text-[10px] rounded-full">
+                  {t}
+                </span>
               ))}
             </div>
           </div>
-        )}
-      </div>
-
+        </div>
+      )}
       <BottomNav />
     </div>
   );
