@@ -1,0 +1,130 @@
+[
+  {
+    "id": "tc001",
+    "name": "立春前-年柱不变",
+    "year": 2024, "month": 2, "day": 4, "hour": 10, "minute": 0,
+    "gender": "男",
+    "expected": {
+      "year_ganzhi": "癸卯",
+      "month_ganzhi": "乙丑",
+      "rizhu": "戊"
+    },
+    "note": "2024年立春在2月4日16:27，故此日10:00仍在癸卯年"
+  },
+  {
+    "id": "tc002",
+    "name": "立春后-年柱更换",
+    "year": 2024, "month": 2, "day": 5, "hour": 10, "minute": 0,
+    "gender": "男",
+    "expected": {
+      "year_ganzhi": "甲辰",
+      "month_ganzhi": "丙寅",
+      "rizhu": "己"
+    },
+    "note": "立春已过，年柱应为甲辰，月柱应变为寅月"
+  },
+  {
+    "id": "tc003",
+    "name": "1990年5月20日-标准命例",
+    "year": 1990, "month": 5, "day": 20, "hour": 12, "minute": 0,
+    "gender": "男",
+    "expected": {
+      "year_ganzhi": "庚午",
+      "month_ganzhi": "辛巳",
+      "day_ganzhi": "乙酉",
+      "hour_ganzhi": "壬午",
+      "rizhu": "乙",
+      "rizhu_wuxing": "木",
+      "nayin": "路旁土"
+    },
+    "note": "请与问真八字App交叉验证"
+  },
+  {
+    "id": "tc004",
+    "name": "1988年8月8日8时-四柱全验证",
+    "year": 1988, "month": 8, "day": 8, "hour": 8, "minute": 0,
+    "gender": "女",
+    "expected": {
+      "year_ganzhi": "戊辰",
+      "month_ganzhi": "庚申",
+      "day_ganzhi": "乙未",
+      "hour_ganzhi": "庚辰",
+      "rizhu": "乙",
+      "rizhu_wuxing": "木",
+      "nayin": "大林木"
+    },
+    "note": "请与问真八字App交叉验证"
+  },
+  {
+    "id": "tc005",
+    "name": "2000年1月1日-千禧年",
+    "year": 2000, "month": 1, "day": 1, "hour": 8, "minute": 0,
+    "gender": "男",
+    "expected": {
+      "year_ganzhi": "己卯",
+      "month_ganzhi": "丙子",
+      "day_ganzhi": "戊午",
+      "hour_ganzhi": "丙辰",
+      "rizhu": "戊",
+      "rizhu_wuxing": "土"
+    },
+    "note": "千禧年元旦。注意：2000年1月1日仍为己卯年（立春在2月4日）"
+  },
+  {
+    "id": "tc006",
+    "name": "大运-阳男顺排",
+    "year": 1990, "month": 5, "day": 20, "hour": 12, "minute": 0,
+    "gender": "男",
+    "expected": {
+      "year_gan": "庚",
+      "dayun_direction": "forward",
+      "dayun_first_ganzhi": "壬午"
+    },
+    "note": "庚为阳干，男命阳年→顺排。月柱辛巳，顺排第一步为壬午"
+  },
+  {
+    "id": "tc007",
+    "name": "大运-阴女逆排",
+    "year": 1988, "month": 8, "day": 8, "hour": 8, "minute": 0,
+    "gender": "女",
+    "expected": {
+      "year_gan": "戊",
+      "dayun_direction": "backward",
+      "dayun_first_ganzhi": "己未"
+    },
+    "note": "戊为阳干，女命阳年→逆排。月柱庚申，逆排第一步为己未"
+  },
+  {
+    "id": "tc008",
+    "name": "天乙贵人验证",
+    "year": 1990, "month": 5, "day": 20, "hour": 12, "minute": 0,
+    "gender": "男",
+    "expected": {
+      "rizhu": "乙",
+      "tianyi_at": ["子", "申"]
+    },
+    "note": "日主乙木，天乙贵人在子、申。乙己鼠猴乡"
+  },
+  {
+    "id": "tc009",
+    "name": "空亡验证",
+    "year": 1990, "month": 5, "day": 20, "hour": 12, "minute": 0,
+    "gender": "男",
+    "expected": {
+      "day_ganzhi": "乙酉",
+      "kongwang_zhi": ["午", "未"]
+    },
+    "note": "日柱乙酉属甲申旬，旬空午未"
+  },
+  {
+    "id": "tc010",
+    "name": "桃花验证-申子辰见酉",
+    "year": 1988, "month": 8, "day": 8, "hour": 8, "minute": 0,
+    "gender": "男",
+    "expected": {
+      "year_zhi": "辰",
+      "taohua_at": "酉"
+    },
+    "note": "年支辰 → 申子辰桃花在酉"
+  }
+]
