@@ -74,6 +74,24 @@ export async function askMentor(
   });
 }
 
+// ===== 今日宜忌 =====
+
+export interface YijiParams {
+  year?: number;
+  month?: number;
+  day?: number;
+  hour?: number;
+  minute?: number;
+  gender?: string;
+}
+
+export async function getYiji(params?: YijiParams) {
+  return fetchAPI("/api/yiji", {
+    method: "POST",
+    body: JSON.stringify(params || {}),
+  });
+}
+
 // ===== 古籍来源列表 =====
 
 export async function getSources() {

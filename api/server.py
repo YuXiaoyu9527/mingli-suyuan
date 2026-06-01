@@ -64,6 +64,16 @@ class MentorRequest(BaseModel):
     correct_answer: str
 
 
+class YijiRequest(BaseModel):
+    """宜忌请求：可选用户八字"""
+    year: Optional[int] = None
+    month: Optional[int] = None
+    day: Optional[int] = None
+    hour: int = 12
+    minute: int = 0
+    gender: str = "男"
+
+
 # ===== 懒加载单例 =====
 
 _searcher = None
@@ -177,6 +187,46 @@ def api_sources():
             {"name": "淵海子平", "volumes": "全篇", "records": 102, "abbr": "yhp"},
             {"name": "欽定協紀辨方書", "volumes": "36卷", "records": 2445, "abbr": "xjbf"},
         ]
+    }
+
+
+@app.post("/api/yiji")
+def api_yiji(req: YijiRequest):
+    """
+    今日宜忌（建除十二神 + 黄道黑道 + 彭祖百忌 + 个人冲合）
+
+    如果不传用户八字参数，只返回通用宜忌。
+    传入出生日期则叠加个人分析。
+    """
+    from datetime import datetime
+    from lunar_python import Solar
+    from api.paipan.yiji import DailyYiji
+
+    now = datetime.now()
+    solar = Solar.fromYmdHms(now.year, now.month, now.day, 12, 0, 0)
+
+    user_bazi = None
+    if req.year is not None:
+        from api.paipan import paipan
+        user_bazi = paipan(req.year, req.month or 1, req.day or 1,
+                           req.hour, req.minute, req.gender)
+
+    yj = DailyYiji()
+    result = yj.analyze(solar, user_bazi)
+
+    return {
+        "date": result.date,
+        "day_ganzhi": result.day_ganzhi,
+        "jianchu": result.jianchu,
+        "jianchu_desc": result.jianchu_desc,
+        "huangdao_shen": result.huangdao_shen,
+        "huangdao_type": result.huangdao_type,
+        "pengzu_ji": result.pengzu_ji,
+        "general_yi": result.general_yi,
+        "general_ji": result.general_ji,
+        "personal_yi": result.personal_yi,
+        "personal_ji": result.personal_ji,
+        "personal_analysis": result.personal_analysis,
     }
 
 
