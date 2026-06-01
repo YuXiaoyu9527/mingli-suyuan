@@ -1,10 +1,57 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
-  <!-- 宣纸白背景 -->
-  <rect width="192" height="192" rx="32" fill="#F5F0E8"/>
-  <!-- 朱砂红圆环 -->
-  <circle cx="96" cy="88" r="48" fill="none" stroke="#C43A31" stroke-width="3"/>
-  <!-- 命字 -->
-  <text x="96" y="100" text-anchor="middle" font-size="52" font-family="serif" fill="#C43A31">命</text>
-  <!-- 底部文字 -->
-  <text x="96" y="166" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#8B7D6B">命理溯源</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1C1814;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3A3228;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#DFCBA0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A8863E;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- 背景：圆角方形书本 -->
+  <rect x="32" y="64" width="448" height="400" rx="32" fill="url(#bg)"/>
+
+  <!-- 书脊鎏金线 -->
+  <line x1="60" y1="96" x2="60" y2="432" stroke="url(#gold)" stroke-width="3" opacity="0.6"/>
+
+  <!-- 封面书页纹理 -->
+  <rect x="80" y="96" width="380" height="340" rx="4" fill="#F7F2E8" opacity="0.08"/>
+
+  <!-- 中心太极图 -->
+  <circle cx="260" cy="240" r="80" fill="none" stroke="url(#gold)" stroke-width="2" opacity="0.8"/>
+
+  <!-- 太极阴阳鱼 -->
+  <path d="M260,160 A80,80 0 0,1 260,320 A40,40 0 0,0 260,240 A40,40 0 0,1 260,160"
+        fill="url(#gold)" opacity="0.9"/>
+  <path d="M260,160 A80,80 0 0,0 260,320 A40,40 0 0,1 260,240 A40,40 0 0,0 260,160"
+        fill="none" stroke="url(#gold)" stroke-width="1" opacity="0.5"/>
+
+  <!-- 阴眼 -->
+  <circle cx="240" cy="220" r="8" fill="#1C1814"/>
+  <!-- 阳眼 -->
+  <circle cx="280" cy="260" r="8" fill="url(#gold)"/>
+
+  <!-- 八卦符号环绕 -->
+  <g font-size="20" fill="#C9A96E" opacity="0.7" text-anchor="middle">
+    <text x="260" y="128">☰</text>
+    <text x="330" y="148">☱</text>
+    <text x="352" y="210">☲</text>
+    <text x="340" y="280">☳</text>
+    <text x="300" y="330">☴</text>
+    <text x="240" y="345">☵</text>
+    <text x="180" y="330">☶</text>
+    <text x="140" y="280">☷</text>
+    <text x="130" y="210">☷</text>
+    <text x="148" y="148">☳</text>
+  </g>
+
+  <!-- 底部书名 -->
+  <text x="260" y="390" text-anchor="middle" font-family="serif" font-size="28"
+        fill="url(#gold)" letter-spacing="8" opacity="0.9">命 理 溯 源</text>
+
+  <!-- 顶部标签 -->
+  <text x="260" y="110" text-anchor="middle" font-family="serif" font-size="14"
+        fill="#C9A96E" letter-spacing="4" opacity="0.5">道 藏 秘 卷</text>
 </svg>
