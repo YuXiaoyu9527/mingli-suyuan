@@ -77,13 +77,26 @@ export default function MingliPage() {
         )}
 
         {results.length === 0 && !loading && !query && (
-          <div className="text-center text-aged text-sm py-8 space-y-2">
-            <p>🔍 试试搜索：</p>
-            <div className="flex flex-wrap justify-center gap-2">
-              {["正官格", "五行相生", "天乙贵人", "嫁娶吉日", "桃花煞"].map(t => (
-                <button key={t} onClick={() => { setQuery(t); handleSearch(); }}
-                  className="px-3 py-1 bg-parchment-dark rounded-full text-xs text-ink-light tap-active border border-parchment-darker">
-                  {t}
+          <div className="text-center text-aged text-sm py-8 space-y-4">
+            <p className="text-dao-gold tracking-widest text-xs">— 热门搜索 —</p>
+            <div className="grid grid-cols-2 gap-2 text-left max-w-xs mx-auto">
+              {[
+                { q: "正官格", icon: "官" },
+                { q: "七杀格", icon: "杀" },
+                { q: "五行相生相克", icon: "行" },
+                { q: "天乙贵人", icon: "贵" },
+                { q: "桃花咸池", icon: "桃" },
+                { q: "嫁娶吉日", icon: "嫁" },
+                { q: "建除十二神", icon: "建" },
+                { q: "纳音取象", icon: "音" },
+              ].map(({ q, icon }) => (
+                <button key={q}
+                  onClick={() => { setQuery(q); handleSearch(); }}
+                  className="flex items-center gap-2 px-3 py-2 bg-dao-paper-dark rounded-lg
+                             text-xs text-dao-ink-light tap-active border border-dao-paper-darker
+                             hover:border-dao-gold/30 transition-colors text-left">
+                  <span className="jing-seal flex-shrink-0">{icon}</span>
+                  <span>{q}</span>
                 </button>
               ))}
             </div>

@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import BottomNav from "@/components/BottomNav";
+import LoadingSplash from "@/components/LoadingSplash";
+import ShareCard from "@/components/ShareCard";
+import FeatureGate from "@/components/FeatureGate";
 import { jianpi, JianpiParams } from "@/lib/api";
 import { Compass, Loader2 } from "lucide-react";
 
@@ -143,13 +146,24 @@ export default function PaipanPage() {
               </div>
             )}
 
-            {/* AI解读 */}
+            {/* AI解读（付费功能） */}
             {result.interpretation && (
-              <div className="classical-quote mt-4">
-                <p className="text-xs text-aged mb-1">AI简批（仅供参考）</p>
-                <p className="text-sm text-ink-light leading-relaxed whitespace-pre-line">{result.interpretation}</p>
-              </div>
+              <FeatureGate feature="AI简批（含古籍原文引用）">
+                <div className="classical-quote mt-4">
+                  <p className="text-xs text-aged mb-1">AI简批（仅供参考）</p>
+                  <p className="text-sm text-ink-light leading-relaxed whitespace-pre-line">{result.interpretation}</p>
+                </div>
+              </FeatureGate>
             )}
+
+            {/* 分享卡片（测测式） */}
+            <ShareCard
+              ganzhi={[p.year.ganzhi, p.month.ganzhi, p.day.ganzhi, p.hour.ganzhi]}
+              rizhu={result.paipan.rizhu}
+              rizhuWuxing={result.paipan.rizhu_wuxing}
+              nayin={p.day.nayin}
+              lunarDate={result.paipan.lunar_date}
+            />
 
             {/* 古籍引用 */}
             {result.ancient_refs && (

@@ -1,57 +1,75 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1C1814;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#3A3228;stop-opacity:1" />
-    </linearGradient>
-    <linearGradient id="gold" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#DFCBA0;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#A8863E;stop-opacity:1" />
-    </linearGradient>
+    <radialGradient id="bronze" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" style="stop-color:#C9A96E;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#8B6E3E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5A3E1E;stop-opacity:1" />
+    </radialGradient>
+    <radialGradient id="ringGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#DFCBA0;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1C1814;stop-opacity:0" />
+    </radialGradient>
+    <filter id="bronzeTexture">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" result="noise"/>
+      <feDiffuseLighting in="noise" lighting-color="#C9A96E" surfaceScale="1.5" result="light">
+        <feDistantLight azimuth="45" elevation="55"/>
+      </feDiffuseLighting>
+      <feComposite in="light" in2="SourceGraphic" operator="in"/>
+    </filter>
   </defs>
 
-  <!-- 背景：圆角方形书本 -->
-  <rect x="32" y="64" width="448" height="400" rx="32" fill="url(#bg)"/>
+  <!-- 背景：深色圆角方形 -->
+  <rect x="24" y="24" width="464" height="464" rx="56" fill="#1C1814"/>
+  <rect x="30" y="30" width="452" height="452" rx="52" fill="none" stroke="#C9A96E" stroke-width="1.5" opacity="0.4"/>
 
-  <!-- 书脊鎏金线 -->
-  <line x1="60" y1="96" x2="60" y2="432" stroke="url(#gold)" stroke-width="3" opacity="0.6"/>
+  <!-- 外环光晕 -->
+  <circle cx="256" cy="220" r="170" fill="url(#ringGlow)"/>
 
-  <!-- 封面书页纹理 -->
-  <rect x="80" y="96" width="380" height="340" rx="4" fill="#F7F2E8" opacity="0.08"/>
+  <!-- 辅首外圆（青铜质感） -->
+  <circle cx="256" cy="220" r="140" fill="none" stroke="url(#bronze)" stroke-width="14"/>
+  <circle cx="256" cy="220" r="140" fill="none" stroke="#DFCBA0" stroke-width="1" opacity="0.3"/>
 
-  <!-- 中心太极图 -->
-  <circle cx="260" cy="240" r="80" fill="none" stroke="url(#gold)" stroke-width="2" opacity="0.8"/>
-
-  <!-- 太极阴阳鱼 -->
-  <path d="M260,160 A80,80 0 0,1 260,320 A40,40 0 0,0 260,240 A40,40 0 0,1 260,160"
-        fill="url(#gold)" opacity="0.9"/>
-  <path d="M260,160 A80,80 0 0,0 260,320 A40,40 0 0,1 260,240 A40,40 0 0,0 260,160"
-        fill="none" stroke="url(#gold)" stroke-width="1" opacity="0.5"/>
-
-  <!-- 阴眼 -->
-  <circle cx="240" cy="220" r="8" fill="#1C1814"/>
-  <!-- 阳眼 -->
-  <circle cx="280" cy="260" r="8" fill="url(#gold)"/>
-
-  <!-- 八卦符号环绕 -->
-  <g font-size="20" fill="#C9A96E" opacity="0.7" text-anchor="middle">
-    <text x="260" y="128">☰</text>
-    <text x="330" y="148">☱</text>
-    <text x="352" y="210">☲</text>
-    <text x="340" y="280">☳</text>
-    <text x="300" y="330">☴</text>
-    <text x="240" y="345">☵</text>
-    <text x="180" y="330">☶</text>
-    <text x="140" y="280">☷</text>
-    <text x="130" y="210">☷</text>
-    <text x="148" y="148">☳</text>
+  <!-- 外圆铆钉（八颗） -->
+  <g fill="#C9A96E" opacity="0.8">
+    <circle cx="256" cy="80" r="7"/>  <circle cx="256" cy="360" r="7"/>
+    <circle cx="116" cy="220" r="7"/>  <circle cx="396" cy="220" r="7"/>
+    <circle cx="157" cy="121" r="7"/>  <circle cx="355" cy="121" r="7"/>
+    <circle cx="157" cy="319" r="7"/>  <circle cx="355" cy="319" r="7"/>
   </g>
 
-  <!-- 底部书名 -->
-  <text x="260" y="390" text-anchor="middle" font-family="serif" font-size="28"
-        fill="url(#gold)" letter-spacing="8" opacity="0.9">命 理 溯 源</text>
+  <!-- 内圆 —— 八卦环 -->
+  <circle cx="256" cy="220" r="100" fill="none" stroke="#C9A96E" stroke-width="1.5" opacity="0.5"/>
 
-  <!-- 顶部标签 -->
-  <text x="260" y="110" text-anchor="middle" font-family="serif" font-size="14"
-        fill="#C9A96E" letter-spacing="4" opacity="0.5">道 藏 秘 卷</text>
+  <!-- 八卦符号 -->
+  <g font-size="16" fill="#C9A96E" opacity="0.6" text-anchor="middle">
+    <text x="256" y="130">☰</text>  <text x="330" y="142">☱</text>
+    <text x="346" y="196">☲</text>  <text x="336" y="254">☳</text>
+    <text x="300" y="298">☴</text>  <text x="256" y="308">☵</text>
+    <text x="212" y="298">☶</text>  <text x="176" y="254">☷</text>
+    <text x="166" y="196">☷</text>  <text x="182" y="142">☳</text>
+  </g>
+
+  <!-- 中心太极 -->
+  <circle cx="256" cy="220" r="42" fill="none" stroke="url(#bronze)" stroke-width="4"/>
+
+  <!-- 太极阴阳鱼 -->
+  <path d="M256,178 A42,42 0 0,1 256,262 A21,21 0 0,0 256,220 A21,21 0 0,1 256,178"
+        fill="#C9A96E" opacity="0.9"/>
+  <path d="M256,178 A42,42 0 0,0 256,262 A21,21 0 0,1 256,220 A21,21 0 0,0 256,178"
+        fill="none" stroke="#C9A96E" stroke-width="1" opacity="0.4"/>
+
+  <!-- 阴眼 -->
+  <circle cx="235" cy="210" r="5" fill="#1C1814"/>
+  <!-- 阳眼 -->
+  <circle cx="277" cy="230" r="5" fill="#C9A96E"/>
+
+  <!-- 门环（悬挂在太极下方） -->
+  <circle cx="256" cy="280" r="24" fill="none" stroke="url(#bronze)" stroke-width="6"/>
+  <circle cx="256" cy="280" r="28" fill="none" stroke="#DFCBA0" stroke-width="0.5" opacity="0.3"/>
+  <!-- 门环连接线 -->
+  <line x1="256" y1="256" x2="256" y2="264" stroke="url(#bronze)" stroke-width="5"/>
+
+  <!-- 底部书名 -->
+  <text x="256" y="435" text-anchor="middle" font-family="serif" font-size="22"
+        fill="#C9A96E" letter-spacing="6" opacity="0.8">命 理 溯 源</text>
 </svg>

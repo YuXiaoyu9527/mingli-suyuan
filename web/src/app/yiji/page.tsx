@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import BottomNav from "@/components/BottomNav";
+import DailyWisdom from "@/components/DailyWisdom";
 import { getYiji, YijiParams } from "@/lib/api";
 import { Loader2, RefreshCw, Compass, Star, AlertTriangle, Clock } from "lucide-react";
 
@@ -223,6 +224,9 @@ export default function YijiPage() {
           <p className="text-[10px] text-aged-light mb-1">数据来源</p>
           {data?.classical_ref || "《协纪辨方书》·乾隆钦定 · 四库全书本"}
         </div>
+
+        {/* 潮汐式日签 */}
+        <DailyWisdom />
 
         <p className="text-center text-[11px] text-aged-light pb-4">
           仅供传统文化研究与民俗参考，不构成人生决策依据
