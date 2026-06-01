@@ -1,56 +1,60 @@
 @import "tailwindcss";
 
-/* ===== 命理溯源 · 中式主题 ===== */
+/* ============================================================
+   命理溯源 · 道藏秘卷 主题
+   Daoist Aesthetic Design System
+   ============================================================ */
 
 @theme inline {
-  /* 核心色板 */
-  --color-vermillion: #C43A31;
-  --color-vermillion-dark: #A8322B;
-  --color-vermillion-light: #D4695E;
+  /* === 核心色板 === */
+  --color-dao-gold: #C9A96E;
+  --color-dao-gold-light: #DFCBA0;
+  --color-dao-gold-dark: #A8863E;
 
-  --color-gold: #C9A96E;
-  --color-gold-light: #DCC89A;
-  --color-gold-dark: #A88A4E;
+  --color-dao-red: #B33A2E;
+  --color-dao-red-light: #D4655E;
+  --color-dao-red-dark: #8B2218;
 
-  --color-parchment: #F5F0E8;
-  --color-parchment-dark: #E8E0D2;
-  --color-parchment-darker: #D4C9B5;
+  --color-dao-ink: #1C1814;
+  --color-dao-ink-light: #3A3228;
+  --color-dao-ink-lighter: #5E5344;
 
-  --color-ink: #2C2416;
-  --color-ink-light: #4A3F2E;
-  --color-ink-lighter: #6B5F4E;
+  --color-dao-paper: #F7F2E8;
+  --color-dao-paper-dark: #EBE2D0;
+  --color-dao-paper-darker: #D4C8AD;
 
-  --color-aged: #8B7D6B;
-  --color-aged-light: #A89880;
+  --color-dao-aged: #9B8C78;
+  --color-dao-aged-light: #B8A890;
 
-  --color-indigo-traditional: #3D5A80;
-  --color-indigo-light: #5A7AA5;
+  --color-dao-jade: #6B8E6B;
+  --color-dao-jade-light: #8AAA8A;
+  --color-dao-jade-dark: #4A6E4A;
 
-  /* 功能色 */
-  --color-auspicious: #5B8C5A;
-  --color-inauspicious: #C43A31;
-  --color-seal: #C43A31;
+  --color-dao-indigo: #2E4A6E;
+  --color-dao-indigo-light: #4A6A9A;
 
-  /* 字体 */
-  --font-display: var(--font-zcool-xiaowei);
-  --font-body: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC",
-    "SimSun", "KaiTi", serif;
-  --font-mono: "SF Mono", "Cascadia Code", "Consolas", monospace;
+  /* === 功能色 === */
+  --color-auspicious: #6B8E6B;
+  --color-inauspicious: #B33A2E;
+  --color-warning: #C9A040;
 
-  /* 间距 */
-  --spacing-safe-bottom: env(safe-area-inset-bottom, 16px);
+  /* === 字体 === */
+  --font-display: var(--font-dao-display);
+  --font-body: "Songti SC", "STSong", "Noto Serif SC", "SimSun", "KaiTi", serif;
 
-  /* 阴影 */
-  --shadow-card: 0 2px 12px rgba(44, 36, 22, 0.08);
-  --shadow-card-hover: 0 4px 20px rgba(44, 36, 22, 0.14);
-  --shadow-nav: 0 -2px 8px rgba(44, 36, 22, 0.06);
+  /* === 阴影（道藏卷轴感） === */
+  --shadow-scroll: 0 4px 20px rgba(28, 24, 20, 0.12), 0 1px 3px rgba(28, 24, 20, 0.08);
+  --shadow-card: 0 2px 8px rgba(28, 24, 20, 0.06);
+  --shadow-nav: 0 -1px 8px rgba(28, 24, 20, 0.08);
 
-  /* 圆角 */
-  --radius-card: 12px;
-  --radius-btn: 8px;
+  /* === 圆角 === */
+  --radius-scroll: 3px;
+  --radius-card: 8px;
 }
 
-/* ===== 基础样式 ===== */
+/* ============================================================
+   基础样式
+   ============================================================ */
 
 html {
   -webkit-tap-highlight-color: transparent;
@@ -60,189 +64,357 @@ html {
 }
 
 body {
-  background-color: var(--color-parchment);
-  color: var(--color-ink);
+  background-color: var(--color-dao-paper);
+  color: var(--color-dao-ink);
   font-family: var(--font-body);
   min-height: 100dvh;
-  /* 防止 iOS 橡皮筋效果导致页面偏移 */
   overscroll-behavior-y: none;
+  /* 纸张纹理 */
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(201, 169, 110, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(179, 58, 46, 0.03) 0%, transparent 50%);
+  background-attachment: fixed;
 }
 
-/* ===== 古籍引用样式 ===== */
+/* ============================================================
+   道藏卡片
+   ============================================================ */
+
+.dao-card {
+  background: linear-gradient(180deg,
+    rgba(247, 242, 232, 0.95) 0%,
+    rgba(240, 234, 220, 0.9) 100%
+  );
+  border: 1px solid var(--color-dao-paper-darker);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow-scroll);
+  position: relative;
+}
+
+/* 卡片顶部鎏金横线 */
+.dao-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 16px;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--color-dao-gold) 20%,
+    var(--color-dao-gold) 80%,
+    transparent 100%
+  );
+  opacity: 0.5;
+}
+
+/* ============================================================
+   古籍引用块
+   ============================================================ */
 
 .classical-quote {
-  writing-mode: horizontal-tb;
-  background: linear-gradient(
-    135deg,
-    rgba(245, 240, 232, 0.9) 0%,
-    rgba(232, 224, 210, 0.6) 100%
-  );
-  border-left: 3px solid var(--color-gold);
-  padding: 16px;
-  margin: 12px 0;
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  line-height: 1.8;
-  color: var(--color-ink-light);
   position: relative;
-  border-radius: 0 8px 8px 0;
+  padding: 16px 16px 16px 20px;
+  margin: 16px 0;
+  border-left: 2px solid var(--color-dao-gold);
+  background: linear-gradient(90deg,
+    rgba(201, 169, 110, 0.08) 0%,
+    rgba(201, 169, 110, 0.02) 50%,
+    transparent 100%
+  );
+  border-radius: 0 var(--radius-scroll) var(--radius-scroll) 0;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--color-dao-ink-light);
 }
 
-.classical-quote::before {
-  content: "「";
-  color: var(--color-gold);
-  font-size: 1.4rem;
-  font-weight: bold;
-  margin-right: 2px;
+/* ============================================================
+   八卦纹饰背景（SVG，纯CSS实现）
+   ============================================================ */
+
+.bg-bagua {
+  position: relative;
 }
 
-.classical-quote::after {
-  content: "」";
-  color: var(--color-gold);
-  font-size: 1.4rem;
-  font-weight: bold;
-  margin-left: 2px;
+.bg-bagua::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image:
+    radial-gradient(circle at 50% 50%, var(--color-dao-gold) 1px, transparent 1px),
+    radial-gradient(circle at 30% 70%, var(--color-dao-red) 1px, transparent 1px),
+    radial-gradient(circle at 70% 30%, var(--color-dao-indigo) 1px, transparent 1px);
+  background-size: 60px 60px, 80px 80px, 100px 100px;
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* ===== 印章样式 ===== */
+/* ============================================================
+   笔画印章
+   ============================================================ */
 
-.seal-mark {
+.seal {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: 2px solid var(--color-vermillion);
-  border-radius: 50%;
-  color: var(--color-vermillion);
+  min-width: 36px;
+  min-height: 36px;
+  border: 2px solid var(--color-dao-red);
+  color: var(--color-dao-red);
   font-family: var(--font-display);
-  font-size: 1.2rem;
-  transform: rotate(-5deg);
+  font-size: 1.1rem;
+  transform: rotate(-3deg);
   flex-shrink: 0;
 }
 
-/* ===== 墨迹高亮 ===== */
-
-.ink-highlight {
-  background: linear-gradient(
-    180deg,
-    transparent 60%,
-    rgba(201, 169, 110, 0.35) 60%
-  );
-  padding: 0 4px;
+.seal-round {
+  border-radius: 50%;
 }
 
-/* ===== 卡片样式 ===== */
-
-.card-ancient {
-  background: var(--color-parchment);
-  border: 1px solid var(--color-parchment-darker);
-  border-radius: var(--radius-card);
-  padding: 20px;
-  box-shadow: var(--shadow-card);
+.seal-square {
+  border-radius: 4px;
 }
 
-/* ===== 按钮样式 ===== */
+/* ============================================================
+   太极加载动画
+   ============================================================ */
 
-.btn-primary {
-  background-color: var(--color-vermillion);
+@keyframes taiji-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.taiji-loader {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background:
+    linear-gradient(180deg,
+      var(--color-dao-ink) 0%, var(--color-dao-ink) 50%,
+      var(--color-dao-paper) 50%, var(--color-dao-paper) 100%
+    );
+  position: relative;
+  animation: taiji-spin 3s linear infinite;
+}
+
+.taiji-loader::before {
+  content: "";
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  top: 25%;
+  left: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%,
+      var(--color-dao-paper) 20%,
+      var(--color-dao-ink) 20%
+    );
+}
+
+.taiji-loader::after {
+  content: "";
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  top: 25%;
+  right: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%,
+      var(--color-dao-ink) 20%,
+      var(--color-dao-paper) 20%
+    );
+}
+
+/* ============================================================
+   按钮
+   ============================================================ */
+
+.btn-dao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: var(--color-dao-red);
   color: white;
   border: none;
-  border-radius: var(--radius-btn);
-  padding: 12px 24px;
+  border-radius: var(--radius-scroll);
   font-family: var(--font-display);
   font-size: 1rem;
+  letter-spacing: 0.05em;
   cursor: pointer;
-  transition: all 0.15s ease;
-  box-shadow: 0 2px 4px rgba(196, 58, 49, 0.3);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(179, 58, 46, 0.25);
+  position: relative;
+  overflow: hidden;
 }
 
-.btn-primary:active {
+.btn-dao:active {
   transform: scale(0.97);
-  background-color: var(--color-vermillion-dark);
+  box-shadow: 0 1px 3px rgba(179, 58, 46, 0.2);
 }
 
-/* ===== 底部导航安全区 ===== */
+/* ============================================================
+   页面过渡
+   ============================================================ */
 
-.safe-bottom {
-  padding-bottom: var(--spacing-safe-bottom);
+@keyframes fadeUpIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== 页面进入动画 ===== */
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.3s ease-out;
+.anim-enter {
+  animation: fadeUpIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ===== 触摸反馈 ===== */
-
-.tap-active {
-  transition: transform 0.1s ease;
+.anim-fade {
+  animation: fadeIn 0.5s ease;
 }
+
+/* ============================================================
+   八卦符号（☰☷☳☶☵☲☴☱）
+   ============================================================ */
+
+.bagua-symbol {
+  font-size: 1.4rem;
+  line-height: 1;
+  opacity: 0.15;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ============================================================
+   干支柱展示
+   ============================================================ */
+
+.pillar-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 8px;
+  background: linear-gradient(180deg,
+    rgba(247, 242, 232, 0.6) 0%,
+    rgba(235, 226, 208, 0.4) 100%
+  );
+  border: 1px solid var(--color-dao-paper-darker);
+  border-radius: var(--radius-card);
+  min-width: 64px;
+}
+
+.pillar-gan {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--color-dao-ink);
+  line-height: 1.2;
+}
+
+.pillar-zhi {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--color-dao-red);
+  line-height: 1.2;
+}
+
+.pillar-label {
+  font-size: 0.65rem;
+  color: var(--color-dao-aged);
+  margin-top: 4px;
+  letter-spacing: 0.1em;
+}
+
+/* ============================================================
+   太极图装饰背景
+   ============================================================ */
+
+.dao-bg-pattern {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.012;
+  background-image:
+    repeating-linear-gradient(0deg, var(--color-dao-ink), var(--color-dao-ink) 1px, transparent 1px, transparent 40px),
+    repeating-linear-gradient(90deg, var(--color-dao-ink), var(--color-dao-ink) 1px, transparent 1px, transparent 40px);
+}
+
+/* ============================================================
+   触摸反馈
+   ============================================================ */
 
 .tap-active:active {
   transform: scale(0.96);
+  transition: transform 0.1s ease;
 }
 
-/* ===== 竖向排版（古籍引用） ===== */
-
-.vertical-text {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-}
-
-/* ===== 滚动条美化 ===== */
-
-::-webkit-scrollbar {
-  width: 4px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-parchment-darker);
-  border-radius: 2px;
-}
-
-/* ===== 选中文字颜色 ===== */
+/* ============================================================
+   文字选中
+   ============================================================ */
 
 ::selection {
-  background: rgba(201, 169, 110, 0.3);
-  color: var(--color-ink);
+  background: rgba(201, 169, 110, 0.25);
+  color: var(--color-dao-ink);
 }
 
-/* ===== 加载动画 ===== */
+/* ============================================================
+   滚动条
+   ============================================================ */
 
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-dao-paper-darker); border-radius: 2px; }
+
+/* ============================================================
+   导航安全区
+   ============================================================ */
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
 }
 
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--color-parchment-dark) 25%,
-    var(--color-parchment) 50%,
-    var(--color-parchment-dark) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 4px;
+/* ============================================================
+   时辰网格
+   ============================================================ */
+
+.hour-cell {
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 4px;
+  transition: all 0.15s;
+}
+
+.hour-cell-ji {
+  background: rgba(107, 142, 107, 0.06);
+  border: 1px solid rgba(107, 142, 107, 0.15);
+}
+
+.hour-cell-xiong {
+  background: rgba(179, 58, 46, 0.04);
+  border: 1px solid rgba(179, 58, 46, 0.1);
+}
+
+/* ============================================================
+   印章标记（"经"字章）
+   ============================================================ */
+
+.jing-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--color-dao-red);
+  border-radius: 50%;
+  color: var(--color-dao-red);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  transform: rotate(-5deg);
 }

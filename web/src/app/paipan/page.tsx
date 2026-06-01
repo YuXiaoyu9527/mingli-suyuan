@@ -41,7 +41,7 @@ export default function PaipanPage() {
 
       <div className="px-5 flex-1 space-y-5">
         {/* 输入表单 */}
-        <div className="card-ancient space-y-4">
+        <div className="dao-card space-y-4">
           <div className="flex gap-2">
             <input type="number" value={form.year} onChange={e => setForm({...form, year: +e.target.value})}
               className="flex-1 bg-parchment-dark border border-parchment-darker rounded-lg px-3 py-2.5 text-ink text-sm focus:outline-none focus:border-vermillion" placeholder="1990"/>
@@ -77,21 +77,26 @@ export default function PaipanPage() {
 
         {/* 结果展示 */}
         {result && p && (
-          <div className="card-ancient animate-fade-in-up space-y-4">
-            {/* 四柱八字 */}
-            <div className="grid grid-cols-4 gap-3 text-center">
+          <div className="dao-card animate-fade-in-up space-y-4">
+            {/* 八字卦象装饰 */}
+            <div className="text-center text-6xl bagua-symbol select-none mb-1">
+              {"☯"}
+            </div>
+
+            {/* 四柱八字 道藏柱式 */}
+            <div className="grid grid-cols-4 gap-2 text-center">
               {["year", "month", "day", "hour"].map((pos, i) => {
-                const label = ["年柱", "月柱", "日柱", "时柱"][i];
+                const labels = ["年柱", "月柱", "日柱", "时柱"];
                 const gz = p[pos].ganzhi;
+                const isDay = pos === "day";
                 return (
-                  <div key={pos}>
-                    <p className="text-[11px] text-aged mb-1">{label}</p>
-                    <div className="bg-parchment-dark rounded-lg py-3">
-                      <p className="text-lg font-[family-name:var(--font-display)] text-ink">
-                        {gz[0]}<br/>{gz[1]}
-                      </p>
-                    </div>
-                    <p className="text-[11px] text-aged-light mt-1">{p[pos].nayin}</p>
+                  <div key={pos} className={`pillar-block ${isDay ? "ring-1 ring-dao-red/20" : ""}`}>
+                    <p className="pillar-label">{labels[i]}</p>
+                    <p className="pillar-gan">{gz[0]}</p>
+                    <p className="pillar-zhi">{gz[1]}</p>
+                    <p className="text-[9px] text-dao-aged-light mt-1 leading-tight">
+                      {p[pos].nayin}
+                    </p>
                   </div>
                 );
               })}

@@ -53,7 +53,7 @@ export default function MingliPage() {
       {/* 结果列表 */}
       <div className="px-5 flex-1 space-y-3">
         {results.map((r, i) => (
-          <div key={i} className="card-ancient">
+          <div key={i} className="dao-card">
             <div className="flex items-start justify-between mb-2">
               <div>
                 <span className="text-xs font-bold text-vermillion font-[family-name:var(--font-display)]">

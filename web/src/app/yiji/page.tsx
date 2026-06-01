@@ -74,7 +74,7 @@ export default function YijiPage() {
       <div className="px-4 flex-1 space-y-4">
         {/* === 宜忌卡片 === */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="card-ancient">
+          <div className="dao-card">
             <h3 className="text-sm font-bold text-auspicious mb-2 flex items-center gap-1">
               <Star size={14} /> 宜
             </h3>
@@ -85,7 +85,7 @@ export default function YijiPage() {
               ))}
             </div>
           </div>
-          <div className="card-ancient">
+          <div className="dao-card">
             <h3 className="text-sm font-bold text-inauspicious mb-2 flex items-center gap-1">
               <AlertTriangle size={14} /> 忌
             </h3>
@@ -99,7 +99,7 @@ export default function YijiPage() {
         </div>
 
         {/* === 吉神方位 === */}
-        <div className="card-ancient">
+        <div className="dao-card">
           <h3 className="text-xs text-aged mb-2 flex items-center gap-1">
             <Compass size={13} /> 吉神方位
           </h3>
@@ -130,7 +130,7 @@ export default function YijiPage() {
         </div>
 
         {/* === 吉神凶煞 === */}
-        <div className="card-ancient">
+        <div className="dao-card">
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div>
               <p className="text-auspicious font-bold mb-1 text-[11px]">吉神</p>
@@ -152,7 +152,7 @@ export default function YijiPage() {
         </div>
 
         {/* === 时辰吉凶（折叠） === */}
-        <details className="card-ancient">
+        <details className="dao-card">
           <summary className="text-xs text-aged cursor-pointer flex items-center gap-1">
             <Clock size={13} /> 时辰吉凶（展开查看）
           </summary>
@@ -175,7 +175,7 @@ export default function YijiPage() {
 
         {/* === 个人宜忌 === */}
         {!showPersonal ? (
-          <div className="card-ancient">
+          <div className="dao-card">
             <p className="text-sm text-ink mb-3">想知道今日对你个人的影响？</p>
             <div className="flex gap-1.5 flex-wrap">
               <input type="number" value={userForm.year} onChange={e => setUserForm({...userForm, year: +e.target.value})}
@@ -196,7 +196,7 @@ export default function YijiPage() {
           </div>
         ) : (
           data?.personal?.analysis?.length > 0 && (
-            <div className="card-ancient border-gold/30">
+            <div className="dao-card border-gold/30">
               <h3 className="text-sm font-bold text-ink mb-2">个人分析</h3>
               {(data.personal.analysis || []).map((a: string, i: number) => (
                 <p key={i} className="text-xs text-ink-light leading-relaxed mb-1.5">{a}</p>

@@ -1,84 +1,56 @@
 "use client";
 
-import { Compass, ScrollText, Swords, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const tabs = [
-  {
-    id: "paipan",
-    label: "排盘",
-    icon: Compass,
-    href: "/paipan",
-    description: "八字排盘",
-  },
-  {
-    id: "yiji",
-    label: "宜忌",
-    icon: ScrollText,
-    href: "/yiji",
-    description: "今日宜忌",
-  },
-  {
-    id: "duanan",
-    label: "断案",
-    icon: Swords,
-    href: "/duanan",
-    description: "断案录",
-  },
-  {
-    id: "mingli",
-    label: "命例",
-    icon: Users,
-    href: "/mingli",
-    description: "历史命例",
-  },
+  { id: "paipan", label: "排盘", icon: "☯", href: "/paipan" },
+  { id: "yiji", label: "黄历", icon: "☰", href: "/yiji" },
+  { id: "duanan", label: "断案", icon: "☲", href: "/duanan" },
+  { id: "mingli", label: "命例", icon: "☷", href: "/mingli" },
 ];
 
 export default function BottomNav() {
   const pathname = usePathname();
 
-  // 高亮当前 tab：URL 路径包含 tab id
   const isActive = (id: string) => {
     if (id === "paipan" && pathname === "/") return true;
     return pathname.startsWith(`/${id}`);
   };
 
   return (
-    <nav
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px]
-                    bg-parchment/95 backdrop-blur-md border-t border-parchment-darker
-                    safe-bottom z-50"
-      style={{ boxShadow: "var(--shadow-nav)" }}
-    >
-      <div className="flex items-center justify-around h-16 px-2">
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px]
+                    bg-dao-paper/97 backdrop-blur-xl safe-bottom z-50"
+         style={{ borderTop: "1px solid var(--color-dao-paper-darker)" }}>
+      <div className="flex items-center justify-around h-[64px] px-1">
         {tabs.map((tab) => {
-          const Icon = tab.icon;
           const active = isActive(tab.id);
-
           return (
             <Link
               key={tab.id}
               href={tab.href}
-              className={`flex flex-col items-center justify-center gap-1
-                         min-w-[64px] py-1 px-2 rounded-lg tap-active
-                         transition-colors duration-150
-                         ${active
-                           ? "text-vermillion"
-                           : "text-aged hover:text-ink-light"
-                         }`}
+              className={`flex flex-col items-center justify-center gap-0.5
+                         min-w-[60px] py-1 px-2 rounded-lg tap-active
+                         transition-all duration-200 relative
+                         ${active ? "text-dao-red" : "text-dao-aged hover:text-dao-ink-light"}`}
             >
-              <Icon
-                size={22}
-                strokeWidth={active ? 2.5 : 1.8}
-                className="transition-all duration-150"
-              />
-              <span
-                className={`text-xs font-medium transition-all duration-150
-                           ${active ? "font-bold" : "font-normal"}`}
-              >
+              {/* 八卦符号 */}
+              <span className={`text-xl transition-all duration-300
+                ${active ? "scale-110 opacity-100" : "opacity-40"}`}>
+                {tab.icon}
+              </span>
+
+              {/* 标签 */}
+              <span className={`text-[11px] tracking-widest transition-all duration-200
+                ${active ? "font-bold" : "font-normal"}`}>
                 {tab.label}
               </span>
+
+              {/* 选中指示（鎏金短线） */}
+              {active && (
+                <span className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-8 h-[2px]
+                               bg-dao-gold rounded-full" />
+              )}
             </Link>
           );
         })}

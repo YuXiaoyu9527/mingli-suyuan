@@ -102,7 +102,7 @@ export default function DuananPage() {
 
       <div className="px-5 flex-1 space-y-4 mt-2">
         {/* 故事卡片 */}
-        <div className="card-ancient">
+        <div className="dao-card">
           <div className="flex items-start gap-3 mb-3">
             <div className="seal-mark flex-shrink-0 mt-1">案</div>
             <div>
@@ -117,7 +117,7 @@ export default function DuananPage() {
         </div>
 
         {/* 问题卡片 */}
-        <div className="card-ancient border-gold/30">
+        <div className="dao-card border-gold/30">
           <p className="text-sm font-bold text-ink mb-4">
             ❓ {sampleQuestion.question}
           </p>
@@ -224,7 +224,7 @@ export default function DuananPage() {
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="card-ancient border-indigo-traditional/20 bg-indigo-traditional/5"
+            className="dao-card border-indigo-traditional/20 bg-indigo-traditional/5"
           >
             <div className="flex items-start gap-2">
               <Lightbulb size={16} className="text-gold mt-0.5 flex-shrink-0" />
