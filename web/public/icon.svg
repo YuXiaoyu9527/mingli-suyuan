@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <!-- 宣纸白背景 -->
+  <rect width="192" height="192" rx="32" fill="#F5F0E8"/>
+  <!-- 朱砂红圆环 -->
+  <circle cx="96" cy="88" r="48" fill="none" stroke="#C43A31" stroke-width="3"/>
+  <!-- 命字 -->
+  <text x="96" y="100" text-anchor="middle" font-size="52" font-family="serif" fill="#C43A31">命</text>
+  <!-- 底部文字 -->
+  <text x="96" y="166" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#8B7D6B">命理溯源</text>
+</svg>

@@ -1,0 +1,248 @@
+@import "tailwindcss";
+
+/* ===== 命理溯源 · 中式主题 ===== */
+
+@theme inline {
+  /* 核心色板 */
+  --color-vermillion: #C43A31;
+  --color-vermillion-dark: #A8322B;
+  --color-vermillion-light: #D4695E;
+
+  --color-gold: #C9A96E;
+  --color-gold-light: #DCC89A;
+  --color-gold-dark: #A88A4E;
+
+  --color-parchment: #F5F0E8;
+  --color-parchment-dark: #E8E0D2;
+  --color-parchment-darker: #D4C9B5;
+
+  --color-ink: #2C2416;
+  --color-ink-light: #4A3F2E;
+  --color-ink-lighter: #6B5F4E;
+
+  --color-aged: #8B7D6B;
+  --color-aged-light: #A89880;
+
+  --color-indigo-traditional: #3D5A80;
+  --color-indigo-light: #5A7AA5;
+
+  /* 功能色 */
+  --color-auspicious: #5B8C5A;
+  --color-inauspicious: #C43A31;
+  --color-seal: #C43A31;
+
+  /* 字体 */
+  --font-display: var(--font-zcool-xiaowei);
+  --font-body: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC",
+    "SimSun", "KaiTi", serif;
+  --font-mono: "SF Mono", "Cascadia Code", "Consolas", monospace;
+
+  /* 间距 */
+  --spacing-safe-bottom: env(safe-area-inset-bottom, 16px);
+
+  /* 阴影 */
+  --shadow-card: 0 2px 12px rgba(44, 36, 22, 0.08);
+  --shadow-card-hover: 0 4px 20px rgba(44, 36, 22, 0.14);
+  --shadow-nav: 0 -2px 8px rgba(44, 36, 22, 0.06);
+
+  /* 圆角 */
+  --radius-card: 12px;
+  --radius-btn: 8px;
+}
+
+/* ===== 基础样式 ===== */
+
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--color-parchment);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  min-height: 100dvh;
+  /* 防止 iOS 橡皮筋效果导致页面偏移 */
+  overscroll-behavior-y: none;
+}
+
+/* ===== 古籍引用样式 ===== */
+
+.classical-quote {
+  writing-mode: horizontal-tb;
+  background: linear-gradient(
+    135deg,
+    rgba(245, 240, 232, 0.9) 0%,
+    rgba(232, 224, 210, 0.6) 100%
+  );
+  border-left: 3px solid var(--color-gold);
+  padding: 16px;
+  margin: 12px 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--color-ink-light);
+  position: relative;
+  border-radius: 0 8px 8px 0;
+}
+
+.classical-quote::before {
+  content: "「";
+  color: var(--color-gold);
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-right: 2px;
+}
+
+.classical-quote::after {
+  content: "」";
+  color: var(--color-gold);
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-left: 2px;
+}
+
+/* ===== 印章样式 ===== */
+
+.seal-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--color-vermillion);
+  border-radius: 50%;
+  color: var(--color-vermillion);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  transform: rotate(-5deg);
+  flex-shrink: 0;
+}
+
+/* ===== 墨迹高亮 ===== */
+
+.ink-highlight {
+  background: linear-gradient(
+    180deg,
+    transparent 60%,
+    rgba(201, 169, 110, 0.35) 60%
+  );
+  padding: 0 4px;
+}
+
+/* ===== 卡片样式 ===== */
+
+.card-ancient {
+  background: var(--color-parchment);
+  border: 1px solid var(--color-parchment-darker);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+}
+
+/* ===== 按钮样式 ===== */
+
+.btn-primary {
+  background-color: var(--color-vermillion);
+  color: white;
+  border: none;
+  border-radius: var(--radius-btn);
+  padding: 12px 24px;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 4px rgba(196, 58, 49, 0.3);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+  background-color: var(--color-vermillion-dark);
+}
+
+/* ===== 底部导航安全区 ===== */
+
+.safe-bottom {
+  padding-bottom: var(--spacing-safe-bottom);
+}
+
+/* ===== 页面进入动画 ===== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* ===== 触摸反馈 ===== */
+
+.tap-active {
+  transition: transform 0.1s ease;
+}
+
+.tap-active:active {
+  transform: scale(0.96);
+}
+
+/* ===== 竖向排版（古籍引用） ===== */
+
+.vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+/* ===== 滚动条美化 ===== */
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-parchment-darker);
+  border-radius: 2px;
+}
+
+/* ===== 选中文字颜色 ===== */
+
+::selection {
+  background: rgba(201, 169, 110, 0.3);
+  color: var(--color-ink);
+}
+
+/* ===== 加载动画 ===== */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-parchment-dark) 25%,
+    var(--color-parchment) 50%,
+    var(--color-parchment-dark) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
