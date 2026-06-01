@@ -92,6 +92,22 @@ export async function getYiji(params?: YijiParams) {
   });
 }
 
+// ===== 断案录题库 =====
+
+export async function getQuiz(chapter?: string) {
+  return fetchAPI("/api/quiz", {
+    method: "POST",
+    body: JSON.stringify({ chapter: chapter || null }),
+  });
+}
+
+export async function checkAnswer(id: string, answer: number) {
+  return fetchAPI("/api/quiz/check", {
+    method: "POST",
+    body: JSON.stringify({ id, answer }),
+  });
+}
+
 // ===== 古籍来源列表 =====
 
 export async function getSources() {

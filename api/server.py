@@ -64,6 +64,10 @@ class MentorRequest(BaseModel):
     correct_answer: str
 
 
+class QuizRequest(BaseModel):
+    chapter: Optional[str] = None  # 按章节筛选
+
+
 class YijiRequest(BaseModel):
     """宜忌请求：可选用户八字"""
     year: Optional[int] = None
@@ -257,6 +261,78 @@ def api_yiji(req: YijiRequest):
         # 个人
         "personal": hl.personal,
     }
+
+
+@app.post("/api/quiz")
+def api_quiz(req: QuizRequest):
+    """获取断案录题库"""
+    import json
+    from pathlib import Path
+
+    quiz_file = Path(__file__).parent.parent / "data" / "quiz_cases.jsonl"
+    if not quiz_file.exists():
+        return {"total": 0, "chapters": [], "questions": []}
+
+    questions = []
+    with open(quiz_file, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                q = json.loads(line)
+                if req.chapter and q.get("chapter") != req.chapter:
+                    continue
+                # 不返回正确答案
+                questions.append({
+                    "id": q["id"],
+                    "chapter": q["chapter"],
+                    "title": q["title"],
+                    "difficulty": q["difficulty"],
+                    "story": q["story"],
+                    "question": q["question"],
+                    "options": q["options"],
+                })
+
+    # 汇总章节信息
+    chapters_set = {}
+    for q in questions:
+        ch = q["chapter"]
+        chapters_set[ch] = chapters_set.get(ch, 0) + 1
+
+    return {
+        "total": len(questions),
+        "chapters": [
+            {"name": ch, "count": cnt}
+            for ch, cnt in sorted(chapters_set.items())
+        ],
+        "questions": questions,
+    }
+
+
+@app.post("/api/quiz/check")
+def api_quiz_check(req: dict):
+    """校验答案"""
+    import json
+    from pathlib import Path
+
+    quiz_id = req.get("id")
+    user_answer = req.get("answer")
+    quiz_file = Path(__file__).parent.parent / "data" / "quiz_cases.jsonl"
+
+    with open(quiz_file, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                q = json.loads(line)
+                if q["id"] == quiz_id:
+                    correct = user_answer == q["correct"]
+                    return {
+                        "correct": correct,
+                        "correct_answer": q["correct"],
+                        "correct_text": q["options"][q["correct"]]["text"],
+                        "classical_ref": q["classical_ref"],
+                    }
+
+    return {"error": "题目未找到"}
 
 
 @app.get("/health")
