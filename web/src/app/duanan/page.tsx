@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import BottomNav from "@/components/BottomNav";
-import { Swords, ChevronRight, Check, X, Lightbulb } from "lucide-react";
+import { askMentor } from "@/lib/api";
+import { Swords, ChevronRight, Check, X, Lightbulb, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // 示例题目
@@ -39,18 +40,37 @@ export default function DuananPage() {
   const [selected, setSelected] = useState<number | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [mentorHint, setMentorHint] = useState<string>("");
+  const [mentorLoading, setMentorLoading] = useState(false);
 
-  const handleSelect = (index: number) => {
-    if (selected !== null) return; // 已作答
+  const handleSelect = async (index: number) => {
+    if (selected !== null) return;
     setSelected(index);
     const correct = index === sampleQuestion.correct;
     setIsCorrect(correct);
+
+    // 调用AI导师
+    setMentorLoading(true);
+    try {
+      const studentAnswer = sampleQuestion.options[index].text;
+      const correctAnswer = sampleQuestion.options[sampleQuestion.correct].text;
+      const data = await askMentor(
+        `${sampleQuestion.story}\n\n${sampleQuestion.question}`,
+        studentAnswer,
+        correctAnswer,
+      );
+      setMentorHint(data.hint || "");
+    } catch {
+      // 后端未启动时显示本地提示
+    }
+    setMentorLoading(false);
   };
 
   const handleReset = () => {
     setSelected(null);
     setShowHint(false);
     setIsCorrect(null);
+    setMentorHint("");
   };
 
   return (
@@ -175,12 +195,11 @@ export default function DuananPage() {
                     <div className="classical-quote text-sm">
                       {sampleQuestion.classicalRef}
                     </div>
-                    <button
-                      onClick={handleReset}
-                      className="mt-3 flex items-center gap-1 text-sm text-vermillion font-medium tap-active"
-                    >
-                      <ChevronRight size={16} />
-                      进入下一案
+                    {mentorLoading && <p className="text-xs text-aged mt-2"><Loader2 size={12} className="inline animate-spin" /> AI导师点评中...</p>}
+                    {mentorHint && <p className="text-sm text-ink-light mt-3 leading-relaxed whitespace-pre-line">{mentorHint}</p>}
+                    <button onClick={handleReset}
+                      className="mt-3 flex items-center gap-1 text-sm text-vermillion font-medium tap-active">
+                      <ChevronRight size={16} /> 进入下一案
                     </button>
                   </div>
                 ) : (
@@ -188,10 +207,9 @@ export default function DuananPage() {
                     <p className="text-sm font-bold text-inauspicious mb-2">
                       ❌ 还需推敲
                     </p>
-                    <button
-                      onClick={handleReset}
-                      className="text-sm text-vermillion font-medium tap-active"
-                    >
+                    {mentorLoading && <p className="text-xs text-aged mt-2"><Loader2 size={12} className="inline animate-spin" /> AI导师提示中...</p>}
+                    {mentorHint && <p className="text-sm text-ink-light mt-2 leading-relaxed whitespace-pre-line">{mentorHint}</p>}
+                    <button onClick={handleReset} className="mt-2 text-sm text-vermillion font-medium tap-active">
                       重新作答
                     </button>
                   </div>
