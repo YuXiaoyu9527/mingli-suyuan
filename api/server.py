@@ -193,9 +193,9 @@ def api_sources():
 @app.post("/api/yiji")
 def api_yiji(req: YijiRequest):
     """
-    今日宜忌（建除十二神 + 黄道黑道 + 彭祖百忌 + 个人冲合）
+    完整老黄历 — 建除/黄道/冲煞/吉神方位/时辰吉凶/星宿/个人分析
 
-    如果不传用户八字参数，只返回通用宜忌。
+    如果不传用户八字参数，只返回通用黄历。
     传入出生日期则叠加个人分析。
     """
     from datetime import datetime
@@ -212,21 +212,50 @@ def api_yiji(req: YijiRequest):
                            req.hour, req.minute, req.gender)
 
     yj = DailyYiji()
-    result = yj.analyze(solar, user_bazi)
+    hl = yj.get_full_huangli(solar, user_bazi)
 
     return {
-        "date": result.date,
-        "day_ganzhi": result.day_ganzhi,
-        "jianchu": result.jianchu,
-        "jianchu_desc": result.jianchu_desc,
-        "huangdao_shen": result.huangdao_shen,
-        "huangdao_type": result.huangdao_type,
-        "pengzu_ji": result.pengzu_ji,
-        "general_yi": result.general_yi,
-        "general_ji": result.general_ji,
-        "personal_yi": result.personal_yi,
-        "personal_ji": result.personal_ji,
-        "personal_analysis": result.personal_analysis,
+        "date": hl.date,
+        "lunar_date": hl.lunar_date,
+        "day_ganzhi": hl.day_ganzhi,
+        "day_gan": hl.day_gan,
+        "day_zhi": hl.day_zhi,
+        "shengxiao": hl.shengxiao,
+        "week": hl.week,
+        "jianchu": hl.jianchu,
+        "xiu": hl.xiu,
+        "xiu_luck": hl.xiu_luck,
+        # 冲煞
+        "chong_shengxiao": hl.chong_shengxiao,
+        "chong_desc": hl.chong_desc,
+        "sha_direction": hl.sha_direction,
+        # 值神
+        "tianshen": hl.tianshen,
+        "tianshen_type": hl.tianshen_type,
+        "tianshen_luck": hl.tianshen_luck,
+        "jishen": hl.jishen,
+        "xiongsha": hl.xiongsha,
+        # 宜忌
+        "yi": hl.yi,
+        "ji": hl.ji,
+        # 彭祖
+        "pengzu_gan": hl.pengzu_gan,
+        "pengzu_zhi": hl.pengzu_zhi,
+        # 吉神方位
+        "caishen": hl.caishen,
+        "xishen": hl.xishen,
+        "fushen": hl.fushen,
+        "yanggui": hl.yanggui,
+        "yingui": hl.yingui,
+        # 胎神/九星
+        "taishen": hl.taishen,
+        "jiuxing": hl.jiuxing,
+        # 时辰
+        "hours": hl.hours,
+        # 古籍参考
+        "classical_ref": hl.classical_ref,
+        # 个人
+        "personal": hl.personal,
     }
 
 

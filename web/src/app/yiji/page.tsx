@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import BottomNav from "@/components/BottomNav";
 import { getYiji, YijiParams } from "@/lib/api";
-import { ScrollText, Sparkles, AlertTriangle, Loader2, RefreshCw } from "lucide-react";
+import { Loader2, RefreshCw, Compass, Star, AlertTriangle, Clock } from "lucide-react";
 
 export default function YijiPage() {
   const [data, setData] = useState<any>(null);
@@ -18,15 +18,11 @@ export default function YijiPage() {
     try {
       const result = await getYiji(params);
       setData(result);
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) { console.error(e); }
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchYiji();
-  }, []);
+  useEffect(() => { fetchYiji(); }, []);
 
   const handlePersonal = () => {
     fetchYiji(userForm);
@@ -37,142 +33,197 @@ export default function YijiPage() {
     return (
       <div className="flex flex-col min-h-dvh pb-20 items-center justify-center">
         <Loader2 size={32} className="animate-spin text-gold" />
-        <p className="text-aged text-sm mt-3">加载今日宜忌...</p>
+        <p className="text-aged text-sm mt-3">加载今日黄历...</p>
         <BottomNav />
       </div>
     );
   }
 
+  const isJi = data?.tianshen_luck === "吉";
+  const isHuangdao = data?.tianshen_type === "黄道";
+
   return (
     <div className="flex flex-col min-h-dvh pb-20">
-      <header className="px-5 pt-10 pb-4">
-        <h1 className="text-2xl text-vermillion font-[family-name:var(--font-display)] tracking-wider">
-          今日宜忌
-        </h1>
-        <p className="text-aged text-sm mt-1">
-          建除十二神 · 黄道黑道 · 彭祖百忌
-        </p>
+      {/* === 顶部：干支主卡片 === */}
+      <header className="px-5 pt-6 pb-3 text-center">
+        <p className="text-xs text-aged-light">{data?.lunar_date} · {data?.week}</p>
+        <div className="inline-flex items-center justify-center w-20 h-20
+                       rounded-full border-2 border-vermillion my-3">
+          <span className="text-3xl font-[family-name:var(--font-display)] text-vermillion">
+            {data?.day_ganzhi}
+          </span>
+        </div>
+        <div className="flex items-center justify-center gap-3 text-sm">
+          <span className={isJi ? "text-auspicious font-bold" : "text-inauspicious font-bold"}>
+            {data?.tianshen}({data?.tianshen_type}/{data?.tianshen_luck})
+          </span>
+          <span className="text-aged">·</span>
+          <span className="text-aged">{data?.jianchu}日</span>
+        </div>
+        <div className="flex justify-center gap-4 mt-2 text-xs text-aged-light">
+          <span>冲{data?.chong_shengxiao}</span>
+          <span>煞{data?.sha_direction}</span>
+          <span>{data?.xiu}星({data?.xiu_luck})</span>
+        </div>
+        <button onClick={() => fetchYiji(showPersonal ? userForm : undefined)}
+          className="mt-2 text-xs text-indigo-traditional tap-active inline-flex items-center gap-1">
+          <RefreshCw size={11} /> 刷新
+        </button>
       </header>
 
-      <div className="px-5 flex-1 space-y-5">
-        {/* 干支日期 */}
-        <div className="text-center py-8 card-ancient">
-          <div className="inline-flex items-center justify-center w-24 h-24
-                         rounded-full border-2 border-vermillion mb-4">
-            <span className="text-3xl font-[family-name:var(--font-display)] text-vermillion">
-              {data?.day_ganzhi}
-            </span>
-          </div>
-          <p className="text-aged text-sm">
-            建除：<span className="text-ink font-bold">{data?.jianchu}日</span>
-            {" · "}
-            黄道：<span className={data?.huangdao_type === "黄道" ? "text-auspicious font-bold" : "text-inauspicious font-bold"}>
-              {data?.huangdao_shen}({data?.huangdao_type})
-            </span>
-          </p>
-          <p className="text-xs text-aged-light mt-1">{data?.jianchu_desc}</p>
-          <p className="text-[11px] text-aged-light mt-2">
-            {data?.pengzu_ji?.join(" · ")}
-          </p>
-          <button onClick={() => fetchYiji()} className="mt-3 text-xs text-indigo-traditional tap-active inline-flex items-center gap-1">
-            <RefreshCw size={12} /> 刷新
-          </button>
-        </div>
-
-        {/* 通用宜忌 */}
+      <div className="px-4 flex-1 space-y-4">
+        {/* === 宜忌卡片 === */}
         <div className="grid grid-cols-2 gap-3">
           <div className="card-ancient">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles size={16} className="text-auspicious" />
-              <h3 className="text-sm font-bold text-ink">宜</h3>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {(data?.general_yi || []).map((item: string) => (
-                <span key={item} className="px-2.5 py-1 bg-auspicious/10 text-auspicious text-xs rounded-full border border-auspicious/20">
-                  {item}
-                </span>
+            <h3 className="text-sm font-bold text-auspicious mb-2 flex items-center gap-1">
+              <Star size={14} /> 宜
+            </h3>
+            <div className="flex flex-wrap gap-1">
+              {(data?.yi || []).map((item: string) => (
+                <span key={item} className="px-2 py-0.5 bg-auspicious/10 text-auspicious text-xs
+                                           rounded-full border border-auspicious/20">{item}</span>
               ))}
-              {(!data?.general_yi?.length) && <span className="text-xs text-aged-light">—</span>}
             </div>
           </div>
-
           <div className="card-ancient">
-            <div className="flex items-center gap-2 mb-3">
-              <AlertTriangle size={16} className="text-inauspicious" />
-              <h3 className="text-sm font-bold text-ink">忌</h3>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {(data?.general_ji || []).map((item: string) => (
-                <span key={item} className="px-2.5 py-1 bg-inauspicious/10 text-inauspicious text-xs rounded-full border border-inauspicious/20">
-                  {item}
-                </span>
+            <h3 className="text-sm font-bold text-inauspicious mb-2 flex items-center gap-1">
+              <AlertTriangle size={14} /> 忌
+            </h3>
+            <div className="flex flex-wrap gap-1">
+              {(data?.ji || []).map((item: string) => (
+                <span key={item} className="px-2 py-0.5 bg-inauspicious/10 text-inauspicious text-xs
+                                           rounded-full border border-inauspicious/20">{item}</span>
               ))}
-              {(!data?.general_ji?.length) && <span className="text-xs text-aged-light">—</span>}
             </div>
           </div>
         </div>
 
-        {/* 个人宜忌 */}
+        {/* === 吉神方位 === */}
+        <div className="card-ancient">
+          <h3 className="text-xs text-aged mb-2 flex items-center gap-1">
+            <Compass size={13} /> 吉神方位
+          </h3>
+          <div className="grid grid-cols-3 gap-2 text-center text-xs">
+            {[
+              { label: "财神", value: data?.caishen, color: "text-gold" },
+              { label: "喜神", value: data?.xishen, color: "text-auspicious" },
+              { label: "福神", value: data?.fushen, color: "text-indigo-traditional" },
+            ].map(({ label, value, color }) => (
+              <div key={label} className="bg-parchment-dark rounded-lg py-2">
+                <p className="text-[10px] text-aged-light">{label}</p>
+                <p className={`font-bold ${color}`}>{value}</p>
+              </div>
+            ))}
+          </div>
+          <div className="grid grid-cols-3 gap-2 text-center text-xs mt-2">
+            {[
+              { label: "阳贵", value: data?.yanggui },
+              { label: "阴贵", value: data?.yingui },
+              { label: "胎神", value: data?.taishen },
+            ].map(({ label, value }) => (
+              <div key={label} className="bg-parchment-dark rounded-lg py-2">
+                <p className="text-[10px] text-aged-light">{label}</p>
+                <p className="text-[10px] text-ink-light leading-tight">{value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* === 吉神凶煞 === */}
+        <div className="card-ancient">
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <p className="text-auspicious font-bold mb-1 text-[11px]">吉神</p>
+              <div className="flex flex-wrap gap-1">
+                {(data?.jishen || []).map((s: string) => (
+                  <span key={s} className="text-[10px] text-auspicious">{s}</span>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-inauspicious font-bold mb-1 text-[11px]">凶煞</p>
+              <div className="flex flex-wrap gap-1">
+                {(data?.xiongsha || []).map((s: string) => (
+                  <span key={s} className="text-[10px] text-inauspicious">{s}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* === 时辰吉凶（折叠） === */}
+        <details className="card-ancient">
+          <summary className="text-xs text-aged cursor-pointer flex items-center gap-1">
+            <Clock size={13} /> 时辰吉凶（展开查看）
+          </summary>
+          <div className="mt-3 grid grid-cols-4 gap-1.5">
+            {data?.hours?.slice(0, 12).map((h: any) => (
+              <div key={h.name}
+                className={`text-center rounded-lg py-1.5 px-1
+                  ${h.tianshen_luck === "吉"
+                    ? "bg-auspicious/5 border border-auspicious/20"
+                    : "bg-inauspicious/5 border border-inauspicious/10"}`}>
+                <p className="text-[10px] font-bold text-ink">{h.name}</p>
+                <p className="text-[10px] text-aged-light">{h.ganzhi}</p>
+                <p className={`text-[10px] ${h.tianshen_luck === "吉" ? "text-auspicious" : "text-inauspicious"}`}>
+                  {h.tianshen}({h.tianshen_luck})
+                </p>
+              </div>
+            ))}
+          </div>
+        </details>
+
+        {/* === 个人宜忌 === */}
         {!showPersonal ? (
           <div className="card-ancient">
             <p className="text-sm text-ink mb-3">想知道今日对你个人的影响？</p>
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-1.5 flex-wrap">
               <input type="number" value={userForm.year} onChange={e => setUserForm({...userForm, year: +e.target.value})}
-                className="w-16 bg-parchment-dark border border-parchment-darker rounded-lg px-2 py-1.5 text-ink text-xs" placeholder="1990"/>
-              <span className="text-xs text-aged self-center">年</span>
+                className="w-14 bg-parchment-dark border border-parchment-darker rounded-lg px-2 py-1.5 text-ink text-xs" placeholder="年"/>
               <input type="number" value={userForm.month} onChange={e => setUserForm({...userForm, month: +e.target.value})}
-                className="w-12 bg-parchment-dark border border-parchment-darker rounded-lg px-2 py-1.5 text-ink text-xs" placeholder="5"/>
-              <span className="text-xs text-aged self-center">月</span>
+                className="w-10 bg-parchment-dark border border-parchment-darker rounded-lg px-2 py-1.5 text-ink text-xs" placeholder="月"/>
               <input type="number" value={userForm.day} onChange={e => setUserForm({...userForm, day: +e.target.value})}
-                className="w-12 bg-parchment-dark border border-parchment-darker rounded-lg px-2 py-1.5 text-ink text-xs" placeholder="20"/>
-              <span className="text-xs text-aged self-center">日</span>
+                className="w-10 bg-parchment-dark border border-parchment-darker rounded-lg px-2 py-1.5 text-ink text-xs" placeholder="日"/>
               <select value={userForm.gender} onChange={e => setUserForm({...userForm, gender: e.target.value})}
                 className="bg-parchment-dark border border-parchment-darker rounded-lg px-2 py-1.5 text-ink text-xs">
                 <option>男</option><option>女</option>
               </select>
               <button onClick={handlePersonal}
-                className="bg-vermillion text-white px-3 py-1.5 rounded-lg text-xs tap-active ml-auto">
-                查看个人宜忌
+                className="bg-vermillion text-white px-3 py-1.5 rounded-lg text-xs tap-active">
+                查看个人
               </button>
             </div>
           </div>
         ) : (
-          <>
-            {data?.personal_analysis && (
-              <div className="card-ancient">
-                <h3 className="text-sm font-bold text-ink mb-2">个人分析</h3>
-                <p className="text-sm text-ink-light leading-relaxed">{data.personal_analysis}</p>
-              </div>
-            )}
-            {(data?.personal_yi?.length > 0 || data?.personal_ji?.length > 0) && (
-              <div className="grid grid-cols-2 gap-3">
-                <div className="card-ancient">
-                  <h3 className="text-sm font-bold text-auspicious mb-2">个人宜</h3>
-                  {(data?.personal_yi || []).map((item: string) => (
-                    <span key={item} className="inline-block px-2 py-1 bg-auspicious/10 text-auspicious text-xs rounded-full border border-auspicious/20 mr-1 mb-1">
-                      {item}
-                    </span>
+          data?.personal?.analysis?.length > 0 && (
+            <div className="card-ancient border-gold/30">
+              <h3 className="text-sm font-bold text-ink mb-2">个人分析</h3>
+              {(data.personal.analysis || []).map((a: string, i: number) => (
+                <p key={i} className="text-xs text-ink-light leading-relaxed mb-1.5">{a}</p>
+              ))}
+              <div className="flex items-center justify-between mt-3 pt-3 border-t border-parchment-darker">
+                <div className="flex gap-2">
+                  {(data.personal.yi || []).map((item: string) => (
+                    <span key={item} className="px-2 py-0.5 bg-auspicious/10 text-auspicious text-[11px] rounded-full">{item}</span>
+                  ))}
+                  {(data.personal.ji || []).map((item: string) => (
+                    <span key={item} className="px-2 py-0.5 bg-inauspicious/10 text-inauspicious text-[11px] rounded-full">{item}</span>
                   ))}
                 </div>
-                <div className="card-ancient">
-                  <h3 className="text-sm font-bold text-inauspicious mb-2">个人忌</h3>
-                  {(data?.personal_ji || []).map((item: string) => (
-                    <span key={item} className="inline-block px-2 py-1 bg-inauspicious/10 text-inauspicious text-xs rounded-full border border-inauspicious/20 mr-1 mb-1">
-                      {item}
-                    </span>
-                  ))}
-                </div>
+                <span className={`text-xs font-bold ${(data.personal.score||0) >= 0 ? "text-auspicious" : "text-inauspicious"}`}>
+                  {data.personal.summary}
+                </span>
               </div>
-            )}
-          </>
+            </div>
+          )
         )}
 
-        {/* 古籍出处 */}
-        <div className="classical-quote text-sm">
-          《协纪辨方书·卷三》：建除十二神者，正月建寅，二月建卯，顺行十二辰，每月各有所建。凡建日，兵福所集，宜封拜、出行、修造……黄道者，天德、月德之所在，宜兴造、嫁娶、会友。黑道者，白虎、天刑之位，诸事不宜。
+        {/* === 古籍出处 === */}
+        <div className="classical-quote text-xs">
+          <p className="text-[10px] text-aged-light mb-1">数据来源</p>
+          {data?.classical_ref || "《协纪辨方书》·乾隆钦定 · 四库全书本"}
         </div>
 
-        {/* 免责声明 */}
         <p className="text-center text-[11px] text-aged-light pb-4">
           仅供传统文化研究与民俗参考，不构成人生决策依据
         </p>
