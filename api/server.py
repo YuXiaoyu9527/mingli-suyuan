@@ -388,6 +388,88 @@ def api_quiz_check(req: dict):
     return {"error": "题目未找到"}
 
 
+@app.get("/api/xuetang")
+def api_xuetang():
+    """获取学堂教材章节列表"""
+    import json
+    from pathlib import Path
+
+    chapters_file = Path(__file__).parent.parent / "data" / "learning_chapters.json"
+    if not chapters_file.exists():
+        return {"chapters": []}
+
+    with open(chapters_file, encoding="utf-8") as f:
+        data = json.load(f)
+
+    # 只返回章节摘要，不返回完整教材内容（内容按需获取）
+    chapters_summary = []
+    for ch in data["chapters"]:
+        chapters_summary.append({
+            "id": ch["id"],
+            "title": ch["title"],
+            "subtitle": ch["subtitle"],
+            "order": ch["order"],
+            "unlock_requires": ch.get("unlock_requires"),
+            "question_count": len(ch.get("quiz_ids", [])),
+            "pass_score": ch.get("pass_score", 7),
+        })
+
+    return {
+        "course": data["course"],
+        "chapters": chapters_summary,
+    }
+
+
+@app.get("/api/xuetang/{chapter_id}")
+def api_xuetang_chapter(chapter_id: str):
+    """获取单章教材完整内容（含课文+测验题目）"""
+    import json
+    from pathlib import Path
+
+    chapters_file = Path(__file__).parent.parent / "data" / "learning_chapters.json"
+    quiz_file = Path(__file__).parent.parent / "data" / "quiz_cases.jsonl"
+
+    with open(chapters_file, encoding="utf-8") as f:
+        data = json.load(f)
+
+    chapter = None
+    for ch in data["chapters"]:
+        if ch["id"] == chapter_id:
+            chapter = ch
+            break
+
+    if not chapter:
+        return {"error": "章节未找到"}
+
+    # 加载关联的测验题
+    questions = []
+    if quiz_file.exists():
+        with open(quiz_file, encoding="utf-8") as f:
+            all_quizzes = [json.loads(l) for l in f if l.strip()]
+        quiz_ids = set(chapter.get("quiz_ids", []))
+        for q in all_quizzes:
+            if q["id"] in quiz_ids:
+                questions.append({
+                    "id": q["id"],
+                    "title": q["title"],
+                    "difficulty": q["difficulty"],
+                    "story": q["story"],
+                    "question": q["question"],
+                    "options": q["options"],
+                })
+
+    return {
+        "id": chapter["id"],
+        "title": chapter["title"],
+        "subtitle": chapter["subtitle"],
+        "order": chapter["order"],
+        "unlock_requires": chapter.get("unlock_requires"),
+        "pass_score": chapter.get("pass_score", 7),
+        "content": chapter["content"],
+        "questions": questions,
+    }
+
+
 @app.get("/health")
 def health():
     return {"status": "healthy"}

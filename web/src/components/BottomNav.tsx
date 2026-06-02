@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const tabs = [
+  { id: "xuetang", label: "学堂", icon: "☰", href: "/xuetang" },
   { id: "paipan", label: "排盘", icon: "☯", href: "/paipan" },
-  { id: "yiji", label: "黄历", icon: "☰", href: "/yiji" },
-  { id: "duanan", label: "断案", icon: "☲", href: "/duanan" },
+  { id: "yiji", label: "黄历", icon: "☲", href: "/yiji" },
   { id: "mingli", label: "命例", icon: "☷", href: "/mingli" },
 ];
 
