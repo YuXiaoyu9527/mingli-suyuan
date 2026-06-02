@@ -229,7 +229,7 @@ export default function YijiPage() {
         <DailyWisdom />
 
         <p className="text-center text-[11px] text-aged-light pb-4">
-          仅供传统文化研究与民俗参考，不构成人生决策依据
+          本软件为易经学术工具，内容仅供传统文化研究与民俗参考，不等于专业测评，不代表任何价值评判，无任何现实指导意义
         </p>
       </div>
 

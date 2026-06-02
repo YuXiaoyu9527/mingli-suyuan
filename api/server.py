@@ -69,6 +69,16 @@ class MingliRequest(BaseModel):
     search: Optional[str] = None   # 搜索关键词
 
 
+class ZejiRequest(BaseModel):
+    activity: str = "结婚"  # 结婚/搬家/开业/出行/动土
+    days: int = 90          # 搜索未来多少天
+    birth_year: Optional[int] = None
+    birth_month: Optional[int] = None
+    birth_day: Optional[int] = None
+    birth_hour: int = 12
+    gender: str = "男"
+
+
 class LiunianRequest(BaseModel):
     # 出生信息
     birth_year: int = 1990
@@ -439,6 +449,31 @@ def api_liunian(req: LiunianRequest):
         }
 
     return result
+
+
+@app.post("/api/zeji")
+def api_zeji(req: ZejiRequest):
+    """择吉搜索：输入活动类型，返回未来合适的吉日"""
+    from api.paipan.zeji import ZejiEngine, ACTIVITY_KEYWORDS
+
+    engine = ZejiEngine()
+
+    # 如果有用户八字，叠加个人分析
+    user_bazi = None
+    if req.birth_year:
+        from api.paipan import paipan
+        user_bazi = paipan(req.birth_year, req.birth_month or 1, req.birth_day or 1,
+                           req.birth_hour, 0, req.gender)
+        results = engine.search_with_personal(req.activity, user_bazi, req.days)
+    else:
+        results = engine.search(req.activity, req.days)
+
+    return {
+        "activity": req.activity,
+        "keywords": ACTIVITY_KEYWORDS.get(req.activity, [req.activity]),
+        "total": len(results),
+        "dates": results,
+    }
 
 
 @app.get("/api/xuetang")
