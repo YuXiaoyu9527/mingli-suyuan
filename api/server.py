@@ -69,6 +69,16 @@ class MingliRequest(BaseModel):
     search: Optional[str] = None   # 搜索关键词
 
 
+class FengshuiRequest(BaseModel):
+    door_direction: str = ""       # 大门朝向
+    kitchen: str = ""              # 厨房位置
+    bedroom: str = ""              # 主卧位置
+    bathroom: str = ""             # 卫生间位置
+    living_room: str = ""          # 客厅位置
+    missing_corners: list = []     # 缺角: ["西北","东南"]
+    xingsha: list = []             # 形煞: ["路冲","穿堂煞"]
+
+
 class ZejiRequest(BaseModel):
     activity: str = "结婚"  # 结婚/搬家/开业/出行/动土
     days: int = 90          # 搜索未来多少天
@@ -497,6 +507,43 @@ def api_yongshen(req: PaipanRequest):
         "recommended": result.recommended,
         "jishen": result.jishen,
         "analysis": result.analysis,
+    }
+
+
+@app.post("/api/fengshui")
+def api_fengshui(req: FengshuiRequest):
+    """阳宅风水分析"""
+    from api.paipan.fengshui import FengshuiEngine, BAGUA_DIRECTIONS, XINGSHA_KB, QUEJIAO_IMPACT
+
+    house = {
+        "door_direction": req.door_direction,
+        "kitchen": req.kitchen,
+        "bedroom": req.bedroom,
+        "bathroom": req.bathroom,
+        "living_room": req.living_room,
+        "missing_corners": req.missing_corners,
+        "xingsha": req.xingsha,
+    }
+
+    engine = FengshuiEngine()
+    report = engine.analyze(house)
+
+    return {
+        "house_gua": report.house_gua,
+        "house_type": report.house_type,
+        "four_ji": report.four_ji,
+        "four_xiong": report.four_xiong,
+        "jiugong_warnings": report.jiugong_warnings,
+        "room_advice": report.room_advice,
+        "xingsha_advice": report.xingsha_advice,
+        "quejiao_advice": report.quejiao_advice,
+        "summary": report.summary,
+        # 返回可选值供前端下拉
+        "options": {
+            "directions": list(BAGUA_DIRECTIONS.keys()),
+            "xingsha_types": list(XINGSHA_KB.keys()),
+            "quejiao_types": list(QUEJIAO_IMPACT.keys()),
+        },
     }
 
 
