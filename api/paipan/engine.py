@@ -38,6 +38,7 @@ class BaziResult:
     # 基本信息
     solar_date: str           # 公历日期
     lunar_date: str           # 农历日期
+    shengxiao: str            # 生肖
     gender: str               # 性别
 
     # 四柱
@@ -162,9 +163,15 @@ def paipan(
     gan_he_pairs = _calc_gan_he(gan_list)
 
     # 8. 组装结果
+    # 生肖（年支推算）
+    shengxiao_map = {"子":"鼠","丑":"牛","寅":"虎","卯":"兔","辰":"龙","巳":"蛇",
+                     "午":"马","未":"羊","申":"猴","酉":"鸡","戌":"狗","亥":"猪"}
+    shengxiao = shengxiao_map.get(zhis["年"], "")
+
     result = BaziResult(
         solar_date=solar.toFullString(),
         lunar_date=f"{lunar.getYearInChinese()}年{lunar.getMonthInChinese()}月{lunar.getDayInChinese()}日",
+        shengxiao=shengxiao,
         gender=gender,
         year=pillars["年"],
         month=pillars["月"],
@@ -228,6 +235,7 @@ def to_dict(result: BaziResult) -> dict:
     return {
         "solar_date": result.solar_date,
         "lunar_date": result.lunar_date,
+        "shengxiao": result.shengxiao,
         "gender": result.gender,
         "rizhu": result.rizhu,
         "rizhu_wuxing": result.rizhu_wuxing,

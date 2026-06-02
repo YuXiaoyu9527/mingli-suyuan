@@ -81,9 +81,17 @@ export default function PaipanPage() {
         {/* 结果展示 */}
         {result && p && (
           <div className="dao-card animate-fade-in-up space-y-4">
-            {/* 八字卦象装饰 */}
-            <div className="text-center text-6xl bagua-symbol select-none mb-1">
-              {"☯"}
+            {/* 日期双行展示 */}
+            <div className="text-center mb-4">
+              <p className="text-xs text-dao-aged tracking-wider">
+                {result.paipan.solar_date?.split(" ")[0] || ""}
+              </p>
+              <p className="text-base text-dao-ink font-[family-name:var(--font-display)] tracking-[0.1em] mt-0.5">
+                农历{result.paipan.lunar_date}
+              </p>
+              <p className="text-[11px] text-dao-aged-light mt-0.5">
+                生肖 · {result.paipan.shengxiao || "—"}  ·  {result.paipan.rizhu}日主({result.paipan.rizhu_wuxing})
+              </p>
             </div>
 
             {/* 四柱八字 道藏柱式 */}
