@@ -145,7 +145,7 @@ export default function XuetangPage() {
           options: q.options,
           userAnswer: q.options[optIdx].text,
           correctAnswer: result.correct_text || "",
-          explanation: result.classical_ref || "",
+          explanation: result.analysis || result.classical_ref || "",
           chapterId: chapterDetail!.id, chapterTitle: chapterDetail!.title,
           timestamp: new Date().toISOString(),
         };
@@ -257,10 +257,10 @@ export default function XuetangPage() {
                           <p className="text-dao-jade font-medium mt-0.5">{w.correctAnswer}</p>
                         </div>
                       </div>
-                      {/* 古籍解析 */}
+                      {/* 问题解析 */}
                       {w.explanation && (
                         <div className="bg-dao-paper-dark/50 rounded p-2 text-[10px] text-dao-ink-light leading-relaxed border-l-2 border-dao-gold">
-                          <span className="text-dao-gold font-medium">古籍出处：</span>
+                          <span className="text-dao-gold font-medium">解析：</span>
                           {w.explanation}
                         </div>
                       )}

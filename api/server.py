@@ -382,7 +382,8 @@ def api_quiz_check(req: dict):
                         "correct": correct,
                         "correct_answer": q["correct"],
                         "correct_text": q["options"][q["correct"]]["text"],
-                        "classical_ref": q["classical_ref"],
+                        "classical_ref": q.get("classical_ref", ""),
+                        "analysis": q.get("analysis", ""),
                     }
 
     return {"error": "题目未找到"}
