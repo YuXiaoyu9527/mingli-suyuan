@@ -170,8 +170,11 @@ export default function XuetangPage() {
 
   const finishQuiz = () => {
     const total = chapterDetail!.questions.length;
+    const answered = Object.keys(quizChecked).length;
     const correct = Object.values(quizChecked).filter(Boolean).length;
-    const passed_quiz = correct >= chapterDetail!.pass_score;
+    // 未答的题算错
+    const wrongCount = (total - answered) + (answered - correct);
+    const passed_quiz = answered === total && correct >= chapterDetail!.pass_score;
 
     setQuizResult({ correct, total, passed: passed_quiz });
 
@@ -380,14 +383,16 @@ export default function XuetangPage() {
                 </span>
               </div>
               <h2 className={`text-xl font-bold ${quizResult.passed ? "text-dao-jade" : "text-dao-red"}`}>
-                {quizResult.passed ? "恭喜通关！" : "还需努力"}
+                {quizResult.passed ? "恭喜通关！" : Object.keys(quizChecked).length < chapterDetail!.questions.length ? "提前退出" : "还需努力"}
               </h2>
               <p className="text-sm text-dao-aged">
                 {wrongQuizMode
                   ? `错题重做完成！${quizResult.passed ? "错误都已纠正" : "还有错题需要巩固"}`
                   : quizResult.passed
                     ? "下一章已解锁，继续学习吧！"
-                    : `需要正确${chapterDetail.pass_score}题才能通关`}
+                    : Object.keys(quizChecked).length < chapterDetail!.questions.length
+                      ? `已答${Object.keys(quizChecked).length}题，对${quizResult.correct}题。需要全部答完且正确${chapterDetail.pass_score}题才能通关`
+                      : `需要正确${chapterDetail.pass_score}题才能通关`}
               </p>
             </div>
 
@@ -521,6 +526,16 @@ export default function XuetangPage() {
                     </button>
                   )}
                 </div>
+
+                {/* 提前退出按钮 */}
+                {Object.keys(quizAnswers).length > 0 && !quizResult && (
+                  <div className="text-center mt-3">
+                    <button onClick={finishQuiz}
+                      className="text-[11px] text-dao-aged-light tap-active hover:text-dao-red transition-colors">
+                      提前退出（已答{Object.keys(quizChecked).length}/{chapterDetail.questions.length}题）
+                    </button>
+                  </div>
+                )}
 
                 {/* 错题即时提示 */}
                 {quizChecked[quizIdx] === false && mentorMsg && (
