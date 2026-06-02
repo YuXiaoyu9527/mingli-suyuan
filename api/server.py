@@ -69,6 +69,18 @@ class MingliRequest(BaseModel):
     search: Optional[str] = None   # 搜索关键词
 
 
+class LiunianRequest(BaseModel):
+    # 出生信息
+    birth_year: int = 1990
+    birth_month: int = 5
+    birth_day: int = 20
+    birth_hour: int = 12
+    gender: str = "男"
+    # 要查的年份
+    year: int = 2026
+    month: Optional[int] = None  # 流月
+
+
 class QuizRequest(BaseModel):
     chapter: Optional[str] = None  # 按章节筛选
 
@@ -383,6 +395,50 @@ def api_quiz_check(req: dict):
                     }
 
     return {"error": "题目未找到"}
+
+
+@app.post("/api/liunian")
+def api_liunian(req: LiunianRequest):
+    """流年/流月推算（需传入出生日期）"""
+    from api.paipan import paipan
+    from api.paipan.liunian import LiunianEngine
+
+    # 排盘
+    user_bazi = paipan(req.birth_year, req.birth_month, req.birth_day, req.birth_hour)
+    engine = LiunianEngine()
+
+    # 流年
+    year_report = engine.calc_liunian(user_bazi, req.year)
+    result = {
+        "birth_bazi": f"{user_bazi.year.gan}{user_bazi.year.zhi} {user_bazi.month.gan}{user_bazi.month.zhi} {user_bazi.day.gan}{user_bazi.day.zhi} {user_bazi.hour.gan}{user_bazi.hour.zhi}",
+        "rizhu": f"{user_bazi.rizhu}({user_bazi.rizhu_wuxing})",
+        "year": year_report.year,
+        "year_ganzhi": year_report.year_ganzhi,
+        "year_shengxiao": year_report.year_shengxiao,
+        "nayin": year_report.nayin,
+        "shishen": year_report.shishen_to_rizhu,
+        "shishen_desc": year_report.shishen_desc,
+        "chong": year_report.chong_pillars,
+        "he": year_report.he_pillars,
+        "xing": year_report.xing_pillars,
+        "overall": year_report.overall,
+        "career": year_report.career,
+        "wealth": year_report.wealth,
+        "health": year_report.health,
+        "relationship": year_report.relationship,
+    }
+
+    # 流月
+    if req.month:
+        month_report = engine.calc_liumonth(user_bazi, req.year, req.month)
+        result["liuyue"] = {
+            "month": month_report.month,
+            "month_ganzhi": month_report.month_ganzhi,
+            "shishen": month_report.shishen_to_rizhu,
+            "keywords": month_report.keywords,
+        }
+
+    return result
 
 
 @app.get("/api/xuetang")
