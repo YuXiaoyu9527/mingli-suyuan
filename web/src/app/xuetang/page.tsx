@@ -40,6 +40,22 @@ export default function XuetangPage() {
   const [wrongBook, setWrongBook] = useState<WrongEntry[]>([]);
   const [showWrongBook, setShowWrongBook] = useState(false);
   const [wrongQuizMode, setWrongQuizMode] = useState(false);
+  const [devClicks, setDevClicks] = useState(0);
+  const [devMode, setDevMode] = useState(false);
+
+  const handleDevClick = () => {
+    const next = devClicks + 1;
+    setDevClicks(next);
+    if (next >= 3) {
+      setDevMode(true);
+      // 解锁所有章节
+      const allPassed: Record<string, boolean> = {};
+      chapters.forEach(ch => { allPassed[ch.id] = true; });
+      setPassed(allPassed);
+      localStorage.setItem("xuetang_passed", JSON.stringify(allPassed));
+    }
+    setTimeout(() => setDevClicks(0), 2000);
+  };
 
   // 错题重做模式
   const startWrongQuiz = () => {
@@ -194,10 +210,15 @@ export default function XuetangPage() {
         <header className="px-5 pt-10 pb-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl text-dao-ink font-[family-name:var(--font-display)] tracking-wider">
+              <h1 className="text-2xl text-dao-ink font-[family-name:var(--font-display)] tracking-wider"
+                onClick={handleDevClick}>
                 命理学堂
+                {devMode && <span className="text-xs text-dao-gold ml-2 font-normal">[已解锁]</span>}
               </h1>
-              <p className="text-dao-aged text-sm mt-1">从零学八字 · 教材+测验 · 通关解锁</p>
+              <p className="text-dao-aged text-sm mt-1">
+                从零学八字 · 教材+测验 · 通关解锁
+                {devMode && <span className="text-dao-gold ml-1">· 开发者模式</span>}
+              </p>
             </div>
             {wrongBook.length > 0 && (
               <button onClick={() => setShowWrongBook(!showWrongBook)}
