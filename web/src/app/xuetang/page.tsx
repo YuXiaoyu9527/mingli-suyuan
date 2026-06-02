@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import BottomNav from "@/components/BottomNav";
 import { checkAnswer, askMentor } from "@/lib/api";
-import { Loader2, BookOpen, ChevronRight, Lock, CheckCircle, ArrowLeft, Swords, Star } from "lucide-react";
+import { Loader2, BookOpen, ChevronRight, Lock, CheckCircle, ArrowLeft, Swords, Star, BookX, Trash2 } from "lucide-react";
 
 interface Chapter {
   id: string; title: string; subtitle: string; order: number;
@@ -22,12 +22,21 @@ interface QuizItem {
   options: { label: string; text: string }[];
 }
 
+interface WrongEntry {
+  quizId: string; title: string; story: string; question: string;
+  userAnswer: string; correctAnswer: string; chapterId: string; chapterTitle: string;
+  timestamp: string;
+}
+
 export default function XuetangPage() {
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [chapterDetail, setChapterDetail] = useState<ChapterDetail | null>(null);
   const [loading, setLoading] = useState(true);
   // 进度
   const [passed, setPassed] = useState<Record<string, boolean>>({});
+  // 错题集
+  const [wrongBook, setWrongBook] = useState<WrongEntry[]>([]);
+  const [showWrongBook, setShowWrongBook] = useState(false);
   // 测验状态
   const [quizMode, setQuizMode] = useState(false);
   const [quizIdx, setQuizIdx] = useState(0);
@@ -40,8 +49,15 @@ export default function XuetangPage() {
   useEffect(() => {
     const saved = localStorage.getItem("xuetang_passed");
     if (saved) setPassed(JSON.parse(saved));
+    const wrong = localStorage.getItem("xuetang_wrong_book");
+    if (wrong) setWrongBook(JSON.parse(wrong));
     loadChapters();
   }, []);
+
+  const saveWrongBook = (entries: WrongEntry[]) => {
+    setWrongBook(entries);
+    localStorage.setItem("xuetang_wrong_book", JSON.stringify(entries));
+  };
 
   const loadChapters = async () => {
     try {
@@ -89,6 +105,18 @@ export default function XuetangPage() {
       }
 
       if (!correct) {
+        // 加入错题集
+        const entry: WrongEntry = {
+          quizId: q.id, title: q.title, story: q.story, question: q.question,
+          userAnswer: q.options[optIdx].text,
+          correctAnswer: result.correct_text || "",
+          chapterId: chapterDetail!.id, chapterTitle: chapterDetail!.title,
+          timestamp: new Date().toISOString(),
+        };
+        // 去重：同题只保留最新一次
+        const updated = wrongBook.filter(w => w.quizId !== q.id);
+        saveWrongBook([entry, ...updated]);
+
         try {
           const mentor = await askMentor(
             `${q.story}\n\n${q.question}`,
@@ -98,6 +126,9 @@ export default function XuetangPage() {
           setMentorMsg(mentor.hint || "");
         } catch {}
       } else {
+        // 答对了，从错题集移除
+        const updated = wrongBook.filter(w => w.quizId !== q.id);
+        if (updated.length < wrongBook.length) saveWrongBook(updated);
         setMentorMsg("");
       }
     } catch {}
@@ -122,16 +153,67 @@ export default function XuetangPage() {
     return (
       <div className="flex flex-col min-h-dvh pb-20">
         <header className="px-5 pt-10 pb-4">
-          <h1 className="text-2xl text-dao-ink font-[family-name:var(--font-display)] tracking-wider">
-            命理学堂
-          </h1>
-          <p className="text-dao-aged text-sm mt-1">从零学八字 · 教材+测验 · 通关解锁</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl text-dao-ink font-[family-name:var(--font-display)] tracking-wider">
+                命理学堂
+              </h1>
+              <p className="text-dao-aged text-sm mt-1">从零学八字 · 教材+测验 · 通关解锁</p>
+            </div>
+            {wrongBook.length > 0 && (
+              <button onClick={() => setShowWrongBook(!showWrongBook)}
+                className="relative flex items-center gap-1 px-3 py-1.5 bg-dao-red/10 text-dao-red
+                           rounded-full text-xs font-medium tap-active border border-dao-red/20">
+                <BookX size={14} />
+                错题集
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-dao-red text-white text-[10px]
+                               rounded-full flex items-center justify-center">{wrongBook.length}</span>
+              </button>
+            )}
+          </div>
         </header>
 
         <div className="px-5 flex-1 space-y-3">
           {loading && (
             <div className="flex justify-center py-12">
               <Loader2 size={28} className="animate-spin text-dao-gold" />
+            </div>
+          )}
+
+          {/* 错题集视图 */}
+          {showWrongBook && (
+            <div className="dao-card mb-3 anim-enter">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-bold text-dao-ink flex items-center gap-2">
+                  <BookX size={16} className="text-dao-red" /> 我的错题集
+                </h3>
+                <button onClick={() => { saveWrongBook([]); }}
+                  className="text-[10px] text-dao-aged tap-active flex items-center gap-1">
+                  <Trash2 size={11} /> 清空
+                </button>
+              </div>
+
+              {wrongBook.length === 0 ? (
+                <p className="text-xs text-dao-aged text-center py-4">暂无错题，继续保持！</p>
+              ) : (
+                <div className="space-y-2 max-h-[50vh] overflow-y-auto">
+                  {wrongBook.map((w, i) => (
+                    <div key={i} className="border border-dao-paper-darker rounded-lg p-3">
+                      <div className="flex items-start justify-between mb-1">
+                        <span className="text-xs font-medium text-dao-ink">{w.title}</span>
+                        <span className="text-[10px] text-dao-aged-light">{w.chapterTitle}</span>
+                      </div>
+                      <p className="text-[11px] text-dao-ink-light line-clamp-2 mb-1">{w.story}</p>
+                      <div className="flex items-center gap-3 text-[10px]">
+                        <span className="text-dao-red">你的回答：{w.userAnswer}</span>
+                        <span className="text-dao-jade">正确答案：{w.correctAnswer}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <button onClick={() => setShowWrongBook(false)}
+                className="mt-3 w-full text-xs text-dao-indigo tap-active">收起错题集</button>
             </div>
           )}
 
@@ -197,6 +279,12 @@ export default function XuetangPage() {
               ${quizMode ? "bg-dao-red text-white border-dao-red" : "bg-dao-paper-dark text-dao-ink-light border-dao-paper-darker"}`}>
             {quizMode ? "← 回教材" : "开始测验 →"}
           </button>
+          {wrongBook.length > 0 && (
+            <button onClick={() => { setChapterDetail(null); setShowWrongBook(true); }}
+              className="relative text-xs px-2 py-1 bg-dao-red/10 text-dao-red rounded-full tap-active">
+              <BookX size={13} /> {wrongBook.length}
+            </button>
+          )}
         </div>
         {/* 总进度 */}
         <div className="mt-2 flex items-center gap-2 text-[11px] text-dao-aged">
