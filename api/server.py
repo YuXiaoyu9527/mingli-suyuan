@@ -92,13 +92,9 @@ _interpreter = None
 def get_searcher():
     global _searcher
     if _searcher is None:
-        # 优先用向量搜索，装不上用关键词搜索
-        try:
-            from api.rag import RAGSearcher
-            _searcher = RAGSearcher()
-        except Exception:
-            from api.rag.simple_search import SimpleSearcher
-            _searcher = SimpleSearcher()
+        # 笔记本ONNX有DLL问题，直接用关键词搜索
+        from api.rag.simple_search import SimpleSearcher
+        _searcher = SimpleSearcher()
     return _searcher
 
 
