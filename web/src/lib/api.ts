@@ -117,6 +117,15 @@ export async function getMingli(pattern?: string, search?: string) {
   });
 }
 
+// ===== 择吉搜索 =====
+
+export async function searchZeji(activity: string, days = 90) {
+  return fetchAPI("/api/zeji", {
+    method: "POST",
+    body: JSON.stringify({ activity, days }),
+  });
+}
+
 // ===== 古籍来源列表 =====
 
 export async function getSources() {

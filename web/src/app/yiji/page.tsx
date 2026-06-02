@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import BottomNav from "@/components/BottomNav";
 import DailyWisdom from "@/components/DailyWisdom";
-import { getYiji, YijiParams } from "@/lib/api";
-import { Loader2, RefreshCw, Compass, Star, AlertTriangle, Clock } from "lucide-react";
+import { getYiji, searchZeji, YijiParams } from "@/lib/api";
+import { Loader2, RefreshCw, Compass, Star, AlertTriangle, Clock, Search } from "lucide-react";
 
 export default function YijiPage() {
   const [data, setData] = useState<any>(null);
@@ -14,6 +14,21 @@ export default function YijiPage() {
     year: 1990, month: 5, day: 20, hour: 12, minute: 0, gender: "男",
   });
 
+  const [zejiActivity, setZejiActivity] = useState("");
+  const [zejiResults, setZejiResults] = useState<any[]>([]);
+  const [zejiLoading, setZejiLoading] = useState(false);
+
+  const PRESET_EVENTS = [
+    { label: "结婚", icon: "💒" },
+    { label: "搬家", icon: "📦" },
+    { label: "开业", icon: "🎉" },
+    { label: "出行", icon: "✈️" },
+    { label: "动土", icon: "🏗️" },
+    { label: "签约", icon: "📝" },
+    { label: "入学", icon: "📚" },
+    { label: "祭祀", icon: "🙏" },
+  ];
+
   const fetchYiji = async (params?: YijiParams) => {
     setLoading(true);
     try {
@@ -21,6 +36,16 @@ export default function YijiPage() {
       setData(result);
     } catch (e) { console.error(e); }
     setLoading(false);
+  };
+
+  const handleZejiSearch = async (activity: string) => {
+    setZejiActivity(activity);
+    setZejiLoading(true);
+    try {
+      const result = await searchZeji(activity, 60);
+      setZejiResults(result.dates || []);
+    } catch (e) { console.error(e); }
+    setZejiLoading(false);
   };
 
   useEffect(() => { fetchYiji(); }, []);
@@ -218,6 +243,58 @@ export default function YijiPage() {
             </div>
           )
         )}
+
+        {/* === 择吉搜索 === */}
+        <div className="dao-card">
+          <h3 className="text-xs text-dao-aged mb-3 flex items-center gap-1">
+            <Search size={13} /> 择吉搜索 · 未来吉日
+          </h3>
+          <div className="grid grid-cols-4 gap-2 mb-3">
+            {PRESET_EVENTS.map(({ label, icon }) => (
+              <button key={label}
+                onClick={() => handleZejiSearch(label)}
+                className={`py-2.5 rounded-lg text-xs font-medium tap-active transition-colors
+                  ${zejiActivity === label
+                    ? "bg-dao-red text-white"
+                    : "bg-dao-paper-dark text-dao-ink-light border border-dao-paper-darker hover:border-dao-gold/30"}`}>
+                <span className="block text-base mb-0.5">{icon}</span>
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {zejiLoading && (
+            <div className="text-center py-4">
+              <Loader2 size={20} className="animate-spin text-dao-gold mx-auto" />
+              <p className="text-xs text-dao-aged mt-1">搜索未来{zejiActivity}吉日...</p>
+            </div>
+          )}
+
+          {!zejiLoading && zejiResults.length > 0 && (
+            <div>
+              <p className="text-[10px] text-dao-aged mb-2">
+                未来60天适合「{zejiActivity}」· 共{zejiResults.length}天
+              </p>
+              <div className="space-y-1 max-h-[200px] overflow-y-auto">
+                {zejiResults.slice(0, 8).map((d: any, i: number) => (
+                  <div key={i} className="flex items-center justify-between py-1.5 px-2 rounded bg-dao-paper-dark/50 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="text-dao-ink font-medium">{d.date.slice(5)}</span>
+                      <span className="text-dao-aged">{d.week}</span>
+                      <span className="text-dao-aged-light">农历{d.lunar}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-dao-ink-light">{d.day_ganzhi} {d.jianchu}日</span>
+                      <span className={d.tianshen_type === "黄道" ? "text-dao-jade text-[10px]" : "text-dao-aged text-[10px]"}>
+                        {d.tianshen}({d.tianshen_luck})
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* === 古籍出处 === */}
         <div className="classical-quote text-xs">
