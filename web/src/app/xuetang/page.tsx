@@ -24,6 +24,7 @@ interface QuizItem {
 
 interface WrongEntry {
   quizId: string; title: string; story: string; question: string;
+  options: { label: string; text: string }[];
   userAnswer: string; correctAnswer: string; chapterId: string; chapterTitle: string;
   timestamp: string;
 }
@@ -37,6 +38,38 @@ export default function XuetangPage() {
   // 错题集
   const [wrongBook, setWrongBook] = useState<WrongEntry[]>([]);
   const [showWrongBook, setShowWrongBook] = useState(false);
+  const [wrongQuizMode, setWrongQuizMode] = useState(false);
+
+  // 错题重做模式
+  const startWrongQuiz = () => {
+    if (wrongBook.length === 0) return;
+    // 随机打乱错题
+    const shuffled = [...wrongBook].sort(() => Math.random() - 0.5);
+    // 构建虚拟章节
+    setChapterDetail({
+      id: "wrong-retry",
+      title: "错题重做",
+      subtitle: `随机${shuffled.length}道错题`,
+      pass_score: Math.ceil(shuffled.length * 0.7),
+      content: [],
+      questions: shuffled.map(w => ({
+        id: w.quizId,
+        title: w.title,
+        difficulty: 1,
+        story: w.story,
+        question: w.question,
+        options: w.options || [],
+      })),
+    });
+    setWrongQuizMode(true);
+    setQuizMode(true);
+    setQuizIdx(0);
+    setQuizAnswers({});
+    setQuizChecked({});
+    setQuizCorrectText({});
+    setQuizResult(null);
+    setMentorMsg("");
+  };
   // 测验状态
   const [quizMode, setQuizMode] = useState(false);
   const [quizIdx, setQuizIdx] = useState(0);
@@ -108,6 +141,7 @@ export default function XuetangPage() {
         // 加入错题集
         const entry: WrongEntry = {
           quizId: q.id, title: q.title, story: q.story, question: q.question,
+          options: q.options,
           userAnswer: q.options[optIdx].text,
           correctAnswer: result.correct_text || "",
           chapterId: chapterDetail!.id, chapterTitle: chapterDetail!.title,
@@ -141,7 +175,7 @@ export default function XuetangPage() {
 
     setQuizResult({ correct, total, passed: passed_quiz });
 
-    if (passed_quiz) {
+    if (passed_quiz && !wrongQuizMode) {
       const newPassed = { ...passed, [chapterDetail!.id]: true };
       setPassed(newPassed);
       localStorage.setItem("xuetang_passed", JSON.stringify(newPassed));
@@ -212,8 +246,19 @@ export default function XuetangPage() {
                   ))}
                 </div>
               )}
-              <button onClick={() => setShowWrongBook(false)}
-                className="mt-3 w-full text-xs text-dao-indigo tap-active">收起错题集</button>
+              <div className="flex gap-2 mt-3">
+                <button onClick={() => {
+                  setShowWrongBook(false);
+                  startWrongQuiz();
+                }}
+                  className="flex-1 py-2 bg-dao-red text-white rounded-lg text-xs font-medium tap-active">
+                  开始重做错题（{wrongBook.length}题）
+                </button>
+                <button onClick={() => setShowWrongBook(false)}
+                  className="px-4 py-2 bg-dao-paper-dark rounded-lg text-xs tap-active">
+                  收起
+                </button>
+              </div>
             </div>
           )}
 
@@ -267,7 +312,7 @@ export default function XuetangPage() {
     <div className="flex flex-col min-h-dvh pb-20">
       <header className="px-5 pt-6 pb-3">
         <div className="flex items-center gap-3">
-          <button onClick={() => setChapterDetail(null)}
+          <button onClick={() => { setChapterDetail(null); setWrongQuizMode(false); }}
             className="text-dao-aged tap-active"><ArrowLeft size={20} /></button>
           <div className="flex-1">
             <h1 className="text-lg font-[family-name:var(--font-display)] text-dao-ink">
@@ -338,9 +383,11 @@ export default function XuetangPage() {
                 {quizResult.passed ? "恭喜通关！" : "还需努力"}
               </h2>
               <p className="text-sm text-dao-aged">
-                {quizResult.passed
-                  ? "下一章已解锁，继续学习吧！"
-                  : `需要正确${chapterDetail.pass_score}题才能通关`}
+                {wrongQuizMode
+                  ? `错题重做完成！${quizResult.passed ? "错误都已纠正" : "还有错题需要巩固"}`
+                  : quizResult.passed
+                    ? "下一章已解锁，继续学习吧！"
+                    : `需要正确${chapterDetail.pass_score}题才能通关`}
               </p>
             </div>
 
@@ -374,17 +421,18 @@ export default function XuetangPage() {
             <div className="flex gap-3 justify-center pt-2">
               {!quizResult.passed && (
                 <button onClick={() => {
-                  setQuizMode(true); setQuizIdx(0); setQuizAnswers({});
-                  setQuizChecked({}); setQuizResult(null); setMentorMsg("");
+                  if (wrongQuizMode) startWrongQuiz();
+                  else { setQuizMode(true); setQuizIdx(0); setQuizAnswers({}); setQuizChecked({}); setQuizCorrectText({}); setQuizResult(null); setMentorMsg(""); }
                 }} className="px-4 py-2 bg-dao-red text-white rounded-lg text-sm tap-active">
-                  重新测验
+                  {wrongQuizMode ? "再做一遍错题" : "重新测验"}
                 </button>
               )}
               <button onClick={() => {
-                setQuizMode(false); setQuizIdx(0); setQuizAnswers({});
-                setQuizChecked({}); setQuizResult(null); setMentorMsg("");
+                if (wrongQuizMode) { setChapterDetail(null); setWrongQuizMode(false); }
+                else { setQuizMode(false); setQuizIdx(0); }
+                setQuizAnswers({}); setQuizChecked({}); setQuizCorrectText({}); setQuizResult(null); setMentorMsg("");
               }} className="px-4 py-2 bg-dao-paper-dark rounded-lg text-sm tap-active">
-                回教材再看一遍
+                {wrongQuizMode ? "返回学堂" : "回教材再看一遍"}
               </button>
             </div>
           </div>
