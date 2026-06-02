@@ -25,7 +25,8 @@ interface QuizItem {
 interface WrongEntry {
   quizId: string; title: string; story: string; question: string;
   options: { label: string; text: string }[];
-  userAnswer: string; correctAnswer: string; chapterId: string; chapterTitle: string;
+  userAnswer: string; correctAnswer: string; explanation: string;
+  chapterId: string; chapterTitle: string;
   timestamp: string;
 }
 
@@ -144,6 +145,7 @@ export default function XuetangPage() {
           options: q.options,
           userAnswer: q.options[optIdx].text,
           correctAnswer: result.correct_text || "",
+          explanation: result.classical_ref || "",
           chapterId: chapterDetail!.id, chapterTitle: chapterDetail!.title,
           timestamp: new Date().toISOString(),
         };
@@ -240,11 +242,17 @@ export default function XuetangPage() {
                         <span className="text-xs font-medium text-dao-ink">{w.title}</span>
                         <span className="text-[10px] text-dao-aged-light">{w.chapterTitle}</span>
                       </div>
-                      <p className="text-[11px] text-dao-ink-light line-clamp-2 mb-1">{w.story}</p>
-                      <div className="flex items-center gap-3 text-[10px]">
+                      <p className="text-[11px] text-dao-ink-light line-clamp-2 mb-2">{w.story}</p>
+                      <div className="flex items-center gap-3 text-[10px] mb-2">
                         <span className="text-dao-red">你的回答：{w.userAnswer}</span>
-                        <span className="text-dao-jade">正确答案：{w.correctAnswer}</span>
+                        <span className="text-dao-jade font-medium">正确答案：{w.correctAnswer}</span>
                       </div>
+                      {w.explanation && (
+                        <div className="bg-dao-paper-dark/50 rounded p-2 text-[10px] text-dao-ink-light leading-relaxed border-l-2 border-dao-gold">
+                          <span className="text-dao-gold font-medium">古籍解析：</span>
+                          {w.explanation}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -414,7 +422,20 @@ export default function XuetangPage() {
                         <p className="text-xs font-medium text-dao-ink">{q.title}</p>
                         <p className="text-[11px] text-dao-aged mt-0.5">你的回答：{userOption}</p>
                         {isWrong && quizCorrectText[i] && (
-                          <p className="text-[11px] text-dao-jade mt-0.5">正确答案：{quizCorrectText[i]}</p>
+                          <>
+                            <p className="text-[11px] text-dao-jade mt-0.5 font-medium">正确答案：{quizCorrectText[i]}</p>
+                            {(() => {
+                              const wb = wrongBook.find(w => w.quizId === q.id);
+                              if (wb?.explanation) {
+                                return (
+                                  <p className="text-[10px] text-dao-gold-dark mt-1 leading-relaxed bg-dao-paper-dark/50 rounded p-1.5">
+                                    {wb.explanation}
+                                  </p>
+                                );
+                              }
+                              return null;
+                            })()}
+                          </>
                         )}
                       </div>
                     </div>
