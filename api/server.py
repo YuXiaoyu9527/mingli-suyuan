@@ -69,6 +69,15 @@ class MingliRequest(BaseModel):
     search: Optional[str] = None   # 搜索关键词
 
 
+class HehunRequest(BaseModel):
+    # 男方
+    m_year: int = 1990; m_month: int = 5; m_day: int = 20
+    m_hour: int = 12; m_minute: int = 0
+    # 女方
+    f_year: int = 1992; f_month: int = 8; f_day: int = 15
+    f_hour: int = 10; f_minute: int = 0
+
+
 class FengshuiRequest(BaseModel):
     door_direction: str = ""       # 大门朝向
     kitchen: str = ""              # 厨房位置
@@ -544,6 +553,37 @@ def api_fengshui(req: FengshuiRequest):
             "xingsha_types": list(XINGSHA_KB.keys()),
             "quejiao_types": list(QUEJIAO_IMPACT.keys()),
         },
+    }
+
+
+@app.post("/api/hehun")
+def api_hehun(req: HehunRequest):
+    """八字合婚"""
+    from api.paipan import paipan
+    from api.paipan.hehun import HehunEngine
+
+    male = paipan(req.m_year, req.m_month, req.m_day, req.m_hour, req.m_minute, "男")
+    female = paipan(req.f_year, req.f_month, req.f_day, req.f_hour, req.f_minute, "女")
+
+    engine = HehunEngine()
+    report = engine.analyze(male, female)
+
+    return {
+        "male_bazi": report.male_bazi,
+        "female_bazi": report.female_bazi,
+        "male_rizhu": report.male_rizhu,
+        "female_rizhu": report.female_rizhu,
+        "nianzhu_score": report.nianzhu_score,
+        "nianzhu_detail": report.nianzhu_detail,
+        "rizhi_score": report.rizhi_score,
+        "rizhi_detail": report.rizhi_detail,
+        "wuxing_score": report.wuxing_score,
+        "wuxing_detail": report.wuxing_detail,
+        "shishen_score": report.shishen_score,
+        "shishen_detail": report.shishen_detail,
+        "total_score": report.total_score,
+        "level": report.level,
+        "summary": report.summary,
     }
 
 
