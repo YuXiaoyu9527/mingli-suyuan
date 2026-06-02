@@ -238,18 +238,29 @@ export default function XuetangPage() {
                 <div className="space-y-2 max-h-[50vh] overflow-y-auto">
                   {wrongBook.map((w, i) => (
                     <div key={i} className="border border-dao-paper-darker rounded-lg p-3">
-                      <div className="flex items-start justify-between mb-1">
-                        <span className="text-xs font-medium text-dao-ink">{w.title}</span>
+                      <div className="flex items-start justify-between mb-2">
+                        <span className="text-xs font-bold text-dao-ink">{w.title}</span>
                         <span className="text-[10px] text-dao-aged-light">{w.chapterTitle}</span>
                       </div>
-                      <p className="text-[11px] text-dao-ink-light line-clamp-2 mb-2">{w.story}</p>
-                      <div className="flex items-center gap-3 text-[10px] mb-2">
-                        <span className="text-dao-red">你的回答：{w.userAnswer}</span>
-                        <span className="text-dao-jade font-medium">正确答案：{w.correctAnswer}</span>
+                      {/* 情景还原 */}
+                      <p className="text-[11px] text-dao-ink-light leading-relaxed mb-2 whitespace-pre-line">{w.story}</p>
+                      {/* 原问题 */}
+                      <p className="text-[11px] text-dao-ink font-medium mb-2">❓ {w.question}</p>
+                      {/* 答题对比 */}
+                      <div className="grid grid-cols-2 gap-2 mb-2 text-[10px]">
+                        <div className="bg-dao-red/5 rounded p-1.5 border border-dao-red/20">
+                          <span className="text-dao-red">你的回答</span>
+                          <p className="text-dao-red font-medium mt-0.5">{w.userAnswer}</p>
+                        </div>
+                        <div className="bg-dao-jade/5 rounded p-1.5 border border-dao-jade/20">
+                          <span className="text-dao-jade">正确答案</span>
+                          <p className="text-dao-jade font-medium mt-0.5">{w.correctAnswer}</p>
+                        </div>
                       </div>
+                      {/* 古籍解析 */}
                       {w.explanation && (
                         <div className="bg-dao-paper-dark/50 rounded p-2 text-[10px] text-dao-ink-light leading-relaxed border-l-2 border-dao-gold">
-                          <span className="text-dao-gold font-medium">古籍解析：</span>
+                          <span className="text-dao-gold font-medium">古籍出处：</span>
                           {w.explanation}
                         </div>
                       )}
@@ -415,12 +426,14 @@ export default function XuetangPage() {
                 return (
                   <div key={i} className={`dao-card py-3 px-4 ${isRight ? "border-l-2 border-l-dao-jade" : isWrong ? "border-l-2 border-l-dao-red" : ""}`}>
                     <div className="flex items-start gap-2">
-                      <span className={`text-xs font-bold mt-0.5 ${isRight ? "text-dao-jade" : isWrong ? "text-dao-red" : "text-dao-aged"}`}>
+                      <span className={`text-xs font-bold mt-0.5 flex-shrink-0 ${isRight ? "text-dao-jade" : isWrong ? "text-dao-red" : "text-dao-aged"}`}>
                         {isRight ? "✓" : isWrong ? "✗" : "○"}
                       </span>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium text-dao-ink">{q.title}</p>
-                        <p className="text-[11px] text-dao-aged mt-0.5">你的回答：{userOption}</p>
+                        <p className="text-xs font-bold text-dao-ink">{q.title}</p>
+                        <p className="text-[11px] text-dao-ink-light leading-relaxed mt-1 line-clamp-3">{q.story}</p>
+                        <p className="text-[10px] text-dao-aged mt-1">❓ {q.question}</p>
+                        <p className="text-[11px] text-dao-aged mt-1">你的回答：{userOption}</p>
                         {isWrong && quizCorrectText[i] && (
                           <>
                             <p className="text-[11px] text-dao-jade mt-0.5 font-medium">正确答案：{quizCorrectText[i]}</p>
