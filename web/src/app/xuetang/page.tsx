@@ -33,6 +33,7 @@ export default function XuetangPage() {
   const [quizIdx, setQuizIdx] = useState(0);
   const [quizAnswers, setQuizAnswers] = useState<Record<number, number>>({});
   const [quizChecked, setQuizChecked] = useState<Record<number, boolean>>({});
+  const [quizCorrectText, setQuizCorrectText] = useState<Record<number, string>>({});
   const [quizResult, setQuizResult] = useState<{ correct: number; total: number; passed: boolean } | null>(null);
   const [mentorMsg, setMentorMsg] = useState("");
 
@@ -61,6 +62,7 @@ export default function XuetangPage() {
       setQuizIdx(0);
       setQuizAnswers({});
       setQuizChecked({});
+      setQuizCorrectText({});
       setQuizResult(null);
       setMentorMsg("");
     } catch (e) { console.error(e); }
@@ -82,6 +84,9 @@ export default function XuetangPage() {
       const result = await checkAnswer(q.id, optIdx);
       const correct = result.correct;
       setQuizChecked({ ...quizChecked, [quizIdx]: correct });
+      if (result.correct_text) {
+        setQuizCorrectText({ ...quizCorrectText, [quizIdx]: result.correct_text });
+      }
 
       if (!correct) {
         try {
@@ -231,23 +236,54 @@ export default function XuetangPage() {
             </div>
           </div>
         ) : quizResult ? (
-          // ===== 测验结果 =====
-          <div className="text-center py-12 anim-enter space-y-4">
-            <div className={`w-20 h-20 rounded-full mx-auto flex items-center justify-center
-              ${quizResult.passed ? "bg-dao-jade/20" : "bg-dao-red/10"}`}>
-              <span className={`text-3xl font-bold ${quizResult.passed ? "text-dao-jade" : "text-dao-red"}`}>
-                {quizResult.correct}/{quizResult.total}
-              </span>
+          // ===== 测验结果 + 错题回顾 =====
+          <div className="anim-enter space-y-4">
+            {/* 分数卡片 */}
+            <div className="text-center py-8 space-y-4">
+              <div className={`w-20 h-20 rounded-full mx-auto flex items-center justify-center
+                ${quizResult.passed ? "bg-dao-jade/20" : "bg-dao-red/10"}`}>
+                <span className={`text-3xl font-bold ${quizResult.passed ? "text-dao-jade" : "text-dao-red"}`}>
+                  {quizResult.correct}/{quizResult.total}
+                </span>
+              </div>
+              <h2 className={`text-xl font-bold ${quizResult.passed ? "text-dao-jade" : "text-dao-red"}`}>
+                {quizResult.passed ? "恭喜通关！" : "还需努力"}
+              </h2>
+              <p className="text-sm text-dao-aged">
+                {quizResult.passed
+                  ? "下一章已解锁，继续学习吧！"
+                  : `需要正确${chapterDetail.pass_score}题才能通关`}
+              </p>
             </div>
-            <h2 className={`text-xl font-bold ${quizResult.passed ? "text-dao-jade" : "text-dao-red"}`}>
-              {quizResult.passed ? "恭喜通关！" : "还需努力"}
-            </h2>
-            <p className="text-sm text-dao-aged">
-              {quizResult.passed
-                ? "下一章已解锁，继续学习吧！"
-                : `需要正确${chapterDetail.pass_score}题才能通关，再试一次吧`}
-            </p>
-            <div className="flex gap-3 justify-center">
+
+            {/* 逐题回顾 */}
+            <div className="space-y-2">
+              <h3 className="text-sm font-bold text-dao-ink">答题回顾</h3>
+              {chapterDetail.questions.map((q, i) => {
+                const isRight = quizChecked[i] === true;
+                const isWrong = quizChecked[i] === false;
+                const userAnswer = quizAnswers[i];
+                const userOption = userAnswer !== undefined ? q.options[userAnswer].text : "未作答";
+                return (
+                  <div key={i} className={`dao-card py-3 px-4 ${isRight ? "border-l-2 border-l-dao-jade" : isWrong ? "border-l-2 border-l-dao-red" : ""}`}>
+                    <div className="flex items-start gap-2">
+                      <span className={`text-xs font-bold mt-0.5 ${isRight ? "text-dao-jade" : isWrong ? "text-dao-red" : "text-dao-aged"}`}>
+                        {isRight ? "✓" : isWrong ? "✗" : "○"}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-dao-ink">{q.title}</p>
+                        <p className="text-[11px] text-dao-aged mt-0.5">你的回答：{userOption}</p>
+                        {isWrong && quizCorrectText[i] && (
+                          <p className="text-[11px] text-dao-jade mt-0.5">正确答案：{quizCorrectText[i]}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="flex gap-3 justify-center pt-2">
               {!quizResult.passed && (
                 <button onClick={() => {
                   setQuizMode(true); setQuizIdx(0); setQuizAnswers({});
@@ -349,6 +385,14 @@ export default function XuetangPage() {
                     </button>
                   )}
                 </div>
+
+                {/* 错题即时提示 */}
+                {quizChecked[quizIdx] === false && mentorMsg && (
+                  <div className="mt-2 p-3 bg-dao-red/5 border border-dao-red/20 rounded-lg text-xs text-dao-ink-light leading-relaxed">
+                    <p className="text-dao-red font-bold mb-1">回答错误，正确答案解析：</p>
+                    {mentorMsg}
+                  </div>
+                )}
               </>
             )}
           </div>
