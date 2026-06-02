@@ -476,6 +476,30 @@ def api_zeji(req: ZejiRequest):
     }
 
 
+@app.post("/api/yongshen")
+def api_yongshen(req: PaipanRequest):
+    """用神推断"""
+    from api.paipan import paipan
+    from api.paipan.yongshen import YongshenEngine
+
+    bazi = paipan(req.year, req.month, req.day, req.hour, req.minute, req.gender)
+    engine = YongshenEngine()
+    result = engine.analyze(bazi)
+
+    return {
+        "rizhu": result.rizhu,
+        "rizhu_wuxing": result.rizhu_wuxing,
+        "wangshuai": result.wangshuai,
+        "wangshuai_reason": result.wangshuai_reason,
+        "fuyi_yongshen": result.fuyi_yongshen,
+        "tiaohou_yongshen": result.tiaohou_yongshen,
+        "tongguan_yongshen": result.tongguan_yongshen,
+        "recommended": result.recommended,
+        "jishen": result.jishen,
+        "analysis": result.analysis,
+    }
+
+
 @app.get("/api/xuetang")
 def api_xuetang():
     """获取学堂教材章节列表"""
