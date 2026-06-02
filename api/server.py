@@ -308,6 +308,23 @@ def api_yiji(req: YijiRequest):
     yj = DailyYiji()
     hl = yj.get_full_huangli(solar, user_bazi)
 
+    # 每日开运建议
+    daily_tips = None
+    if user_bazi is not None:
+        from api.paipan.yongshen import YongshenEngine
+        from api.paipan.daily_tips import generate_from_bazi
+        ys = YongshenEngine().analyze(user_bazi)
+        tips = generate_from_bazi(hl.day_ganzhi, ys, hl.day_gan, hl.day_zhi)
+        daily_tips = {
+            "wear_colors": tips.wear_colors,
+            "wear_detail": tips.wear_detail,
+            "accessory": tips.accessory,
+            "suggest_do": tips.suggest_do,
+            "suggest_avoid": tips.suggest_avoid,
+            "lucky_direction": tips.lucky_direction,
+            "daily_quote": tips.daily_quote,
+        }
+
     return {
         "date": hl.date,
         "lunar_date": hl.lunar_date,
@@ -350,6 +367,8 @@ def api_yiji(req: YijiRequest):
         "classical_ref": hl.classical_ref,
         # 个人
         "personal": hl.personal,
+        # 开运建议
+        "daily_tips": daily_tips,
     }
 
 

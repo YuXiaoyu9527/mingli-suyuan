@@ -6,6 +6,17 @@ import DailyWisdom from "@/components/DailyWisdom";
 import { getYiji, searchZeji, YijiParams } from "@/lib/api";
 import { Loader2, RefreshCw, Compass, Star, AlertTriangle, Clock, Search } from "lucide-react";
 
+// 颜色映射
+const COLOR_MAP: Record<string, string> = {
+  "红色":"#C41E3A","紫色":"#7B2D8E","橙色":"#E8651A","玫红":"#D8336B",
+  "绿色":"#2E7D32","青色":"#00897B","翠绿":"#43A047","墨绿":"#1B5E20",
+  "黄色":"#F9A825","棕色":"#795548","卡其色":"#A1887F","米色":"#D7CCC8",
+  "白色":"#E0E0E0","金色":"#FFD54F","银色":"#BDBDBD","浅灰":"#9E9E9E",
+  "黑色":"#212121","深蓝":"#1565C0","藏青":"#1A237E","灰色":"#616161",
+};
+const getColorHex = (c: string) => COLOR_MAP[c] || "#888888";
+const isDarkColor = (c: string) => ["黑色","深蓝","藏青","墨绿","紫色","灰色"].includes(c);
+
 export default function YijiPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -242,6 +253,67 @@ export default function YijiPage() {
               </div>
             </div>
           )
+        )}
+
+        {/* === 每日开运建议 === */}
+        {data?.daily_tips && (
+          <div className="dao-card border-gold/30">
+            <h3 className="text-sm font-bold text-dao-ink mb-3">今日开运指南</h3>
+
+            {/* 穿搭 */}
+            <div className="mb-3">
+              <p className="text-[10px] text-dao-aged mb-1">今日穿搭</p>
+              <div className="flex flex-wrap gap-1.5">
+                {(data.daily_tips.wear_colors || []).map((c: string) => (
+                  <span key={c} className="px-2.5 py-1 rounded-full text-[11px] font-medium border"
+                    style={{ backgroundColor: getColorHex(c), color: isDarkColor(c) ? '#fff' : '#333', borderColor: 'transparent' }}>
+                    {c}
+                  </span>
+                ))}
+              </div>
+              <p className="text-[11px] text-dao-ink-light mt-1.5 leading-relaxed">{data.daily_tips.wear_detail}</p>
+            </div>
+
+            {/* 配饰 */}
+            {data.daily_tips.accessory?.length > 0 && (
+              <div className="mb-3">
+                <p className="text-[10px] text-dao-aged mb-1">推荐配饰</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {(data.daily_tips.accessory || []).map((a: string) => (
+                    <span key={a} className="px-2 py-0.5 bg-dao-gold/10 text-dao-gold-dark text-[11px] rounded-full">{a}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 宜做 vs 忌做 */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <p className="text-[10px] text-auspicious mb-1">宜做</p>
+                {(data.daily_tips.suggest_do || []).map((a: string) => (
+                  <p key={a} className="text-[11px] text-dao-ink-light">· {a}</p>
+                ))}
+              </div>
+              <div>
+                <p className="text-[10px] text-inauspicious mb-1">尽量避免</p>
+                {(data.daily_tips.suggest_avoid || []).map((a: string) => (
+                  <p key={a} className="text-[11px] text-dao-ink-light">· {a}</p>
+                ))}
+              </div>
+            </div>
+
+            {/* 方位 */}
+            {data.daily_tips.lucky_direction && (
+              <p className="text-[11px] text-dao-aged mt-3">
+                吉方：{data.daily_tips.lucky_direction}方
+              </p>
+            )}
+
+            {/* 日签 */}
+            <div className="mt-3 pt-3 border-t border-dao-paper-darker text-center">
+              <p className="text-xs text-dao-gold italic">「{data.daily_tips.daily_quote}」</p>
+            </div>
+          </div>
         )}
 
         {/* === 择吉搜索 === */}
