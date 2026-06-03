@@ -39,6 +39,7 @@ class PaipanRequest(BaseModel):
     hour: int = 12
     minute: int = 0
     gender: str = "男"
+    city: str = ""  # 出生城市（用于真太阳时校正）
 
 
 class JianpiRequest(BaseModel):
@@ -158,8 +159,30 @@ def root():
 def api_paipan(req: PaipanRequest):
     """八字排盘（纯代码，无AI）"""
     from api.paipan import paipan, to_dict
-    result = paipan(req.year, req.month, req.day, req.hour, req.minute, req.gender)
-    return to_dict(result)
+
+    hour, minute = req.hour, req.minute
+    tz_offset = 0
+    if req.city:
+        from api.paipan.truesolar import correct_time
+        hour, minute, tz_offset = correct_time(req.city, req.hour, req.minute)
+
+    result = paipan(req.year, req.month, req.day, hour, minute, req.gender)
+    data = to_dict(result)
+    if req.city:
+        data["true_solar"] = {
+            "city": req.city,
+            "original_time": f"{req.hour:02d}:{req.minute:02d}",
+            "corrected_time": f"{hour:02d}:{minute:02d}",
+            "offset_minutes": tz_offset,
+        }
+    return data
+
+
+@app.get("/api/cities")
+def api_cities():
+    """获取支持真太阳时校正的城市列表"""
+    from api.paipan.truesolar import get_city_list
+    return {"cities": get_city_list()}
 
 
 @app.post("/api/jianpi")
@@ -534,6 +557,28 @@ def api_yongshen(req: PaipanRequest):
         "tongguan_yongshen": result.tongguan_yongshen,
         "recommended": result.recommended,
         "jishen": result.jishen,
+        "analysis": result.analysis,
+    }
+
+
+@app.post("/api/geju")
+def api_geju(req: PaipanRequest):
+    """格局判定"""
+    from api.paipan import paipan
+    from api.paipan.geju import GejuEngine
+
+    bazi = paipan(req.year, req.month, req.day, req.hour, req.minute, req.gender)
+    engine = GejuEngine()
+    result = engine.determine(bazi)
+
+    return {
+        "pattern": result.pattern,
+        "pattern_type": result.pattern_type,
+        "yueling": result.yueling,
+        "yueling_shishen": result.yueling_shishen,
+        "is_chengge": result.is_chengge,
+        "chengge_conditions": result.chengge_conditions,
+        "baige_reasons": result.baige_reasons,
         "analysis": result.analysis,
     }
 
