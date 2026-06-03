@@ -69,15 +69,15 @@ function PaipanPanel() {
       <div className="dao-card space-y-3">
         <div className="grid grid-cols-5 gap-1.5">
           <input type="number" value={form.year} onChange={e=>update("year",+e.target.value)}
-            className="bg-bg-subtle border border-border rounded-lg px-1 py-2.5 text-text text-sm text-center w-full" placeholder="年"/>
+            className="bg-white border border-border rounded-lg px-1 py-3 text-text text-base text-center w-full shadow-sm" placeholder="年"/>
           <input type="number" value={form.month} onChange={e=>update("month",+e.target.value)} min={1} max={12}
-            className="bg-bg-subtle border border-border rounded-lg px-1 py-2.5 text-text text-sm text-center w-full" placeholder="月"/>
+            className="bg-white border border-border rounded-lg px-1 py-3 text-text text-base text-center w-full shadow-sm" placeholder="月"/>
           <input type="number" value={form.day} onChange={e=>update("day",+e.target.value)} min={1} max={31}
-            className="bg-bg-subtle border border-border rounded-lg px-1 py-2.5 text-text text-sm text-center w-full" placeholder="日"/>
+            className="bg-white border border-border rounded-lg px-1 py-3 text-text text-base text-center w-full shadow-sm" placeholder="日"/>
           <input type="number" value={form.hour} onChange={e=>update("hour",+e.target.value)} min={0} max={23}
-            className="bg-bg-subtle border border-border rounded-lg px-1 py-2.5 text-text text-sm text-center w-full" placeholder="时"/>
+            className="bg-white border border-border rounded-lg px-1 py-3 text-text text-base text-center w-full shadow-sm" placeholder="时"/>
           <select value={form.gender} onChange={e=>update("gender",e.target.value)}
-            className="bg-bg-subtle border border-border rounded-lg px-1 py-2.5 text-text text-sm text-center w-full">
+            className="bg-white border border-border rounded-lg px-1 py-3 text-text text-base text-center w-full shadow-sm">
             <option>男</option><option>女</option></select>
         </div>
         <div className="flex gap-2">
