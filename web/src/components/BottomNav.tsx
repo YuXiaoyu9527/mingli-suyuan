@@ -4,11 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const tabs = [
+  { id: "mingli", label: "命理", icon: "☯", href: "/mingli" },
+  { id: "yiji", label: "择吉", icon: "☲", href: "/yiji" },
+  { id: "fengshui", label: "风水", icon: "☶", href: "/fengshui" },
   { id: "xuetang", label: "学堂", icon: "☰", href: "/xuetang" },
-  { id: "paipan", label: "排盘", icon: "☯", href: "/paipan" },
-  { id: "yiji", label: "黄历", icon: "☲", href: "/yiji" },
-  { id: "hehun", label: "合婚", icon: "☵", href: "/hehun" },
-  { id: "mingli", label: "命例", icon: "☷", href: "/mingli" },
+  { id: "dianji", label: "典籍", icon: "☷", href: "/dianji" },
 ];
 
 export default function BottomNav() {
