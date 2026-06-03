@@ -185,6 +185,68 @@ def api_cities():
     return {"cities": get_city_list()}
 
 
+@app.post("/api/full-analysis")
+def api_full_analysis(req: PaipanRequest):
+    """全量分析：排盘+格局+用神+AI简批 一次返回"""
+    from api.paipan import paipan, to_dict
+    from api.paipan.geju import GejuEngine
+    from api.paipan.yongshen import YongshenEngine
+
+    # 真太阳时
+    hour, minute = req.hour, req.minute
+    tz_info = None
+    if req.city:
+        from api.paipan.truesolar import correct_time
+        hour, minute, tz_offset = correct_time(req.city, req.hour, req.minute)
+        tz_info = {"city": req.city, "offset": tz_offset,
+                   "corrected": f"{hour:02d}:{minute:02d}"}
+
+    bazi = paipan(req.year, req.month, req.day, hour, minute, req.gender)
+    data = to_dict(bazi)
+
+    # 格局
+    geju = GejuEngine().determine(bazi)
+
+    # 用神
+    yongshen = YongshenEngine().analyze(bazi)
+
+    # AI（可选）
+    interpretation = None
+    ancient_refs = None
+    try:
+        from api.rag.simple_search import SimpleSearcher
+        searcher = SimpleSearcher()
+        terms = f"{data['rizhu']}日主 {data['rizhu_wuxing']}"
+        ancient_refs = searcher.search_for_ai(terms, top_k=2)
+        from api.ai import AIInterpreter
+        ai = AIInterpreter()
+        interpretation = ai.jianpi(data, ancient_refs)
+    except Exception:
+        pass
+
+    return {
+        "paipan": data,
+        "true_solar": tz_info,
+        "geju": {
+            "pattern": geju.pattern,
+            "pattern_type": geju.pattern_type,
+            "is_chengge": geju.is_chengge,
+            "conditions": geju.chengge_conditions,
+            "reasons": geju.baige_reasons,
+            "analysis": geju.analysis,
+        },
+        "yongshen": {
+            "wangshuai": yongshen.wangshuai,
+            "wangshuai_reason": yongshen.wangshuai_reason,
+            "recommended": yongshen.recommended,
+            "jishen": yongshen.jishen,
+            "analysis": yongshen.analysis,
+        },
+        "interpretation": interpretation,
+        "ancient_refs": ancient_refs,
+    }
+
+
 @app.post("/api/jianpi")
 def api_jianpi(req: JianpiRequest):
     """
