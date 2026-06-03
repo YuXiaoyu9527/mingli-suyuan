@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { getApiUrl } from "@/lib/api";
 import BottomNav from "@/components/BottomNav";
 import { Loader2, Home } from "lucide-react";
 
@@ -14,7 +15,7 @@ export default function FengshuiPage() {
   const [result, setResult] = useState<any>(null);
 
   useEffect(()=>{
-    fetch("http://localhost:8000/api/fengshui",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({})})
+    fetch(`${getApiUrl()}/api/fengshui`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({})})
       .then(r=>r.json()).then(d=>setOptions(d.options)).catch(()=>{});
   },[]);
 
@@ -24,7 +25,7 @@ export default function FengshuiPage() {
   const handle = async () => {
     setLoading(true);
     try {
-      const r = await fetch("http://localhost:8000/api/fengshui",{
+      const r = await fetch(`${getApiUrl()}/api/fengshui`,{
         method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(form)});
       setResult(await r.json());
     }catch(e){} setLoading(false);

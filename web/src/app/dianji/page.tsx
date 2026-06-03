@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { getApiUrl } from "@/lib/api";
 import BottomNav from "@/components/BottomNav";
 import { Search, Star, Loader2, BookOpen } from "lucide-react";
 
@@ -47,7 +48,7 @@ function SearchPanel() {
     const sq = query || q; if(!sq.trim()) return;
     setLoad(true);
     try {
-      const r = await fetch("http://localhost:8000/api/search",{
+      const r = await fetch(`${getApiUrl()}/api/search`,{
         method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({query:sq,top_k:10})});
       const d = await r.json(); setRes(d.results||[]);
@@ -117,7 +118,7 @@ function MingliPanel() {
   const go = async (p?:string) => {
     setLoad(true);
     try {
-      const r = await fetch("http://localhost:8000/api/mingli",{
+      const r = await fetch(`${getApiUrl()}/api/mingli`,{
         method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({pattern:p||null})});
       const d = await r.json();

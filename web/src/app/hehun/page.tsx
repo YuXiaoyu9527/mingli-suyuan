@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { getApiUrl } from "@/lib/api";
 import BottomNav from "@/components/BottomNav";
 import { Loader2, Heart } from "lucide-react";
 
@@ -13,7 +14,7 @@ export default function HehunPage() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const resp = await fetch("http://localhost:8000/api/hehun", {
+      const resp = await fetch(`${getApiUrl()}/api/hehun`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           m_year:m.year,m_month:m.month,m_day:m.day,m_hour:m.hour,

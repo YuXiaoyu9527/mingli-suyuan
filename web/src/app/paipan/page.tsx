@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { getApiUrl } from "@/lib/api";
 import BottomNav from "@/components/BottomNav";
 import ShareCard from "@/components/ShareCard";
 import FeatureGate from "@/components/FeatureGate";
@@ -18,7 +19,7 @@ export default function PaipanPage() {
   const handleSubmit = async () => {
     setLoading(true); setError(""); setShowTab("overview");
     try {
-      const resp = await fetch("http://localhost:8000/api/full-analysis", {
+      const resp = await fetch(`${getApiUrl()}/api/full-analysis`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });

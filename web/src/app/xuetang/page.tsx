@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { getApiUrl } from "@/lib/api";
 import BottomNav from "@/components/BottomNav";
 import { checkAnswer, askMentor } from "@/lib/api";
 import { Loader2, BookOpen, ChevronRight, Lock, CheckCircle, ArrowLeft, Swords, Star, BookX, Trash2 } from "lucide-react";
@@ -111,7 +112,7 @@ export default function XuetangPage() {
 
   const loadChapters = async () => {
     try {
-      const resp = await fetch("http://localhost:8000/api/xuetang");
+      const resp = await fetch(`${getApiUrl()}/api/xuetang`);
       const data = await resp.json();
       setChapters(data.chapters || []);
     } catch (e) { console.error(e); }
@@ -121,7 +122,7 @@ export default function XuetangPage() {
   const loadChapter = async (chId: string) => {
     setLoading(true);
     try {
-      const resp = await fetch(`http://localhost:8000/api/xuetang/${chId}`);
+      const resp = await fetch(`${getApiUrl()}/api/xuetang/${chId}`);
       const data = await resp.json();
       setChapterDetail(data);
       setQuizMode(false);

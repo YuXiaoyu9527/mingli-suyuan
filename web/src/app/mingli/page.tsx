@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { getApiUrl } from "@/lib/api";
 import BottomNav from "@/components/BottomNav";
 import ShareCard from "@/components/ShareCard";
 import FeatureGate from "@/components/FeatureGate";
@@ -55,7 +56,7 @@ function PaipanPanel() {
   const handle = async () => {
     setLoading(true);
     try {
-      const r=await fetch("http://localhost:8000/api/full-analysis",{
+      const r=await fetch(`${getApiUrl()}/api/full-analysis`,{
         method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(form)});
       setResult(await r.json()); setTab("overview");
     }catch(e){}
@@ -208,7 +209,7 @@ function HehunPanel() {
   const go=async()=>{
     setLoad(true);
     try{
-      const resp=await fetch("http://localhost:8000/api/hehun",{
+      const resp=await fetch(`${getApiUrl()}/api/hehun`,{
         method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({m_year:m.year,m_month:m.month,m_day:m.day,m_hour:m.hour,
                              f_year:f.year,f_month:f.month,f_day:f.day,f_hour:f.hour})});
@@ -288,7 +289,7 @@ function LiunianPanel() {
   const go=async()=>{
     setLoad(true);
     try{
-      const resp=await fetch("http://localhost:8000/api/liunian",{
+      const resp=await fetch(`${getApiUrl()}/api/liunian`,{
         method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(form)});
       setR(await resp.json());
     }catch(e){} setLoad(false);
