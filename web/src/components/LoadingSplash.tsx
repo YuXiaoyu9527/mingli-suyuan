@@ -14,7 +14,7 @@ export default function LoadingSplash({ message = "推演中..." }: { message?: 
 
   return (
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center
-                    bg-dao-paper anim-fade">
+                    bg-bg anim-fade">
       {/* 八卦环绕 */}
       <div className="relative w-32 h-32 mb-8">
         {/* 太极图 */}
@@ -28,7 +28,7 @@ export default function LoadingSplash({ message = "推演中..." }: { message?: 
           const y = Math.sin(angle) * r;
           return (
             <span key={i}
-              className="absolute text-dao-gold bagua-symbol"
+              className="absolute text-gold bagua-symbol"
               style={{
                 left: `calc(50% + ${x}px)`,
                 top: `calc(50% + ${y}px)`,
@@ -44,11 +44,11 @@ export default function LoadingSplash({ message = "推演中..." }: { message?: 
       </div>
 
       {/* 标题 */}
-      <h1 className="text-2xl font-[family-name:var(--font-display)] text-dao-red
+      <h1 className="text-2xl font-[family-name:var(--font-display)] text-accent
                      tracking-[0.2em] mb-2 anim-enter">
         命 理 溯 源
       </h1>
-      <p className="text-xs text-dao-aged tracking-[0.3em] anim-fade">
+      <p className="text-xs text-text-secondary tracking-[0.3em] anim-fade">
         {message}
       </p>
     </div>

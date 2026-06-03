@@ -45,18 +45,18 @@ export default function ShareCard({
       {/* 分享卡片视觉（截图用） */}
       <div className="dao-card text-center py-6 space-y-3" id="share-card">
         {/* 标题 */}
-        <p className="text-[10px] text-dao-aged tracking-[0.2em]">道 藏 秘 卷</p>
+        <p className="text-[10px] text-text-secondary tracking-[0.2em]">道 藏 秘 卷</p>
 
         {/* 八字展示 */}
         <div className="flex justify-center gap-3">
           {["年", "月", "日", "时"].map((label, i) => (
             <div key={label}>
-              <p className="text-[9px] text-dao-aged mb-1">{label}</p>
+              <p className="text-[9px] text-text-secondary mb-1">{label}</p>
               <div className="pillar-block min-w-[48px] py-2">
-                <p className="text-sm font-[family-name:var(--font-display)] text-dao-ink">
+                <p className="text-sm font-[family-name:var(--font-display)] text-text">
                   {ganzhi[i]?.[0]}
                 </p>
-                <p className="text-sm font-[family-name:var(--font-display)] text-dao-red">
+                <p className="text-sm font-[family-name:var(--font-display)] text-accent">
                   {ganzhi[i]?.[1]}
                 </p>
               </div>
@@ -66,20 +66,20 @@ export default function ShareCard({
 
         {/* 日主 */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5
-                       bg-dao-red/5 rounded-full border border-dao-red/20">
-          <span className="text-xs text-dao-aged">日主</span>
-          <span className="text-lg font-[family-name:var(--font-display)] text-dao-red">
+                       bg-accent/5 rounded-full border border-accent/20">
+          <span className="text-xs text-text-secondary">日主</span>
+          <span className="text-lg font-[family-name:var(--font-display)] text-accent">
             {rizhu}
           </span>
-          <span className="text-xs text-dao-aged-light">({rizhuWuxing})</span>
+          <span className="text-xs text-text-tertiary">({rizhuWuxing})</span>
         </div>
 
         {/* 纳音 */}
-        <p className="text-[11px] text-dao-aged-light">纳音：{nayin}</p>
-        <p className="text-[10px] text-dao-aged-light">{lunarDate}</p>
+        <p className="text-[11px] text-text-tertiary">纳音：{nayin}</p>
+        <p className="text-[10px] text-text-tertiary">{lunarDate}</p>
 
         {/* 水印 */}
-        <p className="text-[9px] text-dao-gold/50 tracking-[0.3em]">
+        <p className="text-[9px] text-gold/50 tracking-[0.3em]">
           命 理 溯 源
         </p>
       </div>
@@ -87,8 +87,8 @@ export default function ShareCard({
       {/* 分享按钮 */}
       <button
         onClick={handleShare}
-        className="mt-4 w-full py-2.5 bg-dao-paper-dark border border-dao-paper-darker
-                   rounded-lg text-xs text-dao-ink-light tap-active flex items-center justify-center gap-1.5"
+        className="mt-4 w-full py-2.5 bg-bg-subtle border border-border
+                   rounded-lg text-xs text-text tap-active flex items-center justify-center gap-1.5"
       >
         📤 分享我的八字
       </button>

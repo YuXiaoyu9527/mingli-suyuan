@@ -42,15 +42,15 @@ export default function FeatureGate({
 
       {/* 解锁提示 */}
       <div className="absolute inset-0 flex flex-col items-center justify-center
-                      bg-dao-paper/60 backdrop-blur-[2px] rounded-lg">
-        <Crown size={24} className="text-dao-gold mb-2" />
-        <p className="text-xs text-dao-ink-light font-medium mb-1">
+                      bg-bg/60 backdrop-blur-[2px] rounded-lg">
+        <Crown size={24} className="text-gold mb-2" />
+        <p className="text-xs text-text font-medium mb-1">
           解锁{feature}
         </p>
-        <p className="text-[11px] text-dao-aged mb-3">
+        <p className="text-[11px] text-text-secondary mb-3">
           古籍溯源 · 命理详解 · 深度学习
         </p>
-        <button className="px-4 py-1.5 bg-dao-gold text-white text-xs rounded-full
+        <button className="px-4 py-1.5 bg-gold text-white text-xs rounded-full
                            font-medium tap-active">
           ¥9.9/月 开通
         </button>

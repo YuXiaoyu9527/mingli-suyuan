@@ -38,10 +38,10 @@ export default function PaipanPage() {
   return (
     <div className="flex flex-col min-h-dvh pb-20">
       <header className="px-5 pt-10 pb-4">
-        <h1 className="text-2xl text-dao-ink font-[family-name:var(--font-display)] tracking-wider">
+        <h1 className="text-2xl text-text font-[family-name:var(--font-display)] tracking-wider">
           八字排盘
         </h1>
-        <p className="text-dao-aged text-sm mt-1">lunar-python引擎 · 真太阳时 · 格局+用神</p>
+        <p className="text-text-secondary text-sm mt-1">lunar-python引擎 · 真太阳时 · 格局+用神</p>
       </header>
 
       <div className="px-5 flex-1 space-y-4">
@@ -49,34 +49,34 @@ export default function PaipanPage() {
         <div className="dao-card space-y-3">
           <div className="flex gap-2">
             <input type="number" value={form.year} onChange={e=>update("year",+e.target.value)}
-              className="flex-1 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-3 py-2.5
-                         text-dao-ink text-sm focus:outline-none focus:border-dao-gold" placeholder="年"/>
+              className="flex-1 bg-bg-subtle border border-border rounded-lg px-3 py-2.5
+                         text-text text-sm focus:outline-none focus:border-gold" placeholder="年"/>
             <input type="number" value={form.month} onChange={e=>update("month",+e.target.value)} min={1} max={12}
-              className="w-14 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-2 py-2.5
-                         text-dao-ink text-sm text-center focus:outline-none focus:border-dao-gold" placeholder="月"/>
+              className="w-14 bg-bg-subtle border border-border rounded-lg px-2 py-2.5
+                         text-text text-sm text-center focus:outline-none focus:border-gold" placeholder="月"/>
             <input type="number" value={form.day} onChange={e=>update("day",+e.target.value)} min={1} max={31}
-              className="w-14 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-2 py-2.5
-                         text-dao-ink text-sm text-center focus:outline-none focus:border-dao-gold" placeholder="日"/>
+              className="w-14 bg-bg-subtle border border-border rounded-lg px-2 py-2.5
+                         text-text text-sm text-center focus:outline-none focus:border-gold" placeholder="日"/>
             <input type="number" value={form.hour} onChange={e=>update("hour",+e.target.value)} min={0} max={23}
-              className="w-14 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-2 py-2.5
-                         text-dao-ink text-sm text-center focus:outline-none focus:border-dao-gold" placeholder="时"/>
+              className="w-14 bg-bg-subtle border border-border rounded-lg px-2 py-2.5
+                         text-text text-sm text-center focus:outline-none focus:border-gold" placeholder="时"/>
             <select value={form.gender} onChange={e=>update("gender",e.target.value)}
-              className="w-14 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-1 py-2.5
-                         text-dao-ink text-sm focus:outline-none">
+              className="w-14 bg-bg-subtle border border-border rounded-lg px-1 py-2.5
+                         text-text text-sm focus:outline-none">
               <option>男</option><option>女</option>
             </select>
           </div>
           <div className="flex gap-2">
             <input type="text" value={form.city} onChange={e=>update("city",e.target.value)}
               placeholder="出生城市（可选，用于真太阳时）"
-              className="flex-1 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-3 py-2
-                         text-dao-ink text-xs focus:outline-none focus:border-dao-gold"/>
+              className="flex-1 bg-bg-subtle border border-border rounded-lg px-3 py-2
+                         text-text text-xs focus:outline-none focus:border-gold"/>
             <button onClick={handleSubmit} disabled={loading}
-              className="bg-dao-red text-white px-5 rounded-lg text-sm font-medium tap-active flex items-center gap-1.5">
+              className="bg-accent text-white px-5 rounded-lg text-sm font-medium tap-active flex items-center gap-1.5">
               {loading ? <Loader2 size={16} className="animate-spin"/> : "排盘"}
             </button>
           </div>
-          {error && <p className="text-xs text-dao-red text-center">{error}</p>}
+          {error && <p className="text-xs text-accent text-center">{error}</p>}
         </div>
 
         {/* 结果 */}
@@ -84,14 +84,14 @@ export default function PaipanPage() {
           <div className="space-y-4 anim-enter">
             {/* 日期 + 八字总览 */}
             <div className="text-center py-6 dao-card">
-              <p className="text-[11px] text-dao-aged tracking-wider">
+              <p className="text-[11px] text-text-secondary tracking-wider">
                 {result.paipan.solar_date?.split(" ")[0]}
               </p>
-              <p className="text-base text-dao-ink font-[family-name:var(--font-display)] mt-0.5">
+              <p className="text-base text-text font-[family-name:var(--font-display)] mt-0.5">
                 农历{result.paipan.lunar_date}
               </p>
               {result.true_solar && (
-                <p className="text-[10px] text-dao-gold mt-0.5">
+                <p className="text-[10px] text-gold mt-0.5">
                   真太阳时：{result.true_solar.corrected} ({result.true_solar.offset}分)
                 </p>
               )}
@@ -103,11 +103,11 @@ export default function PaipanPage() {
                   const gz=p[pos].ganzhi;
                   const isDay=pos==="day";
                   return (
-                    <div key={pos} className={`${isDay?"ring-2 ring-dao-red/20":""} bg-dao-paper-dark/50 rounded-lg py-4`}>
-                      <p className="text-[10px] text-dao-aged mb-1">{labels[i]}</p>
-                      <p className="text-xl font-[family-name:var(--font-display)] text-dao-ink leading-tight">{gz[0]}</p>
-                      <p className="text-xl font-[family-name:var(--font-display)] text-dao-red leading-tight">{gz[1]}</p>
-                      <p className="text-[9px] text-dao-aged-light mt-1">{p[pos].nayin}</p>
+                    <div key={pos} className={`${isDay?"ring-2 ring-dao-red/20":""} bg-bg-subtle/50 rounded-lg py-4`}>
+                      <p className="text-[10px] text-text-secondary mb-1">{labels[i]}</p>
+                      <p className="text-xl font-[family-name:var(--font-display)] text-text leading-tight">{gz[0]}</p>
+                      <p className="text-xl font-[family-name:var(--font-display)] text-accent leading-tight">{gz[1]}</p>
+                      <p className="text-[9px] text-text-tertiary mt-1">{p[pos].nayin}</p>
                     </div>
                   );
                 })}
@@ -115,13 +115,13 @@ export default function PaipanPage() {
 
               {/* 摘要行 */}
               <div className="flex items-center justify-center gap-3 mt-4 text-sm flex-wrap">
-                <span className="text-dao-aged">日主</span>
-                <span className="text-dao-red font-bold text-lg font-[family-name:var(--font-display)]">{result.paipan.rizhu}</span>
-                <span className="text-dao-aged-light">({result.paipan.rizhu_wuxing})</span>
-                <span className="text-[10px] text-dao-gold px-2 py-0.5 bg-dao-gold/10 rounded-full">
+                <span className="text-text-secondary">日主</span>
+                <span className="text-accent font-bold text-lg font-[family-name:var(--font-display)]">{result.paipan.rizhu}</span>
+                <span className="text-text-tertiary">({result.paipan.rizhu_wuxing})</span>
+                <span className="text-[10px] text-gold px-2 py-0.5 bg-gold/10 rounded-full">
                   {g?.pattern || ""}
                 </span>
-                <span className="text-[10px] text-dao-indigo-light px-2 py-0.5 bg-dao-indigo/10 rounded-full">
+                <span className="text-[10px] text-text-secondary px-2 py-0.5 bg-dao-indigo/10 rounded-full">
                   {y?.wangshuai || ""}
                 </span>
               </div>
@@ -129,20 +129,20 @@ export default function PaipanPage() {
               {/* 用神 */}
               {y && (
                 <div className="flex items-center justify-center gap-2 mt-3 text-xs">
-                  <span className="text-dao-aged">用神：</span>
+                  <span className="text-text-secondary">用神：</span>
                   {(y.recommended||[]).map((wx:string)=>(
-                    <span key={wx} className="text-dao-jade font-medium">{wx}</span>
+                    <span key={wx} className="text-green font-medium">{wx}</span>
                   ))}
-                  <span className="text-dao-aged-light ml-1">忌：</span>
+                  <span className="text-text-tertiary ml-1">忌：</span>
                   {(y.jishen||[]).map((wx:string)=>(
-                    <span key={wx} className="text-dao-red/70">{wx}</span>
+                    <span key={wx} className="text-accent/70">{wx}</span>
                   ))}
                 </div>
               )}
             </div>
 
             {/* Tab切换: 概览/详情/AI解读 */}
-            <div className="flex gap-1 bg-dao-paper-dark rounded-lg p-1">
+            <div className="flex gap-1 bg-bg-subtle rounded-lg p-1">
               {[
                 {id:"overview" as const,label:"概览"},
                 {id:"detail" as const,label:"详情"},
@@ -150,7 +150,7 @@ export default function PaipanPage() {
               ].map(t=>(
                 <button key={t.id} onClick={()=>setShowTab(t.id)}
                   className={`flex-1 py-1.5 rounded-md text-xs transition-colors
-                    ${showTab===t.id?"bg-dao-paper text-dao-ink font-bold":"text-dao-aged"}`}>
+                    ${showTab===t.id?"bg-bg text-text font-bold":"text-text-secondary"}`}>
                   {t.label}
                 </button>
               ))}
@@ -162,34 +162,34 @@ export default function PaipanPage() {
                 {/* 格局分析 */}
                 {g && (
                   <div className="dao-card">
-                    <h3 className="text-xs font-bold text-dao-ink mb-2">格局</h3>
-                    <p className="text-sm text-dao-ink-light leading-relaxed">{g.analysis}</p>
-                    {g.conditions?.length>0 && <p className="text-[11px] text-dao-jade mt-1">✅ {g.conditions.join("；")}</p>}
-                    {g.reasons?.length>0 && <p className="text-[11px] text-dao-red mt-1">⚠ {g.reasons.join("；")}</p>}
+                    <h3 className="text-xs font-bold text-text mb-2">格局</h3>
+                    <p className="text-sm text-text leading-relaxed">{g.analysis}</p>
+                    {g.conditions?.length>0 && <p className="text-[11px] text-green mt-1">✅ {g.conditions.join("；")}</p>}
+                    {g.reasons?.length>0 && <p className="text-[11px] text-accent mt-1">⚠ {g.reasons.join("；")}</p>}
                   </div>
                 )}
                 {/* 用神分析 */}
                 {y && (
                   <div className="dao-card">
-                    <h3 className="text-xs font-bold text-dao-ink mb-2">用神</h3>
-                    <p className="text-sm text-dao-ink-light leading-relaxed">{y.analysis}</p>
+                    <h3 className="text-xs font-bold text-text mb-2">用神</h3>
+                    <p className="text-sm text-text leading-relaxed">{y.analysis}</p>
                   </div>
                 )}
                 {/* 五行条 */}
                 <div className="dao-card">
-                  <h3 className="text-xs font-bold text-dao-ink mb-3">五行分布</h3>
+                  <h3 className="text-xs font-bold text-text mb-3">五行分布</h3>
                   {Object.entries(result.paipan.wuxing_scores as Record<string,number>).map(([wx,score])=>{
                     const colors:Record<string,string>={金:"bg-yellow-500",木:"bg-green-600",水:"bg-blue-500",火:"bg-red-500",土:"bg-amber-600"};
                     const total=Math.max(1,Object.values(result.paipan.wuxing_scores as number[]).reduce((a,b)=>a+b,0));
                     const pct=Math.round((score/total)*100);
                     return (
                       <div key={wx} className="flex items-center gap-2 mb-1.5">
-                        <span className="text-[11px] text-dao-aged w-4">{wx}</span>
-                        <div className="flex-1 h-3 bg-dao-paper-dark rounded-full overflow-hidden">
+                        <span className="text-[11px] text-text-secondary w-4">{wx}</span>
+                        <div className="flex-1 h-3 bg-bg-subtle rounded-full overflow-hidden">
                           <div className={`h-full ${colors[wx]||"bg-gray-400"} rounded-full transition-all`}
                             style={{width:`${pct}%`}}/>
                         </div>
-                        <span className="text-[11px] text-dao-aged-light w-8 text-right">{score}</span>
+                        <span className="text-[11px] text-text-tertiary w-8 text-right">{score}</span>
                       </div>
                     );
                   })}
@@ -205,19 +205,19 @@ export default function PaipanPage() {
                   const d=p[pos];
                   return (
                     <div key={pos} className="dao-card py-3 px-4">
-                      <p className="font-bold text-dao-ink mb-1">{label} · {d.ganzhi} · {d.nayin}</p>
-                      <p className="text-dao-aged-light">天干{d.gan}({d.gan_wuxing}) 地支{d.zhi}({d.zhi_wuxing})</p>
-                      <p className="text-dao-aged-light">十神: {pos==="day"?"日主":d.shishen} · 长生: {d.changsheng}</p>
-                      <p className="text-dao-aged-light">藏干: {d.canggan?.map((c:any)=>`${c.gan}(${c.score})`).join(" ")}</p>
+                      <p className="font-bold text-text mb-1">{label} · {d.ganzhi} · {d.nayin}</p>
+                      <p className="text-text-tertiary">天干{d.gan}({d.gan_wuxing}) 地支{d.zhi}({d.zhi_wuxing})</p>
+                      <p className="text-text-tertiary">十神: {pos==="day"?"日主":d.shishen} · 长生: {d.changsheng}</p>
+                      <p className="text-text-tertiary">藏干: {d.canggan?.map((c:any)=>`${c.gan}(${c.score})`).join(" ")}</p>
                     </div>
                   );
                 })}
                 {result.paipan.zhi_relations && (
                   <div className="dao-card py-3 px-4">
-                    <p className="font-bold text-dao-ink mb-1">地支关系</p>
+                    <p className="font-bold text-text mb-1">地支关系</p>
                     {Object.entries(result.paipan.zhi_relations as Record<string,string[]>).map(([rel,items])=>{
                       if(!(items as string[]).length) return null;
-                      return <p key={rel} className="text-dao-aged-light">{rel}: {(items as string[]).join("、")}</p>;
+                      return <p key={rel} className="text-text-tertiary">{rel}: {(items as string[]).join("、")}</p>;
                     })}
                   </div>
                 )}
@@ -230,16 +230,16 @@ export default function PaipanPage() {
                 {result.interpretation ? (
                   <FeatureGate feature="AI简批（含古籍原文引用）">
                     <div className="classical-quote">
-                      <p className="text-xs text-dao-aged mb-1">AI简批</p>
-                      <p className="text-sm text-dao-ink-light leading-relaxed whitespace-pre-line">
+                      <p className="text-xs text-text-secondary mb-1">AI简批</p>
+                      <p className="text-sm text-text leading-relaxed whitespace-pre-line">
                         {result.interpretation}
                       </p>
                     </div>
                   </FeatureGate>
                 ) : (
                   <div className="dao-card text-center py-8">
-                    <p className="text-dao-aged text-sm">AI解读需要配置 DeepSeek API Key</p>
-                    <p className="text-[11px] text-dao-aged-light mt-1">在项目根目录创建 .env 文件</p>
+                    <p className="text-text-secondary text-sm">AI解读需要配置 DeepSeek API Key</p>
+                    <p className="text-[11px] text-text-tertiary mt-1">在项目根目录创建 .env 文件</p>
                   </div>
                 )}
               </div>
@@ -254,7 +254,7 @@ export default function PaipanPage() {
               lunarDate={result.paipan.lunar_date}
             />
 
-            <p className="text-center text-[10px] text-dao-aged-light pb-2">
+            <p className="text-center text-[10px] text-text-tertiary pb-2">
               本软件为易经学术工具，内容仅供传统文化研究与民俗参考，不等于专业测评，不代表任何价值评判，无任何现实指导意义
             </p>
           </div>

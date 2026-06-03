@@ -38,13 +38,13 @@ export default function DailyWisdom() {
 
   return (
     <div className="text-center px-8 py-6">
-      <p className="text-xs text-dao-aged tracking-[0.15em] mb-3">
+      <p className="text-xs text-text-secondary tracking-[0.15em] mb-3">
         今 日 一 签
       </p>
-      <p className="text-base text-dao-ink-light leading-relaxed font-[family-name:var(--font-body)] italic">
+      <p className="text-base text-text leading-relaxed font-[family-name:var(--font-body)] italic">
         「{wisdom.text}」
       </p>
-      <p className="text-[11px] text-dao-aged-light mt-3 tracking-wider">
+      <p className="text-[11px] text-text-tertiary mt-3 tracking-wider">
         {wisdom.source}
       </p>
     </div>

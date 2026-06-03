@@ -17,22 +17,17 @@ export default function BottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px]
-                    bg-dao-paper/97 backdrop-blur-xl safe-bottom z-50"
-         style={{ borderTop: "1px solid var(--color-dao-paper-darker)" }}>
-      <div className="flex items-center justify-around h-[64px] px-0.5">
+                    bg-white/95 backdrop-blur-xl safe-bottom z-50 border-t border-border">
+      <div className="flex items-center justify-around h-[56px]">
         {tabs.map((tab) => {
           const active = isActive(tab.id);
           return (
             <Link key={tab.id} href={tab.href}
               className={`flex flex-col items-center justify-center gap-0.5
-                         min-w-[56px] py-1 rounded-lg tap-active
-                         transition-all duration-200 relative
-                         ${active ? "text-dao-red" : "text-dao-aged hover:text-dao-ink-light"}`}>
-              <span className={`text-lg transition-all duration-300
-                ${active ? "scale-110 opacity-100" : "opacity-40"}`}>{tab.icon}</span>
-              <span className={`text-[10px] tracking-widest transition-all duration-200
-                ${active ? "font-bold" : "font-normal"}`}>{tab.label}</span>
-              {active && <span className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-[2px] bg-dao-gold rounded-full"/>}
+                         min-w-[56px] py-1 rounded-lg tap-active transition-colors
+                         ${active ? "text-accent" : "text-text-tertiary"}`}>
+              <span className={`text-lg ${active ? "opacity-100" : "opacity-50"}`}>{tab.icon}</span>
+              <span className={`text-[10px] ${active ? "font-semibold" : "font-normal"}`}>{tab.label}</span>
             </Link>
           );
         })}

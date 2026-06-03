@@ -210,23 +210,23 @@ export default function XuetangPage() {
         <header className="px-5 pt-10 pb-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl text-dao-ink font-[family-name:var(--font-display)] tracking-wider"
+              <h1 className="text-2xl text-text font-[family-name:var(--font-display)] tracking-wider"
                 onClick={handleDevClick}>
                 命理学堂
-                {devMode && <span className="text-xs text-dao-gold ml-2 font-normal">[已解锁]</span>}
+                {devMode && <span className="text-xs text-gold ml-2 font-normal">[已解锁]</span>}
               </h1>
-              <p className="text-dao-aged text-sm mt-1">
+              <p className="text-text-secondary text-sm mt-1">
                 从零学八字 · 教材+测验 · 通关解锁
-                {devMode && <span className="text-dao-gold ml-1">· 开发者模式</span>}
+                {devMode && <span className="text-gold ml-1">· 开发者模式</span>}
               </p>
             </div>
             {wrongBook.length > 0 && (
               <button onClick={() => setShowWrongBook(!showWrongBook)}
-                className="relative flex items-center gap-1 px-3 py-1.5 bg-dao-red/10 text-dao-red
-                           rounded-full text-xs font-medium tap-active border border-dao-red/20">
+                className="relative flex items-center gap-1 px-3 py-1.5 bg-accent/10 text-accent
+                           rounded-full text-xs font-medium tap-active border border-accent/20">
                 <BookX size={14} />
                 错题集
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-dao-red text-white text-[10px]
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent text-white text-[10px]
                                rounded-full flex items-center justify-center">{wrongBook.length}</span>
               </button>
             )}
@@ -236,7 +236,7 @@ export default function XuetangPage() {
         <div className="px-5 flex-1 space-y-3">
           {loading && (
             <div className="flex justify-center py-12">
-              <Loader2 size={28} className="animate-spin text-dao-gold" />
+              <Loader2 size={28} className="animate-spin text-gold" />
             </div>
           )}
 
@@ -244,44 +244,44 @@ export default function XuetangPage() {
           {showWrongBook && (
             <div className="dao-card mb-3 anim-enter">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-bold text-dao-ink flex items-center gap-2">
-                  <BookX size={16} className="text-dao-red" /> 我的错题集
+                <h3 className="text-sm font-bold text-text flex items-center gap-2">
+                  <BookX size={16} className="text-accent" /> 我的错题集
                 </h3>
                 <button onClick={() => { saveWrongBook([]); }}
-                  className="text-[10px] text-dao-aged tap-active flex items-center gap-1">
+                  className="text-[10px] text-text-secondary tap-active flex items-center gap-1">
                   <Trash2 size={11} /> 清空
                 </button>
               </div>
 
               {wrongBook.length === 0 ? (
-                <p className="text-xs text-dao-aged text-center py-4">暂无错题，继续保持！</p>
+                <p className="text-xs text-text-secondary text-center py-4">暂无错题，继续保持！</p>
               ) : (
                 <div className="space-y-2 max-h-[50vh] overflow-y-auto">
                   {wrongBook.map((w, i) => (
-                    <div key={i} className="border border-dao-paper-darker rounded-lg p-3">
+                    <div key={i} className="border border-border rounded-lg p-3">
                       <div className="flex items-start justify-between mb-2">
-                        <span className="text-xs font-bold text-dao-ink">{w.title}</span>
-                        <span className="text-[10px] text-dao-aged-light">{w.chapterTitle}</span>
+                        <span className="text-xs font-bold text-text">{w.title}</span>
+                        <span className="text-[10px] text-text-tertiary">{w.chapterTitle}</span>
                       </div>
                       {/* 情景还原 */}
-                      <p className="text-[11px] text-dao-ink-light leading-relaxed mb-2 whitespace-pre-line">{w.story}</p>
+                      <p className="text-[11px] text-text leading-relaxed mb-2 whitespace-pre-line">{w.story}</p>
                       {/* 原问题 */}
-                      <p className="text-[11px] text-dao-ink font-medium mb-2">❓ {w.question}</p>
+                      <p className="text-[11px] text-text font-medium mb-2">❓ {w.question}</p>
                       {/* 答题对比 */}
                       <div className="grid grid-cols-2 gap-2 mb-2 text-[10px]">
-                        <div className="bg-dao-red/5 rounded p-1.5 border border-dao-red/20">
-                          <span className="text-dao-red">你的回答</span>
-                          <p className="text-dao-red font-medium mt-0.5">{w.userAnswer}</p>
+                        <div className="bg-accent/5 rounded p-1.5 border border-accent/20">
+                          <span className="text-accent">你的回答</span>
+                          <p className="text-accent font-medium mt-0.5">{w.userAnswer}</p>
                         </div>
-                        <div className="bg-dao-jade/5 rounded p-1.5 border border-dao-jade/20">
-                          <span className="text-dao-jade">正确答案</span>
-                          <p className="text-dao-jade font-medium mt-0.5">{w.correctAnswer}</p>
+                        <div className="bg-green/5 rounded p-1.5 border border-green/20">
+                          <span className="text-green">正确答案</span>
+                          <p className="text-green font-medium mt-0.5">{w.correctAnswer}</p>
                         </div>
                       </div>
                       {/* 问题解析 */}
                       {w.explanation && (
-                        <div className="bg-dao-paper-dark/50 rounded p-2 text-[10px] text-dao-ink-light leading-relaxed border-l-2 border-dao-gold">
-                          <span className="text-dao-gold font-medium">解析：</span>
+                        <div className="bg-bg-subtle/50 rounded p-2 text-[10px] text-text leading-relaxed border-l-2 border-gold">
+                          <span className="text-gold font-medium">解析：</span>
                           {w.explanation}
                         </div>
                       )}
@@ -294,11 +294,11 @@ export default function XuetangPage() {
                   setShowWrongBook(false);
                   startWrongQuiz();
                 }}
-                  className="flex-1 py-2 bg-dao-red text-white rounded-lg text-xs font-medium tap-active">
+                  className="flex-1 py-2 bg-accent text-white rounded-lg text-xs font-medium tap-active">
                   开始重做错题（{wrongBook.length}题）
                 </button>
                 <button onClick={() => setShowWrongBook(false)}
-                  className="px-4 py-2 bg-dao-paper-dark rounded-lg text-xs tap-active">
+                  className="px-4 py-2 bg-bg-subtle rounded-lg text-xs tap-active">
                   收起
                 </button>
               </div>
@@ -311,30 +311,30 @@ export default function XuetangPage() {
               <button key={ch.id} disabled={!unlocked}
                 onClick={() => loadChapter(ch.id)}
                 className={`w-full text-left dao-card tap-active transition-all
-                  ${!unlocked ? "opacity-50" : "hover:border-dao-gold/50"}`}>
+                  ${!unlocked ? "opacity-50" : "hover:border-gold/50"}`}>
                 <div className="flex items-center gap-4">
                   {/* 图标 */}
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0
-                    ${passed[ch.id] ? "bg-dao-jade/20 text-dao-jade" :
-                      unlocked ? "bg-dao-gold/10 text-dao-gold" : "bg-dao-paper-dark text-dao-aged"}`}>
+                    ${passed[ch.id] ? "bg-green/20 text-green" :
+                      unlocked ? "bg-gold/10 text-gold" : "bg-bg-subtle text-text-secondary"}`}>
                     {passed[ch.id] ? <CheckCircle size={22} /> :
                      unlocked ? <BookOpen size={22} /> : <Lock size={22} />}
                   </div>
                   {/* 信息 */}
                   <div className="flex-1">
-                    <h3 className="text-base font-bold text-dao-ink">{ch.title}</h3>
-                    <p className="text-xs text-dao-aged mt-0.5">{ch.subtitle}</p>
-                    <div className="flex items-center gap-3 mt-1.5 text-[11px] text-dao-aged-light">
+                    <h3 className="text-base font-bold text-text">{ch.title}</h3>
+                    <p className="text-xs text-text-secondary mt-0.5">{ch.subtitle}</p>
+                    <div className="flex items-center gap-3 mt-1.5 text-[11px] text-text-tertiary">
                       <span>{ch.question_count}道情景题</span>
                       <span>正确{ch.pass_score}题即通关</span>
                     </div>
                   </div>
-                  <ChevronRight size={18} className="text-dao-aged" />
+                  <ChevronRight size={18} className="text-text-secondary" />
                 </div>
                 {/* 进度条 */}
                 {passed[ch.id] && (
-                  <div className="mt-3 h-1 bg-dao-jade/20 rounded-full overflow-hidden">
-                    <div className="h-full bg-dao-jade w-full rounded-full" />
+                  <div className="mt-3 h-1 bg-green/20 rounded-full overflow-hidden">
+                    <div className="h-full bg-green w-full rounded-full" />
                   </div>
                 )}
               </button>
@@ -356,29 +356,29 @@ export default function XuetangPage() {
       <header className="px-5 pt-6 pb-3">
         <div className="flex items-center gap-3">
           <button onClick={() => { setChapterDetail(null); setWrongQuizMode(false); }}
-            className="text-dao-aged tap-active"><ArrowLeft size={20} /></button>
+            className="text-text-secondary tap-active"><ArrowLeft size={20} /></button>
           <div className="flex-1">
-            <h1 className="text-lg font-[family-name:var(--font-display)] text-dao-ink">
+            <h1 className="text-lg font-[family-name:var(--font-display)] text-text">
               {chapterDetail.title}
             </h1>
           </div>
           <button onClick={() => setQuizMode(!quizMode)}
             className={`text-xs px-3 py-1.5 rounded-full tap-active border
-              ${quizMode ? "bg-dao-red text-white border-dao-red" : "bg-dao-paper-dark text-dao-ink-light border-dao-paper-darker"}`}>
+              ${quizMode ? "bg-accent text-white border-accent" : "bg-bg-subtle text-text border-border"}`}>
             {quizMode ? "← 回教材" : "开始测验 →"}
           </button>
           {wrongBook.length > 0 && (
             <button onClick={() => { setChapterDetail(null); setShowWrongBook(true); }}
-              className="relative text-xs px-2 py-1 bg-dao-red/10 text-dao-red rounded-full tap-active">
+              className="relative text-xs px-2 py-1 bg-accent/10 text-accent rounded-full tap-active">
               <BookX size={13} /> {wrongBook.length}
             </button>
           )}
         </div>
         {/* 总进度 */}
-        <div className="mt-2 flex items-center gap-2 text-[11px] text-dao-aged">
+        <div className="mt-2 flex items-center gap-2 text-[11px] text-text-secondary">
           <span>学习进度：{totalProgress}/{totalChapters}章</span>
-          <div className="flex-1 h-1 bg-dao-paper-dark rounded-full overflow-hidden">
-            <div className="h-full bg-dao-gold rounded-full" style={{width: `${(totalProgress/totalChapters)*100}%`}} />
+          <div className="flex-1 h-1 bg-bg-subtle rounded-full overflow-hidden">
+            <div className="h-full bg-gold rounded-full" style={{width: `${(totalProgress/totalChapters)*100}%`}} />
           </div>
         </div>
       </header>
@@ -389,17 +389,17 @@ export default function XuetangPage() {
           <div className="space-y-4 anim-enter">
             {chapterDetail.content.map((block, i) => {
               if (block.type === "heading") {
-                return <h2 key={i} className="text-lg font-bold text-dao-ink mt-6 mb-2 font-[family-name:var(--font-display)]">{block.text}</h2>;
+                return <h2 key={i} className="text-lg font-bold text-text mt-6 mb-2 font-[family-name:var(--font-display)]">{block.text}</h2>;
               }
               if (block.type === "quote") {
                 return (
                   <div key={i} className="classical-quote text-sm">
                     <p>{block.text}</p>
-                    {block.source && <p className="text-[10px] text-dao-aged mt-2">—— {block.source}</p>}
+                    {block.source && <p className="text-[10px] text-text-secondary mt-2">—— {block.source}</p>}
                   </div>
                 );
               }
-              return <p key={i} className="text-sm text-dao-ink-light leading-relaxed">{block.text}</p>;
+              return <p key={i} className="text-sm text-text leading-relaxed">{block.text}</p>;
             })}
 
             {/* 进入测验按钮 */}
@@ -408,7 +408,7 @@ export default function XuetangPage() {
                 className="btn-dao flex items-center gap-2 mx-auto">
                 <Swords size={16} /> 开始测验（{chapterDetail.questions.length}题）
               </button>
-              <p className="text-[11px] text-dao-aged mt-2">正确{chapterDetail.pass_score}题即可通关</p>
+              <p className="text-[11px] text-text-secondary mt-2">正确{chapterDetail.pass_score}题即可通关</p>
             </div>
           </div>
         ) : quizResult ? (
@@ -417,15 +417,15 @@ export default function XuetangPage() {
             {/* 分数卡片 */}
             <div className="text-center py-8 space-y-4">
               <div className={`w-20 h-20 rounded-full mx-auto flex items-center justify-center
-                ${quizResult.passed ? "bg-dao-jade/20" : "bg-dao-red/10"}`}>
-                <span className={`text-3xl font-bold ${quizResult.passed ? "text-dao-jade" : "text-dao-red"}`}>
+                ${quizResult.passed ? "bg-green/20" : "bg-accent/10"}`}>
+                <span className={`text-3xl font-bold ${quizResult.passed ? "text-green" : "text-accent"}`}>
                   {quizResult.correct}/{quizResult.total}
                 </span>
               </div>
-              <h2 className={`text-xl font-bold ${quizResult.passed ? "text-dao-jade" : "text-dao-red"}`}>
+              <h2 className={`text-xl font-bold ${quizResult.passed ? "text-green" : "text-accent"}`}>
                 {quizResult.passed ? "恭喜通关！" : Object.keys(quizChecked).length < chapterDetail!.questions.length ? "提前退出" : "还需努力"}
               </h2>
-              <p className="text-sm text-dao-aged">
+              <p className="text-sm text-text-secondary">
                 {wrongQuizMode
                   ? `错题重做完成！${quizResult.passed ? "错误都已纠正" : "还有错题需要巩固"}`
                   : quizResult.passed
@@ -438,7 +438,7 @@ export default function XuetangPage() {
 
             {/* 逐题回顾 */}
             <div className="space-y-2">
-              <h3 className="text-sm font-bold text-dao-ink">答题回顾</h3>
+              <h3 className="text-sm font-bold text-text">答题回顾</h3>
               {chapterDetail.questions.map((q, i) => {
                 const isRight = quizChecked[i] === true;
                 const isWrong = quizChecked[i] === false;
@@ -447,22 +447,22 @@ export default function XuetangPage() {
                 return (
                   <div key={i} className={`dao-card py-3 px-4 ${isRight ? "border-l-2 border-l-dao-jade" : isWrong ? "border-l-2 border-l-dao-red" : ""}`}>
                     <div className="flex items-start gap-2">
-                      <span className={`text-xs font-bold mt-0.5 flex-shrink-0 ${isRight ? "text-dao-jade" : isWrong ? "text-dao-red" : "text-dao-aged"}`}>
+                      <span className={`text-xs font-bold mt-0.5 flex-shrink-0 ${isRight ? "text-green" : isWrong ? "text-accent" : "text-text-secondary"}`}>
                         {isRight ? "✓" : isWrong ? "✗" : "○"}
                       </span>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold text-dao-ink">{q.title}</p>
-                        <p className="text-[11px] text-dao-ink-light leading-relaxed mt-1 line-clamp-3">{q.story}</p>
-                        <p className="text-[10px] text-dao-aged mt-1">❓ {q.question}</p>
-                        <p className="text-[11px] text-dao-aged mt-1">你的回答：{userOption}</p>
+                        <p className="text-xs font-bold text-text">{q.title}</p>
+                        <p className="text-[11px] text-text leading-relaxed mt-1 line-clamp-3">{q.story}</p>
+                        <p className="text-[10px] text-text-secondary mt-1">❓ {q.question}</p>
+                        <p className="text-[11px] text-text-secondary mt-1">你的回答：{userOption}</p>
                         {isWrong && quizCorrectText[i] && (
                           <>
-                            <p className="text-[11px] text-dao-jade mt-0.5 font-medium">正确答案：{quizCorrectText[i]}</p>
+                            <p className="text-[11px] text-green mt-0.5 font-medium">正确答案：{quizCorrectText[i]}</p>
                             {(() => {
                               const wb = wrongBook.find(w => w.quizId === q.id);
                               if (wb?.explanation) {
                                 return (
-                                  <p className="text-[10px] text-dao-gold-dark mt-1 leading-relaxed bg-dao-paper-dark/50 rounded p-1.5">
+                                  <p className="text-[10px] text-gold-dark mt-1 leading-relaxed bg-bg-subtle/50 rounded p-1.5">
                                     {wb.explanation}
                                   </p>
                                 );
@@ -483,7 +483,7 @@ export default function XuetangPage() {
                 <button onClick={() => {
                   if (wrongQuizMode) startWrongQuiz();
                   else { setQuizMode(true); setQuizIdx(0); setQuizAnswers({}); setQuizChecked({}); setQuizCorrectText({}); setQuizResult(null); setMentorMsg(""); }
-                }} className="px-4 py-2 bg-dao-red text-white rounded-lg text-sm tap-active">
+                }} className="px-4 py-2 bg-accent text-white rounded-lg text-sm tap-active">
                   {wrongQuizMode ? "再做一遍错题" : "重新测验"}
                 </button>
               )}
@@ -491,7 +491,7 @@ export default function XuetangPage() {
                 if (wrongQuizMode) { setChapterDetail(null); setWrongQuizMode(false); }
                 else { setQuizMode(false); setQuizIdx(0); }
                 setQuizAnswers({}); setQuizChecked({}); setQuizCorrectText({}); setQuizResult(null); setMentorMsg("");
-              }} className="px-4 py-2 bg-dao-paper-dark rounded-lg text-sm tap-active">
+              }} className="px-4 py-2 bg-bg-subtle rounded-lg text-sm tap-active">
                 {wrongQuizMode ? "返回学堂" : "回教材再看一遍"}
               </button>
             </div>
@@ -500,17 +500,17 @@ export default function XuetangPage() {
           // ===== 测验模式 =====
           <div className="space-y-4 anim-enter">
             {/* 进度 */}
-            <div className="flex items-center justify-between text-xs text-dao-aged">
+            <div className="flex items-center justify-between text-xs text-text-secondary">
               <span>第 {quizIdx + 1}/{chapterDetail.questions.length} 题</span>
               <div className="flex gap-1">
                 {chapterDetail.questions.map((_, i) => (
                   <div key={i} className={`w-2 h-2 rounded-full
-                    ${quizChecked[i] === true ? "bg-dao-jade" :
-                      quizChecked[i] === false ? "bg-dao-red" :
-                      quizAnswers[i] !== undefined ? "bg-dao-gold" : "bg-dao-paper-darker"}`} />
+                    ${quizChecked[i] === true ? "bg-green" :
+                      quizChecked[i] === false ? "bg-accent" :
+                      quizAnswers[i] !== undefined ? "bg-gold" : "bg-bg-subtleer"}`} />
                 ))}
               </div>
-              <span className="text-dao-gold">
+              <span className="text-gold">
                 已对 {Object.values(quizChecked).filter(Boolean).length} 题
               </span>
             </div>
@@ -520,26 +520,26 @@ export default function XuetangPage() {
                 {/* 题目 */}
                 <div className="dao-card">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs text-dao-aged">{q.title}</span>
+                    <span className="text-xs text-text-secondary">{q.title}</span>
                     <span className="flex gap-0.5">
-                      {[1,2,3].map(d => <Star key={d} size={10} className={d <= q.difficulty ? "fill-dao-gold text-dao-gold" : "text-dao-paper-darker"} />)}
+                      {[1,2,3].map(d => <Star key={d} size={10} className={d <= q.difficulty ? "fill-dao-gold text-gold" : "text-dao-paper-darker"} />)}
                     </span>
                   </div>
-                  <p className="text-sm text-dao-ink-light leading-relaxed whitespace-pre-line">{q.story}</p>
+                  <p className="text-sm text-text leading-relaxed whitespace-pre-line">{q.story}</p>
                 </div>
 
                 {/* 问题 */}
                 <div className="dao-card" style={{ borderColor: "rgba(201,169,110,0.3)" }}>
-                  <p className="text-sm font-bold text-dao-ink mb-3">❓ {q.question}</p>
+                  <p className="text-sm font-bold text-text mb-3">❓ {q.question}</p>
                   <div className="space-y-2">
                     {q.options.map((opt, i) => {
                       const checked = quizChecked[quizIdx];
                       const isSelected = quizAnswers[quizIdx] === i;
-                      let style = "border-dao-paper-darker";
+                      let style = "border-border";
                       if (checked !== undefined && isSelected) {
-                        style = checked ? "border-dao-jade bg-dao-jade/5" : "border-dao-red bg-dao-red/5";
+                        style = checked ? "border-green bg-green/5" : "border-accent bg-accent/5";
                       } else if (!isSelected) {
-                        style = "border-dao-paper-darker hover:border-dao-gold/30";
+                        style = "border-border hover:border-gold/30";
                       }
 
                       return (
@@ -547,10 +547,10 @@ export default function XuetangPage() {
                           disabled={quizChecked[quizIdx] !== undefined}
                           className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all tap-active ${style}`}>
                           <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border
-                            bg-dao-paper-dark text-dao-ink-light border-dao-paper-darker">
+                            bg-bg-subtle text-text border-border">
                             {opt.label}
                           </span>
-                          <span className="text-sm text-dao-ink text-left">{opt.text}</span>
+                          <span className="text-sm text-text text-left">{opt.text}</span>
                         </button>
                       );
                     })}
@@ -559,8 +559,8 @@ export default function XuetangPage() {
                   {/* 导师提示 */}
                   {mentorMsg && (
                     <div className="mt-3 p-3 bg-dao-indigo/5 border border-dao-indigo/20 rounded-lg">
-                      <p className="text-xs text-dao-aged mb-1">导师提示</p>
-                      <p className="text-sm text-dao-ink-light leading-relaxed">{mentorMsg}</p>
+                      <p className="text-xs text-text-secondary mb-1">导师提示</p>
+                      <p className="text-sm text-text leading-relaxed">{mentorMsg}</p>
                     </div>
                   )}
                 </div>
@@ -569,14 +569,14 @@ export default function XuetangPage() {
                 <div className="flex justify-between">
                   <button onClick={() => { setQuizIdx(Math.max(0, quizIdx - 1)); setMentorMsg(""); }}
                     disabled={quizIdx === 0}
-                    className="text-xs text-dao-indigo tap-active disabled:opacity-30">← 上一题</button>
+                    className="text-xs text-accent tap-active disabled:opacity-30">← 上一题</button>
                   {quizIdx < chapterDetail.questions.length - 1 ? (
                     <button onClick={() => { setQuizIdx(quizIdx + 1); setMentorMsg(""); }}
-                      className="text-xs text-dao-indigo tap-active">下一题 →</button>
+                      className="text-xs text-accent tap-active">下一题 →</button>
                   ) : (
                     <button onClick={finishQuiz}
                       disabled={Object.keys(quizChecked).length < chapterDetail.questions.length}
-                      className="text-xs font-bold text-dao-red tap-active disabled:opacity-30">
+                      className="text-xs font-bold text-accent tap-active disabled:opacity-30">
                       提交测验 →
                     </button>
                   )}
@@ -586,7 +586,7 @@ export default function XuetangPage() {
                 {Object.keys(quizAnswers).length > 0 && !quizResult && (
                   <div className="text-center mt-3">
                     <button onClick={finishQuiz}
-                      className="text-[11px] text-dao-aged-light tap-active hover:text-dao-red transition-colors">
+                      className="text-[11px] text-text-tertiary tap-active hover:text-accent transition-colors">
                       提前退出（已答{Object.keys(quizChecked).length}/{chapterDetail.questions.length}题）
                     </button>
                   </div>
@@ -594,8 +594,8 @@ export default function XuetangPage() {
 
                 {/* 错题即时提示 */}
                 {quizChecked[quizIdx] === false && mentorMsg && (
-                  <div className="mt-2 p-3 bg-dao-red/5 border border-dao-red/20 rounded-lg text-xs text-dao-ink-light leading-relaxed">
-                    <p className="text-dao-red font-bold mb-1">回答错误，正确答案解析：</p>
+                  <div className="mt-2 p-3 bg-accent/5 border border-accent/20 rounded-lg text-xs text-text leading-relaxed">
+                    <p className="text-accent font-bold mb-1">回答错误，正确答案解析：</p>
                     {mentorMsg}
                   </div>
                 )}
