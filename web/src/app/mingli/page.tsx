@@ -67,17 +67,17 @@ function PaipanPanel() {
   return (
     <div className="space-y-4 anim-enter">
       <div className="dao-card space-y-3">
-        <div className="flex gap-2">
+        <div className="grid grid-cols-5 gap-1.5">
           <input type="number" value={form.year} onChange={e=>update("year",+e.target.value)}
-            className="flex-1 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-2 py-2.5 text-dao-ink text-sm text-center" placeholder="年"/>
+            className="bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-1 py-2.5 text-dao-ink text-sm text-center w-full" placeholder="年"/>
           <input type="number" value={form.month} onChange={e=>update("month",+e.target.value)} min={1} max={12}
-            className="w-12 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-2 py-2.5 text-dao-ink text-sm text-center" placeholder="月"/>
+            className="bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-1 py-2.5 text-dao-ink text-sm text-center w-full" placeholder="月"/>
           <input type="number" value={form.day} onChange={e=>update("day",+e.target.value)} min={1} max={31}
-            className="w-12 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-2 py-2.5 text-dao-ink text-sm text-center" placeholder="日"/>
+            className="bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-1 py-2.5 text-dao-ink text-sm text-center w-full" placeholder="日"/>
           <input type="number" value={form.hour} onChange={e=>update("hour",+e.target.value)} min={0} max={23}
-            className="w-12 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-2 py-2.5 text-dao-ink text-sm text-center" placeholder="时"/>
+            className="bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-1 py-2.5 text-dao-ink text-sm text-center w-full" placeholder="时"/>
           <select value={form.gender} onChange={e=>update("gender",e.target.value)}
-            className="w-12 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-1 py-2.5 text-dao-ink text-sm">
+            className="bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-1 py-2.5 text-dao-ink text-sm text-center w-full">
             <option>男</option><option>女</option></select>
         </div>
         <div className="flex gap-2">
@@ -211,20 +211,24 @@ function HehunPanel() {
   return (
     <div className="space-y-4 anim-enter">
       <div className="dao-card space-y-3">
-        <p className="text-xs font-bold">男方</p>
-        <div className="flex gap-2">
-          {["year","month","day","hour"].map(k=>(
-            <input key={k} type="number" value={(m as any)[k]} onChange={e=>setM({...m,[k]:+e.target.value})}
-              className="flex-1 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-2 py-2 text-xs text-dao-ink text-center"
-              placeholder={k==="year"?"年":k==="month"?"月":k==="day"?"日":"时"}/>
+        <p className="text-xs font-bold text-dao-ink">男方</p>
+        <div className="grid grid-cols-4 gap-2">
+          {[{k:"year",p:"年"},{k:"month",p:"月"},{k:"day",p:"日"},{k:"hour",p:"时"}].map(({k,p})=>(
+            <div key={k} className="flex items-center gap-1">
+              <input type="number" value={(m as any)[k]} onChange={e=>setM({...m,[k]:+e.target.value})}
+                className="w-full bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-2 py-2.5 text-sm text-dao-ink text-center"
+                placeholder={p}/>
+            </div>
           ))}
         </div>
-        <p className="text-xs font-bold">女方</p>
-        <div className="flex gap-2">
-          {["year","month","day","hour"].map(k=>(
-            <input key={k} type="number" value={(f as any)[k]} onChange={e=>setF({...f,[k]:+e.target.value})}
-              className="flex-1 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-2 py-2 text-xs text-dao-ink text-center"
-              placeholder={k==="year"?"年":k==="month"?"月":k==="day"?"日":"时"}/>
+        <p className="text-xs font-bold text-dao-ink mt-2">女方</p>
+        <div className="grid grid-cols-4 gap-2">
+          {[{k:"year",p:"年"},{k:"month",p:"月"},{k:"day",p:"日"},{k:"hour",p:"时"}].map(({k,p})=>(
+            <div key={k} className="flex items-center gap-1">
+              <input type="number" value={(f as any)[k]} onChange={e=>setF({...f,[k]:+e.target.value})}
+                className="w-full bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-2 py-2.5 text-sm text-dao-ink text-center"
+                placeholder={p}/>
+            </div>
           ))}
         </div>
         <button onClick={go} disabled={load}
@@ -285,15 +289,15 @@ function LiunianPanel() {
   return (
     <div className="space-y-4 anim-enter">
       <div className="dao-card space-y-2">
-        <div className="flex gap-2">
+        <div className="grid grid-cols-5 gap-1.5">
           <input type="number" value={form.birth_year} onChange={e=>setForm({...form,birth_year:+e.target.value})}
-            className="flex-1 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-2 py-2 text-xs text-center" placeholder="出生年"/>
+            className="bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-1 py-2.5 text-sm text-center w-full" placeholder="年"/>
           <input type="number" value={form.birth_month} onChange={e=>setForm({...form,birth_month:+e.target.value})}
-            className="w-12 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-2 py-2 text-xs text-center" placeholder="月"/>
+            className="bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-1 py-2.5 text-sm text-center w-full" placeholder="月"/>
           <input type="number" value={form.birth_day} onChange={e=>setForm({...form,birth_day:+e.target.value})}
-            className="w-12 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-2 py-2 text-xs text-center" placeholder="日"/>
+            className="bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-1 py-2.5 text-sm text-center w-full" placeholder="日"/>
           <select value={form.gender} onChange={e=>setForm({...form,gender:e.target.value})}
-            className="w-14 bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-1 py-2 text-xs"><option>男</option><option>女</option></select>
+            className="bg-dao-paper-dark border border-dao-paper-darker rounded-lg px-1 py-2.5 text-sm text-center w-full"><option>男</option><option>女</option></select>
         </div>
         <div className="flex gap-2 items-center">
           <span className="text-xs text-dao-aged">查流年：</span>
