@@ -93,36 +93,44 @@ function PaipanPanel() {
 
       {result&&p&&(
         <div className="space-y-4 anim-enter">
-          <div className="text-center py-6 dao-card">
-            <p className="text-[11px] text-text-secondary">{result.paipan.solar_date?.split(" ")[0]}</p>
+          {/* 八字核心卡 — 特殊底色 */}
+          <div className="text-center py-6 rounded-xl"
+            style={{background:"linear-gradient(135deg,#FFFBF0 0%,#FFF8E7 100%)",border:"1px solid #E8D5A3"}}>
+            <p className="text-[11px] text-text-secondary tracking-wider">{result.paipan.solar_date?.split(" ")[0]}</p>
             <p className="text-sm text-text mt-0.5">农历{result.paipan.lunar_date}</p>
             {result.true_solar&&<p className="text-[10px] text-gold mt-0.5">真太阳时 {result.true_solar.corrected}</p>}
-            <div className="grid grid-cols-4 gap-2 mt-4">
+            <div className="grid grid-cols-4 gap-2 mt-5 px-2">
               {["year","month","day","hour"].map((pos,i)=>{
                 const gz=p[pos].ganzhi; const isDay=pos==="day";
                 return (
-                  <div key={pos} className={`${isDay?"ring-2 ring-dao-red/20":""} bg-bg-subtle/50 rounded-lg py-3`}>
-                    <p className="text-[10px] text-text-secondary">{"年月日时"[i]}柱</p>
-                    <p className="text-lg font-[family-name:var(--font-display)] text-text">{gz[0]}</p>
-                    <p className="text-lg font-[family-name:var(--font-display)] text-accent">{gz[1]}</p>
-                    <p className="text-[9px] text-text-tertiary">{p[pos].nayin}</p>
+                  <div key={pos} className={`${isDay?"ring-2 ring-accent/20 bg-accent/3":""} rounded-lg py-3 px-1`}
+                    style={isDay?{}:{background:"rgba(0,0,0,0.02)"}}>
+                    <p className="text-[10px] text-text-secondary mb-1">{"年月日时"[i]}柱</p>
+                    <p className="text-xl font-[family-name:var(--font-display)] text-text leading-tight">{gz[0]}</p>
+                    <p className="text-xl font-[family-name:var(--font-display)] text-accent leading-tight">{gz[1]}</p>
+                    <p className="text-[10px] text-text-tertiary mt-0.5">{p[pos].nayin}</p>
                   </div>
                 );
               })}
             </div>
-            <div className="flex items-center justify-center gap-2 mt-3 flex-wrap text-sm">
-              <span className="text-text-secondary">日主</span>
-              <span className="text-accent font-bold font-[family-name:var(--font-display)]">{result.paipan.rizhu}</span>
-              <span className="text-text-tertiary">({result.paipan.rizhu_wuxing})</span>
-              {g&&<span className="text-[10px] text-gold px-2 py-0.5 bg-gold/10 rounded-full">{g.pattern}</span>}
-              {y&&<span className="text-[10px] px-2 py-0.5 bg-dao-indigo/10 rounded-full text-text-secondary">{y.wangshuai}</span>}
+            {/* 日主+格局+用神 摘要 */}
+            <div className="flex items-center justify-center gap-2 mt-4 flex-wrap text-sm">
+              <span className="text-text-secondary text-xs">日主</span>
+              <span className="text-accent font-bold text-xl font-[family-name:var(--font-display)]">{result.paipan.rizhu}</span>
+              <span className="text-text-tertiary text-xs">({result.paipan.rizhu_wuxing})</span>
+              {g&&<span className="text-xs px-2.5 py-1 bg-gold/15 text-gold font-medium rounded-full border border-gold/30">{g.pattern}</span>}
+              {y&&<span className="text-xs px-2.5 py-1 bg-bg-subtle text-text-secondary font-medium rounded-full">{y.wangshuai}</span>}
             </div>
             {y&&(
               <div className="flex items-center justify-center gap-2 mt-2 text-xs">
-                <span className="text-text-secondary">用神：</span>
-                {(y.recommended||[]).map((wx:string)=><span key={wx} className="text-green font-medium">{wx}</span>)}
-                <span className="text-text-tertiary">忌：</span>
-                {(y.jishen||[]).map((wx:string)=><span key={wx} className="text-accent/70">{wx}</span>)}
+                <span className="text-text-secondary">用神</span>
+                {(y.recommended||[]).map((wx:string)=>(
+                  <span key={wx} className="px-2 py-0.5 bg-green/10 text-green font-bold rounded-full">{wx}</span>
+                ))}
+                <span className="text-text-tertiary ml-1">忌</span>
+                {(y.jishen||[]).map((wx:string)=>(
+                  <span key={wx} className="px-2 py-0.5 bg-accent/8 text-accent/70 rounded-full">{wx}</span>
+                ))}
               </div>
             )}
           </div>
