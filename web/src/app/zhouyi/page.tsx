@@ -80,8 +80,7 @@ export default function ZhouyiPage() {
         {result && (
           <div className="space-y-4">
             {/* 卦象——爻线动画 */}
-            <div className="text-center py-8 rounded-xl"
-              style={{background:"linear-gradient(135deg,#FFFBF0 0%,#FFF8E7 100%)",border:"1px solid #E8D5A3"}}>
+            <div className="dao-card-warm text-center py-8">
               <p className="text-text-secondary text-xs mb-4">问：{result.question}</p>
 
               {/* 六条爻线 */}

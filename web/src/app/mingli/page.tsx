@@ -182,8 +182,7 @@ function PaipanPanel() {
       {result&&p&&(
         <div className="space-y-4 anim-enter">
           {/* 八字核心卡 — 特殊底色 */}
-          <div className="text-center py-6 rounded-xl"
-            style={{background:"linear-gradient(135deg,#FFFBF0 0%,#FFF8E7 100%)",border:"1px solid #E8D5A3"}}>
+          <div className="dao-card-warm text-center py-6">
             <p className="text-[11px] text-text-secondary tracking-wider">{result.paipan.solar_date?.split(" ")[0]}</p>
             <p className="text-sm text-text mt-0.5">农历{result.paipan.lunar_date}</p>
             {result.true_solar&&<p className="text-[10px] text-gold mt-0.5">真太阳时 {result.true_solar.corrected}</p>}

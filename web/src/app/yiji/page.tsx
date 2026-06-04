@@ -89,19 +89,21 @@ export default function YijiPage() {
         </div>
       </div>
 
-      <div className="px-5 flex-1 space-y-3 page-content">
-        {/* === 宜忌（两列紧凑） === */}
+      <div className="px-5 flex-1 space-y-3 anim-stagger">
+        {/* === 宜忌（两列紧凑+鎏金线） === */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="dao-card py-3">
+          <div className="dao-card-warm py-3">
             <h3 className="text-xs font-bold text-green mb-2 flex items-center gap-1"><Star size={12}/>宜</h3>
-            <div className="flex flex-wrap gap-1">
-              {(data?.yi||[]).map((s:string)=><span key={s} className="px-2 py-0.5 bg-green/5 text-green text-[11px] rounded-full">{s}</span>)}
+            <div className="gold-divider"/>
+            <div className="flex flex-wrap gap-1 mt-2">
+              {(data?.yi||[]).map((s:string)=><span key={s} className="px-2.5 py-1 bg-green/5 text-green text-[11px] rounded-full border border-green/10">{s}</span>)}
             </div>
           </div>
-          <div className="dao-card py-3">
+          <div className="dao-card-warm py-3">
             <h3 className="text-xs font-bold text-accent mb-2 flex items-center gap-1"><AlertTriangle size={12}/>忌</h3>
-            <div className="flex flex-wrap gap-1">
-              {(data?.ji||[]).map((s:string)=><span key={s} className="px-2 py-0.5 bg-accent/5 text-accent text-[11px] rounded-full">{s}</span>)}
+            <div className="gold-divider"/>
+            <div className="flex flex-wrap gap-1 mt-2">
+              {(data?.ji||[]).map((s:string)=><span key={s} className="px-2.5 py-1 bg-accent/5 text-accent text-[11px] rounded-full border border-accent/10">{s}</span>)}
             </div>
           </div>
         </div>

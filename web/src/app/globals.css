@@ -1,205 +1,151 @@
 @import "tailwindcss";
 
-/* ============================================================
-   命理溯源 — 水墨道韵
-   Refined Daoist Minimalism
-
-   Design direction: 高端书法画廊 — 留白让墨色呼吸
-   - 宣纸暖白底 + 墨色文字 + 鎏金点缀
-   - 马山正楷体标题 + 宋体正文
-   - 卡片: 极淡暖色 + 微妙阴影
-   - 动画: 交错淡入 + 流畅过渡
-   ============================================================ */
-
 @theme inline {
-  --color-bg: #FAFAF7;
-  --color-bg-card: #FDFCF9;
-  --color-bg-subtle: #F5F2EC;
-  --color-bg-warm: #FDF8F0;
-  --color-border: #E8E2D8;
-  --color-border-gold: #D4C5A0;
-
+  --color-bg: #FDFCF8;
+  --color-bg-card: #FFFEFB;
+  --color-bg-dark: #F5F0E5;
+  --color-border: #E5DFD0;
+  --color-border-gold: #D4C49A;
   --color-text: #1C1814;
   --color-text-secondary: #6B6358;
   --color-text-tertiary: #9B9288;
-
   --color-accent: #B33A2E;
   --color-accent-light: #D4655E;
   --color-green: #5B8C5A;
   --color-gold: #B8860B;
   --color-gold-light: #D4A843;
-
   --font-display: var(--font-dao-display);
-  --font-body: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", "KaiTi", serif;
-
-  --shadow-sm: 0 1px 2px rgba(28,24,20,0.04);
-  --shadow-card: 0 2px 8px rgba(28,24,20,0.06);
-  --shadow-nav: 0 -1px 0 rgba(28,24,20,0.06);
-  --radius-card: 14px;
-  --radius-btn: 12px;
+  --font-body: "Songti SC", "STSong", "Noto Serif SC", "KaiTi", serif;
+  --shadow-card: 0 1px 4px rgba(28,24,20,0.06), 0 4px 12px rgba(28,24,20,0.04);
+  --radius-card: 16px;
 }
 
-html {
-  -webkit-tap-highlight-color: transparent;
-  -webkit-font-smoothing: antialiased;
-  text-size-adjust: 100%;
-  overflow-x: hidden;
-}
+html { -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; text-size-adjust: 100%; }
 
 body {
   background: var(--color-bg);
+  /* 宣纸纤维纹理 */
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(180,160,120,0.015) 2px, rgba(180,160,120,0.015) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(180,160,120,0.01) 3px, rgba(180,160,120,0.01) 6px);
   color: var(--color-text);
   font-family: var(--font-body);
   min-height: 100dvh;
-  overscroll-behavior-y: none;
   font-size: 15px;
   line-height: 1.7;
-  letter-spacing: 0.01em;
 }
 
-/* 卡片 — 宣纸质感的暖白 */
+/* === 卡片 === */
 .dao-card {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
-  padding: 18px;
-  box-shadow: var(--shadow-sm);
+  padding: 17px;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.2s;
 }
-
-/* 特殊暖色卡 */
 .dao-card-warm {
-  background: linear-gradient(135deg, #FDF8F0 0%, #FBF4E8 100%);
+  background: linear-gradient(135deg, #FFFDF7 0%, #FFF9EE 100%);
   border: 1px solid var(--color-border-gold);
   border-radius: var(--radius-card);
   padding: 22px;
   box-shadow: var(--shadow-card);
 }
 
-/* 古籍引用 */
+/* === 鎏金分割线 === */
+.gold-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-border-gold) 30%, var(--color-border-gold) 70%, transparent);
+  margin: 12px 0;
+}
+
+/* === 古籍引用 === */
 .classical-quote {
-  padding: 18px 20px;
-  margin: 16px 0;
+  padding: 16px 18px;
+  margin: 14px 0;
   border-left: 3px solid var(--color-gold);
-  background: linear-gradient(90deg, rgba(184,134,11,0.04) 0%, transparent 100%);
-  border-radius: 0 var(--radius-card) var(--radius-card) 0;
+  background: linear-gradient(90deg, rgba(184,134,11,0.05) 0%, rgba(184,134,11,0.01) 60%, transparent 100%);
+  border-radius: 0 12px 12px 0;
   font-size: 14px;
   line-height: 1.9;
   color: var(--color-text-secondary);
 }
 
-/* 按钮 */
+/* === 朱砂按钮 === */
 .btn-dao {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 14px 28px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px 26px;
   background: var(--color-accent);
-  color: white;
-  border: none;
-  border-radius: var(--radius-btn);
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(179,58,46,0.2);
+  color: white; border: none; border-radius: 12px;
+  font-size: 15px; font-weight: 500; cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 2px 8px rgba(179,58,46,0.22);
 }
-.btn-dao:active { opacity: 0.88; transform: scale(0.98); }
+.btn-dao:active { opacity: 0.85; transform: scale(0.97); }
 
-/* 四柱 */
+/* === 金色按钮 === */
+.btn-gold {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 11px 22px;
+  background: linear-gradient(135deg, #DFCBA0, #C9A96E);
+  color: #3A2E18; border: 1px solid #C9A96E; border-radius: 12px;
+  font-size: 14px; font-weight: 500; cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-gold:active { opacity: 0.85; transform: scale(0.97); }
+
+/* === 四柱展示 === */
 .pillar-block {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px 8px;
-  background: var(--color-bg-subtle);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 15px 6px;
+  background: var(--color-bg-dark);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: 12px; min-width: 64px;
 }
-.pillar-gan {
-  font-family: var(--font-display);
-  font-size: 24px;
-  color: var(--color-text);
-  line-height: 1.2;
-}
-.pillar-zhi {
-  font-family: var(--font-display);
-  font-size: 24px;
-  color: var(--color-accent);
-  line-height: 1.2;
-}
-.pillar-label { font-size: 11px; color: var(--color-text-secondary); }
+.pillar-gan { font-family: var(--font-display); font-size: 24px; color: var(--color-text); line-height: 1.1; }
+.pillar-zhi { font-family: var(--font-display); font-size: 24px; color: var(--color-accent); line-height: 1.1; }
+.pillar-label { font-size: 10px; color: var(--color-text-secondary); margin-top: 4px; }
 
-/* 印章 */
+/* === 小印章 === */
 .jing-seal {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px; height: 28px;
-  border: 1.5px solid var(--color-accent);
-  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px;
+  border: 1.5px solid var(--color-accent); border-radius: 50%;
   color: var(--color-accent);
-  font-family: var(--font-display);
-  font-size: 13px;
+  font-family: var(--font-display); font-size: 12px;
 }
 
-/* 动效 */
-@keyframes fadeUpIn {
-  from { opacity: 0; transform: translateY(16px); }
+/* === 动画 === */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
-@keyframes pulse {
-  0%,100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-.anim-enter { animation: fadeUpIn 0.35s cubic-bezier(0.16,1,0.3,1); }
-.anim-fade { animation: fadeIn 0.5s ease; }
 
-/* 卡片交错入场 */
-.anim-stagger > * {
-  opacity: 0;
-  animation: fadeUpIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
-}
-.anim-stagger > *:nth-child(1) { animation-delay: 0.05s; }
-.anim-stagger > *:nth-child(2) { animation-delay: 0.1s; }
-.anim-stagger > *:nth-child(3) { animation-delay: 0.15s; }
-.anim-stagger > *:nth-child(4) { animation-delay: 0.2s; }
-.anim-stagger > *:nth-child(5) { animation-delay: 0.25s; }
+.anim-enter { animation: fadeUp 0.4s cubic-bezier(0.22,1,0.36,1); }
 
-/* 触摸 */
+/* 卡片交错出现 */
+.anim-stagger > *:nth-child(1) { animation: fadeUp 0.4s 0s cubic-bezier(0.22,1,0.36,1) both; }
+.anim-stagger > *:nth-child(2) { animation: fadeUp 0.4s 0.07s cubic-bezier(0.22,1,0.36,1) both; }
+.anim-stagger > *:nth-child(3) { animation: fadeUp 0.4s 0.14s cubic-bezier(0.22,1,0.36,1) both; }
+.anim-stagger > *:nth-child(4) { animation: fadeUp 0.4s 0.21s cubic-bezier(0.22,1,0.36,1) both; }
+.anim-stagger > *:nth-child(5) { animation: fadeUp 0.4s 0.28s cubic-bezier(0.22,1,0.36,1) both; }
+.anim-stagger > *:nth-child(6) { animation: fadeUp 0.4s 0.35s cubic-bezier(0.22,1,0.36,1) both; }
+
+/* === 工具 === */
 .tap-active:active { transform: scale(0.97); transition: transform 0.1s; }
-
-/* 选中 */
 ::selection { background: rgba(179,58,46,0.12); color: var(--color-text); }
-
-/* 滚动条 */
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
-
-/* 安全区 */
 .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 16px); }
-
-/* 无滚动条 */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
-/* 时辰格 */
-.hour-cell-ji { background: rgba(91,140,90,0.06); border: 1px solid rgba(91,140,90,0.12); border-radius: 6px; padding: 6px; text-align: center; }
-.hour-cell-xiong { background: rgba(179,58,46,0.03); border: 1px solid rgba(179,58,46,0.08); border-radius: 6px; padding: 6px; text-align: center; }
-
-/* 页面内容区：交错动画 */
-.page-content > .dao-card,
-.page-content > .dao-card-warm {
-  opacity: 0;
-  animation: fadeUpIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
-}
-.page-content > *:nth-child(1) { animation-delay: 0s; }
-.page-content > *:nth-child(2) { animation-delay: 0.06s; }
-.page-content > *:nth-child(3) { animation-delay: 0.12s; }
-.page-content > *:nth-child(4) { animation-delay: 0.18s; }
-.page-content > *:nth-child(5) { animation-delay: 0.24s; }
-.page-content > *:nth-child(6) { animation-delay: 0.3s; }
+/* === 时辰小格 === */
+.hour-cell-ji { background: rgba(91,140,90,0.06); border: 1px solid rgba(91,140,90,0.12); border-radius: 8px; padding: 8px 4px; text-align: center; }
+.hour-cell-xiong { background: rgba(179,58,46,0.03); border: 1px solid rgba(179,58,46,0.08); border-radius: 8px; padding: 8px 4px; text-align: center; }

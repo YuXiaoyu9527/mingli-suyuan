@@ -103,7 +103,7 @@ export default function FengshuiPage() {
         {result&&(
           <div className="space-y-4 anim-enter">
             {result.house_gua&&(
-              <div className="text-center py-6 rounded-xl" style={{background:"linear-gradient(135deg,#F8F4F0 0%,#F5F0E8 100%)",border:"1px solid #D4C8AD"}}>
+              <div className="dao-card-warm text-center py-6">
                 <p className="text-3xl font-[family-name:var(--font-display)] text-text">{result.house_gua}宅</p>
                 <p className="text-text-secondary text-sm mt-1">{result.house_type}</p>
                 <div className="grid grid-cols-2 gap-3 mt-4 text-left text-xs">
