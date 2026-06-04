@@ -79,7 +79,7 @@ export default function YijiPage() {
             </div>
             {data?.fetched_at && (
               <p className="text-[9px] text-text-tertiary mt-1">更新于 {data.fetched_at}</p>
-            </div>
+            )}
           </div>
           {/* 彭祖小提示 */}
           <div className="text-right text-[10px] text-text-tertiary leading-relaxed">
