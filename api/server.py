@@ -70,6 +70,16 @@ class MingliRequest(BaseModel):
     search: Optional[str] = None   # 搜索关键词
 
 
+class QimingRequest(BaseModel):
+    f_year: int = 1990; f_month: int = 5; f_day: int = 20; f_hour: int = 12
+    m_year: int = 1992; m_month: int = 8; m_day: int = 15; m_hour: int = 10
+    surname: str = "李"; gender: str = "男"
+
+
+class ZhouyiRequest(BaseModel):
+    question: str = "我想问事业"
+
+
 class HehunRequest(BaseModel):
     # 男方
     m_year: int = 1990; m_month: int = 5; m_day: int = 20
@@ -620,6 +630,57 @@ def api_yongshen(req: PaipanRequest):
         "recommended": result.recommended,
         "jishen": result.jishen,
         "analysis": result.analysis,
+    }
+
+
+@app.post("/api/qiming")
+def api_qiming(req: QimingRequest):
+    """八字起名"""
+    from api.paipan import paipan
+    from api.paipan.qiming import QimingEngine
+
+    father = paipan(req.f_year, req.f_month, req.f_day, req.f_hour, 0, "男")
+    mother = paipan(req.m_year, req.m_month, req.m_day, req.m_hour, 0, "女")
+
+    engine = QimingEngine()
+    result = engine.generate(father, mother, req.surname, req.gender)
+
+    return {
+        "surname": result.surname,
+        "gender": result.gender,
+        "father_rizhu": result.father_rizhu,
+        "mother_rizhu": result.mother_rizhu,
+        "father_yongshen": result.father_yongshen,
+        "mother_yongshen": result.mother_yongshen,
+        "recommended_wuxing": result.recommended_wuxing,
+        "wuxing_reason": result.wuxing_reason,
+        "suggestions": result.suggestions,
+    }
+
+
+@app.post("/api/zhouyi")
+def api_zhouyi(req: ZhouyiRequest):
+    """周易占卜"""
+    from api.paipan.zhouyi import ZhouyiEngine
+
+    engine = ZhouyiEngine()
+    result = engine.divine(req.question)
+    display = engine.get_hexagram_display(result.original_code)
+
+    return {
+        "question": result.question,
+        "original_code": result.original_code,
+        "original_name": result.original_name,
+        "original_meaning": result.original_meaning,
+        "original_advice": result.original_advice,
+        "original_element": result.original_element,
+        "direction": result.direction,
+        "changing_lines": result.changing_lines,
+        "changed_name": result.changed_name,
+        "changed_meaning": result.changed_meaning,
+        "analysis": result.analysis,
+        "suggestion": result.suggestion,
+        "display": display,
     }
 
 
