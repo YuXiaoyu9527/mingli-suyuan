@@ -7,7 +7,7 @@ import ShareCard from "@/components/ShareCard";
 import FeatureGate from "@/components/FeatureGate";
 import { Loader2, Heart } from "lucide-react";
 
-type SubTab = "paipan" | "hehun" | "liunian";
+type SubTab = "paipan" | "hehun" | "liunian" | "qiming";
 
 export default function MingliPage() {
   const [sub, setSub] = useState<SubTab>("paipan");
@@ -15,6 +15,7 @@ export default function MingliPage() {
     {id:"paipan",label:"排盘",icon:"☯"},
     {id:"hehun",label:"合婚",icon:"☵"},
     {id:"liunian",label:"流年",icon:"☳"},
+    {id:"qiming",label:"起名",icon:"✏️"},
   ];
 
   return (
@@ -38,9 +39,92 @@ export default function MingliPage() {
         {sub==="paipan" && <PaipanPanel/>}
         {sub==="hehun" && <HehunPanel/>}
         {sub==="liunian" && <LiunianPanel/>}
+        {sub==="qiming" && <QimingPanel/>}
       </div>
 
       <BottomNav/>
+    </div>
+  );
+}
+
+// ===== 起名子面板 =====
+function QimingPanel() {
+  const [form,setForm]=useState({
+    f_year:1990,f_month:5,f_day:20,f_hour:12,
+    m_year:1992,m_month:8,m_day:15,m_hour:10,
+    surname:"王",gender:"男",
+  });
+  const [load,setLoad]=useState(false);
+  const [r,setR]=useState<any>(null);
+
+  const go=async()=>{
+    setLoad(true);
+    try{
+      const resp=await fetch(`${getApiUrl()}/api/qiming`,{
+        method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(form)});
+      setR(await resp.json());
+    }catch(e){} setLoad(false);
+  };
+
+  return (
+    <div className="space-y-4 anim-enter">
+      <div className="dao-card space-y-3">
+        <p className="text-xs font-bold text-text">父亲</p>
+        <div className="grid grid-cols-4 gap-2">
+          {["f_year","f_month","f_day","f_hour"].map((k,i)=>(
+            <input key={k} type="number" value={(form as any)[k]} onChange={e=>setForm({...form,[k]:+e.target.value})}
+              className="bg-white border border-border rounded-lg px-1 py-3 text-text text-base text-center w-full shadow-sm"
+              placeholder={["年","月","日","时"][i]}/>
+          ))}
+        </div>
+        <p className="text-xs font-bold text-text">母亲</p>
+        <div className="grid grid-cols-4 gap-2">
+          {["m_year","m_month","m_day","m_hour"].map((k,i)=>(
+            <input key={k} type="number" value={(form as any)[k]} onChange={e=>setForm({...form,[k]:+e.target.value})}
+              className="bg-white border border-border rounded-lg px-1 py-3 text-text text-base text-center w-full shadow-sm"
+              placeholder={["年","月","日","时"][i]}/>
+          ))}
+        </div>
+        <div className="flex gap-2 items-center">
+          <input type="text" value={form.surname} onChange={e=>setForm({...form,surname:e.target.value})}
+            className="w-16 bg-white border border-border rounded-lg px-2 py-2.5 text-text text-center shadow-sm" placeholder="姓"/>
+          <select value={form.gender} onChange={e=>setForm({...form,gender:e.target.value})}
+            className="bg-white border border-border rounded-lg px-2 py-2.5 text-text shadow-sm">
+            <option>男</option><option>女</option></select>
+          <button onClick={go} disabled={load}
+            className="bg-accent text-white px-5 py-2.5 rounded-lg text-sm tap-active ml-auto">
+            {load?<Loader2 size={16} className="animate-spin"/>:"起名"}
+          </button>
+        </div>
+      </div>
+
+      {r&&(
+        <div className="space-y-4 anim-enter">
+          <div className="dao-card text-center py-6">
+            <p className="text-text-secondary text-xs">推荐五行</p>
+            <p className="text-xl font-bold text-accent mt-1">{(r.recommended_wuxing||[]).join(" + ")}</p>
+            <p className="text-text-secondary text-xs mt-2">{r.wuxing_reason}</p>
+          </div>
+          <div className="dao-card">
+            <p className="text-xs font-bold text-text mb-3">推荐名字</p>
+            <div className="space-y-3">
+              {(r.suggestions||[]).map((s:any,i:number)=>(
+                <div key={i} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                  <div>
+                    <p className="text-base font-bold font-[family-name:var(--font-display)] text-text">{s.name}</p>
+                    <p className="text-[11px] text-text-secondary mt-0.5">{s.structure} · {s.wuxing} · {s.meaning}</p>
+                  </div>
+                  <span className="px-2 py-1 rounded-full text-[10px] font-medium"
+                    style={{background:s.wuxing.includes("木")?"#e8f5e9":s.wuxing.includes("火")?"#fce4ec":s.wuxing.includes("土")?"#fff8e1":s.wuxing.includes("金")?"#fff3e0":"#e3f2fd",
+                            color:s.wuxing.includes("木")?"#2e7d32":s.wuxing.includes("火")?"#c62828":s.wuxing.includes("土")?"#f57f17":s.wuxing.includes("金")?"#e65100":"#1565c0"}}>
+                    {s.wuxing}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

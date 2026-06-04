@@ -7,7 +7,7 @@ const tabs = [
   { id: "mingli", label: "命理", icon: "☯", href: "/mingli" },
   { id: "yiji", label: "择吉", icon: "☲", href: "/yiji" },
   { id: "fengshui", label: "风水", icon: "☶", href: "/fengshui" },
-  { id: "xuetang", label: "学堂", icon: "☰", href: "/xuetang" },
+  { id: "zhouyi", label: "周易", icon: "☳", href: "/zhouyi" },
   { id: "dianji", label: "典籍", icon: "☷", href: "/dianji" },
 ];
 
