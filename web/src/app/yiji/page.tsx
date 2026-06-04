@@ -89,7 +89,7 @@ export default function YijiPage() {
         </div>
       </div>
 
-      <div className="px-5 flex-1 space-y-3">
+      <div className="px-5 flex-1 space-y-3 page-content">
         {/* === 宜忌（两列紧凑） === */}
         <div className="grid grid-cols-2 gap-3">
           <div className="dao-card py-3">

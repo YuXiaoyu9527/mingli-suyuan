@@ -1,31 +1,42 @@
 @import "tailwindcss";
 
 /* ============================================================
-   命理溯源 — 清爽版主题
-   参考问真八字：白底、克制、留白、统一
+   命理溯源 — 水墨道韵
+   Refined Daoist Minimalism
+
+   Design direction: 高端书法画廊 — 留白让墨色呼吸
+   - 宣纸暖白底 + 墨色文字 + 鎏金点缀
+   - 马山正楷体标题 + 宋体正文
+   - 卡片: 极淡暖色 + 微妙阴影
+   - 动画: 交错淡入 + 流畅过渡
    ============================================================ */
 
 @theme inline {
-  --color-bg: #FFFFFF;
-  --color-bg-card: #FFFFFF;
-  --color-bg-subtle: #F5F5F5;
-  --color-border: #E8E8E8;
-  --color-text: #1A1A1A;
-  --color-text-secondary: #8E8E93;
-  --color-text-tertiary: #B0B0B0;
-  --color-accent: #C0392B;
-  --color-accent-light: #E74C3C;
-  --color-green: #4CAF50;
+  --color-bg: #FAFAF7;
+  --color-bg-card: #FDFCF9;
+  --color-bg-subtle: #F5F2EC;
+  --color-bg-warm: #FDF8F0;
+  --color-border: #E8E2D8;
+  --color-border-gold: #D4C5A0;
+
+  --color-text: #1C1814;
+  --color-text-secondary: #6B6358;
+  --color-text-tertiary: #9B9288;
+
+  --color-accent: #B33A2E;
+  --color-accent-light: #D4655E;
+  --color-green: #5B8C5A;
   --color-gold: #B8860B;
   --color-gold-light: #D4A843;
 
   --font-display: var(--font-dao-display);
-  --font-body: -apple-system, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  --font-body: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", "KaiTi", serif;
 
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.08);
-  --shadow-nav: 0 -1px 0 rgba(0,0,0,0.06);
-  --radius-card: 12px;
-  --radius-btn: 10px;
+  --shadow-sm: 0 1px 2px rgba(28,24,20,0.04);
+  --shadow-card: 0 2px 8px rgba(28,24,20,0.06);
+  --shadow-nav: 0 -1px 0 rgba(28,24,20,0.06);
+  --radius-card: 14px;
+  --radius-btn: 12px;
 }
 
 html {
@@ -42,27 +53,37 @@ body {
   min-height: 100dvh;
   overscroll-behavior-y: none;
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
 }
 
-/* 卡片 */
+/* 卡片 — 宣纸质感的暖白 */
 .dao-card {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
-  padding: 16px;
-  box-shadow: none;
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* 特殊暖色卡 */
+.dao-card-warm {
+  background: linear-gradient(135deg, #FDF8F0 0%, #FBF4E8 100%);
+  border: 1px solid var(--color-border-gold);
+  border-radius: var(--radius-card);
+  padding: 22px;
+  box-shadow: var(--shadow-card);
 }
 
 /* 古籍引用 */
 .classical-quote {
-  padding: 14px 16px;
-  margin: 12px 0;
-  border-left: 3px solid var(--color-accent);
-  background: var(--color-bg-subtle);
-  border-radius: 0 8px 8px 0;
+  padding: 18px 20px;
+  margin: 16px 0;
+  border-left: 3px solid var(--color-gold);
+  background: linear-gradient(90deg, rgba(184,134,11,0.04) 0%, transparent 100%);
+  border-radius: 0 var(--radius-card) var(--radius-card) 0;
   font-size: 14px;
-  line-height: 1.8;
+  line-height: 1.9;
   color: var(--color-text-secondary);
 }
 
@@ -71,8 +92,8 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 12px 24px;
+  gap: 8px;
+  padding: 14px 28px;
   background: var(--color-accent);
   color: white;
   border: none;
@@ -80,29 +101,30 @@ body {
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(179,58,46,0.2);
 }
-.btn-dao:active { opacity: 0.85; transform: scale(0.98); }
+.btn-dao:active { opacity: 0.88; transform: scale(0.98); }
 
-/* 四柱展示 */
+/* 四柱 */
 .pillar-block {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 14px 8px;
+  padding: 16px 8px;
   background: var(--color-bg-subtle);
   border: 1px solid var(--color-border);
   border-radius: 10px;
 }
 .pillar-gan {
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: 24px;
   color: var(--color-text);
   line-height: 1.2;
 }
 .pillar-zhi {
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: 24px;
   color: var(--color-accent);
   line-height: 1.2;
 }
@@ -121,30 +143,63 @@ body {
   font-size: 13px;
 }
 
-/* 动画 */
+/* 动效 */
 @keyframes fadeUpIn {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.anim-enter { animation: fadeUpIn 0.25s ease-out; }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.anim-enter { animation: fadeUpIn 0.35s cubic-bezier(0.16,1,0.3,1); }
+.anim-fade { animation: fadeIn 0.5s ease; }
+
+/* 卡片交错入场 */
+.anim-stagger > * {
+  opacity: 0;
+  animation: fadeUpIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.anim-stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.anim-stagger > *:nth-child(2) { animation-delay: 0.1s; }
+.anim-stagger > *:nth-child(3) { animation-delay: 0.15s; }
+.anim-stagger > *:nth-child(4) { animation-delay: 0.2s; }
+.anim-stagger > *:nth-child(5) { animation-delay: 0.25s; }
 
 /* 触摸 */
 .tap-active:active { transform: scale(0.97); transition: transform 0.1s; }
 
 /* 选中 */
-::selection { background: rgba(192,57,43,0.15); color: var(--color-text); }
+::selection { background: rgba(179,58,46,0.12); color: var(--color-text); }
 
 /* 滚动条 */
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #D0D0D0; border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
 
 /* 安全区 */
 .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 16px); }
 
-/* 时辰格 */
-.hour-cell-ji { background: rgba(76,175,80,0.06); border: 1px solid rgba(76,175,80,0.15); border-radius: 6px; padding: 6px; text-align: center; }
-.hour-cell-xiong { background: rgba(192,57,43,0.04); border: 1px solid rgba(192,57,43,0.1); border-radius: 6px; padding: 6px; text-align: center; }
-
 /* 无滚动条 */
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* 时辰格 */
+.hour-cell-ji { background: rgba(91,140,90,0.06); border: 1px solid rgba(91,140,90,0.12); border-radius: 6px; padding: 6px; text-align: center; }
+.hour-cell-xiong { background: rgba(179,58,46,0.03); border: 1px solid rgba(179,58,46,0.08); border-radius: 6px; padding: 6px; text-align: center; }
+
+/* 页面内容区：交错动画 */
+.page-content > .dao-card,
+.page-content > .dao-card-warm {
+  opacity: 0;
+  animation: fadeUpIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.page-content > *:nth-child(1) { animation-delay: 0s; }
+.page-content > *:nth-child(2) { animation-delay: 0.06s; }
+.page-content > *:nth-child(3) { animation-delay: 0.12s; }
+.page-content > *:nth-child(4) { animation-delay: 0.18s; }
+.page-content > *:nth-child(5) { animation-delay: 0.24s; }
+.page-content > *:nth-child(6) { animation-delay: 0.3s; }
