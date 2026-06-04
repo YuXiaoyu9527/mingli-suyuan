@@ -112,7 +112,21 @@ class HexagramResult:
 
 
 class ZhouyiEngine:
-    """周易占卜引擎"""
+    """周易占卜引擎（整合梅花易数）"""
+
+    # 八卦对应（梅花易数先天八卦数）
+    BAGUA_NUM = {1:("乾","天","☰"),2:("兑","泽","☱"),3:("离","火","☲"),
+                 4:("震","雷","☳"),5:("巽","风","☴"),6:("坎","水","☵"),
+                 7:("艮","山","☶"),8:("坤","地","☷")}
+
+    # 八卦五行
+    BAGUA_WUXING = {"乾":"金","兑":"金","离":"火","震":"木","巽":"木","坎":"水","艮":"土","坤":"土"}
+
+    # 生克关系
+    SHENG_KE = {
+        ("木","火"):"生",("火","土"):"生",("土","金"):"生",("金","水"):"生",("水","木"):"生",
+        ("木","土"):"克",("土","水"):"克",("水","火"):"克",("火","金"):"克",("金","木"):"克",
+    }
 
     def divine(self, question: str) -> HexagramResult:
         """起卦占卜"""
@@ -200,6 +214,95 @@ class ZhouyiEngine:
             return f"{r.original_advice}。宜守正待时，不宜轻举妄动。"
         else:
             return f"{r.original_advice}。中庸之道，顺其自然即可。"
+
+    def divine_by_time(self, question: str) -> HexagramResult:
+        """时间起卦（梅花易数）: 年月日时 → 上卦+下卦+动爻"""
+        import datetime
+        now = datetime.datetime.now()
+        year = now.year
+        month = now.month
+        day = now.day
+        hour = now.hour
+
+        # 上卦 = (年+月+日) % 8
+        shang = (year + month + day) % 8 or 8
+        # 下卦 = (年+月+日+时) % 8
+        xia = (year + month + day + hour) % 8 or 8
+        # 动爻 = (年+月+日+时) % 6
+        dongyao = (year + month + day + hour) % 6 or 6
+
+        shang_gua = self.BAGUA_NUM[shang]
+        xia_gua = self.BAGUA_NUM[xia]
+        shang_wx = self.BAGUA_WUXING.get(shang_gua[0], "")
+        xia_wx = self.BAGUA_WUXING.get(xia_gua[0], "")
+
+        # 体用关系：无动爻的卦为体，有动爻的卦为用
+        if dongyao <= 3:
+            ti_gua = xia_gua[0]  # 下卦为体
+            yong_gua = shang_gua[0]  # 上卦为用
+        else:
+            ti_gua = shang_gua[0]  # 上卦为体
+            yong_gua = xia_gua[0]  # 下卦为用
+
+        ti_wx = self.BAGUA_WUXING.get(ti_gua, "")
+        yong_wx = self.BAGUA_WUXING.get(yong_gua, "")
+
+        # 体用生克
+        sk = self.SHENG_KE.get((ti_wx, yong_wx), None)
+        sk_rev = self.SHENG_KE.get((yong_wx, ti_wx), None)
+
+        if sk == "生":
+            ti_yong_desc = f"用生体（{yong_wx}生{ti_wx}）：大吉，事易成"
+        elif sk_rev == "生":
+            ti_yong_desc = f"体生用（{ti_wx}生{yong_wx}）：泄气，需付出较多"
+        elif sk == "克":
+            ti_yong_desc = f"体克用（{ti_wx}克{yong_wx}）：事可成但费力"
+        elif sk_rev == "克":
+            ti_yong_desc = f"用克体（{yong_wx}克{ti_wx}）：不吉，宜小心行事"
+        else:
+            ti_yong_desc = f"体用比和（{ti_wx}与{yong_wx}同五行）：和谐顺利"
+
+        # 生成卦码（下卦→上卦，下卦爻在前）
+        code = self._tri_grams_to_code(xia, shang, dongyao)
+        return self._build_result(question, code, [5 - dongyao + 1], shang_gua, xia_gua, ti_yong_desc)
+
+    def divine_by_number(self, question: str, n1: int, n2: int, n3: int = 0) -> HexagramResult:
+        """数字起卦（梅花易数）: 两个或三个数字 → 上卦+下卦+动爻"""
+        shang = n1 % 8 or 8
+        xia = n2 % 8 or 8
+        dongyao = (n3 % 6 or 6) if n3 else ((n1 + n2) % 6 or 6)
+
+        shang_gua = self.BAGUA_NUM[shang]
+        xia_gua = self.BAGUA_NUM[xia]
+
+        code = self._tri_grams_to_code(xia, shang, dongyao)
+        return self._build_result(question, code, [5 - dongyao + 1], shang_gua, xia_gua, "")
+
+    def _tri_grams_to_code(self, xia_num: int, shang_num: int, dongyao: int) -> str:
+        """八卦数 → 六爻二进制码"""
+        trigram_map = {1:"111",2:"011",3:"101",4:"001",5:"110",6:"010",7:"100",8:"000"}
+        xia_code = trigram_map.get(xia_num, "000")
+        shang_code = trigram_map.get(shang_num, "000")
+        return xia_code + shang_code  # 下卦在前
+
+    def _build_result(self, question, code, changing, shang_gua=None, xia_gua=None, ti_yong_desc="") -> HexagramResult:
+        """构建结果"""
+        original = GUACI.get(code, {"name":"未识别的卦","meaning":"—","advice":"—"})
+        result = HexagramResult(
+            question=question,
+            original_code=code,
+            original_name=original.get("name",""),
+            original_meaning=original.get("meaning",""),
+            original_advice=original.get("advice",""),
+            original_element=original.get("element",""),
+            direction=original.get("direction",""),
+            changing_lines=changing,
+        )
+        result.analysis = self._analyze(result)
+        if ti_yong_desc:
+            result.analysis += f" 体用关系：{ti_yong_desc}。"
+        result.suggestion = self._suggest(result)
+        return result
 
     def get_hexagram_display(self, code: str) -> dict:
         """获取卦象展示数据"""

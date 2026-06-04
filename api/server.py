@@ -78,6 +78,10 @@ class QimingRequest(BaseModel):
 
 class ZhouyiRequest(BaseModel):
     question: str = "我想问事业"
+    method: str = "random"  # random/time/number
+    n1: Optional[int] = None
+    n2: Optional[int] = None
+    n3: Optional[int] = None
 
 
 class HehunRequest(BaseModel):
@@ -664,7 +668,14 @@ def api_zhouyi(req: ZhouyiRequest):
     from api.paipan.zhouyi import ZhouyiEngine
 
     engine = ZhouyiEngine()
-    result = engine.divine(req.question)
+
+    if req.method == "time":
+        result = engine.divine_by_time(req.question)
+    elif req.method == "number" and req.n1 is not None and req.n2 is not None:
+        result = engine.divine_by_number(req.question, req.n1, req.n2, req.n3 or 0)
+    else:
+        result = engine.divine(req.question)
+
     display = engine.get_hexagram_display(result.original_code)
 
     return {
