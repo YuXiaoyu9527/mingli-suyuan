@@ -40,6 +40,8 @@ export default function YijiPage() {
   };
 
   useEffect(()=>{fetchYiji()},[]);
+  // 每5分钟自动刷新
+  useEffect(()=>{const t=setInterval(()=>fetchYiji(showPersonal?uf:undefined),300000);return ()=>clearInterval(t)},[showPersonal,uf]);
 
   const doZeji = async (a: string) => {
     setZejiAct(a); setZejiLoad(true);
@@ -74,6 +76,9 @@ export default function YijiPage() {
               <span>{data?.jianchu}·{data?.xiu}</span>
               <button onClick={()=>fetchYiji(showPersonal?uf:undefined)}
                 className="text-accent tap-active"><RefreshCw size={11}/></button>
+            </div>
+            {data?.fetched_at && (
+              <p className="text-[9px] text-text-tertiary mt-1">更新于 {data.fetched_at}</p>
             </div>
           </div>
           {/* 彭祖小提示 */}

@@ -395,7 +395,9 @@ def api_yiji(req: YijiRequest):
     from lunar_python import Solar
     from api.paipan.yiji import DailyYiji
 
-    now = datetime.now()
+    from datetime import timezone, timedelta
+    tz_cn = timezone(timedelta(hours=8))
+    now = datetime.now(tz_cn)
     solar = Solar.fromYmdHms(now.year, now.month, now.day, 12, 0, 0)
 
     user_bazi = None
@@ -468,6 +470,8 @@ def api_yiji(req: YijiRequest):
         "personal": hl.personal,
         # 开运建议
         "daily_tips": daily_tips,
+        # 时间戳
+        "fetched_at": now.strftime("%Y-%m-%d %H:%M:%S"),
     }
 
 
