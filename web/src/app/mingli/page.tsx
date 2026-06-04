@@ -109,16 +109,19 @@ function QimingPanel() {
             <p className="text-xs font-bold text-text mb-3">推荐名字</p>
             <div className="space-y-3">
               {(r.suggestions||[]).map((s:any,i:number)=>(
-                <div key={i} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                  <div>
-                    <p className="text-base font-bold font-[family-name:var(--font-display)] text-text">{s.name}</p>
-                    <p className="text-[11px] text-text-secondary mt-0.5">{s.structure} · {s.wuxing} · {s.meaning}</p>
+                <div key={i} className="py-3 border-b border-border last:border-0">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xl font-[family-name:var(--font-display)] text-text">{s.name}</p>
+                    <span className="px-2.5 py-1 rounded-full text-[11px] font-medium"
+                      style={{background:s.wuxing==="木"?"#e8f5e9":s.wuxing==="火"?"#fce4ec":s.wuxing==="土"?"#fff8e1":s.wuxing==="金"?"#fff3e0":"#e3f2fd",
+                              color:s.wuxing==="木"?"#2e7d32":s.wuxing==="火"?"#c62828":s.wuxing==="土"?"#f57f17":s.wuxing==="金"?"#e65100":"#1565c0"}}>
+                      {s.wuxing}行
+                    </span>
                   </div>
-                  <span className="px-2 py-1 rounded-full text-[10px] font-medium"
-                    style={{background:s.wuxing.includes("木")?"#e8f5e9":s.wuxing.includes("火")?"#fce4ec":s.wuxing.includes("土")?"#fff8e1":s.wuxing.includes("金")?"#fff3e0":"#e3f2fd",
-                            color:s.wuxing.includes("木")?"#2e7d32":s.wuxing.includes("火")?"#c62828":s.wuxing.includes("土")?"#f57f17":s.wuxing.includes("金")?"#e65100":"#1565c0"}}>
-                    {s.wuxing}
-                  </span>
+                  <p className="text-xs text-text-secondary mb-1"><span className="text-text-tertiary">字义：</span>{s.meaning}</p>
+                  <p className="text-xs text-text-secondary mb-1"><span className="text-text-tertiary">寓意：</span>{s.story}</p>
+                  {s.source && s.source !== "--" && <p className="text-[10px] text-text-tertiary mb-1">出处：{s.source}</p>}
+                  <p className="text-[10px] text-gold italic mt-1">「{s.why}」</p>
                 </div>
               ))}
             </div>
