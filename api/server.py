@@ -162,22 +162,28 @@ def get_searcher():
     if _searcher is not None:
         return _searcher
 
-    # 尝试 ChromaDB 语义搜索（台式机首选）
+    # 台式机优先使用 SimpleSearcher v2（内存安全、零依赖、已验证通过）
+    # ChromaDB 语义搜索待 ONNX 版本兼容问题修复后再启用
+    try:
+        from api.rag.simple_search import SimpleSearcher
+        _searcher = SimpleSearcher()
+        _searcher.search("", top_k=1)  # 触发数据加载
+        _searcher_type = "keyword-v2"
+        print(f"  [RAG] SimpleSearcher v2 就绪 ({_searcher.record_count} 条记录)")
+        return _searcher
+    except Exception as e:
+        print(f"  [RAG] SimpleSearcher 加载失败: {e}")
+
+    # 保底：尝试 ChromaDB
     try:
         from api.rag.searcher import RAGSearcher
         _searcher = RAGSearcher()
-        _searcher.ensure_ready()  # 触发模型加载 + 索引连接
+        _searcher.ensure_ready()
         _searcher_type = "chromadb"
         print(f"  [RAG] ChromaDB 语义搜索就绪 ({_searcher._collection.count()} 条索引)")
         return _searcher
     except Exception as e:
-        print(f"  [RAG] ChromaDB 不可用 ({e})，降级到关键词搜索")
-
-    # Fallback: 零依赖关键词搜索
-    from api.rag.simple_search import SimpleSearcher
-    _searcher = SimpleSearcher()
-    _searcher_type = "keyword"
-    return _searcher
+        print(f"  [RAG] ChromaDB 不可用 ({e})")
 
 
 def get_ai():
