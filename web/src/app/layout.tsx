@@ -30,6 +30,8 @@ export const metadata: Metadata = {
   formatDetection: { telephone: false },
 };
 
+import PWARegister from "@/components/PWARegister";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN" className={`${zcool.variable} h-full`}>
@@ -37,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         bg-bg text-text font-[family-name:var(--font-body)]
                         overflow-x-hidden">
         {children}
+        <PWARegister />
       </body>
     </html>
   );

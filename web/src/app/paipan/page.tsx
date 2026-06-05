@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { getApiUrl } from "@/lib/api";
 import BottomNav from "@/components/BottomNav";
 import ShareCard from "@/components/ShareCard";
@@ -229,14 +230,24 @@ export default function PaipanPage() {
             {showTab==="ai" && (
               <div className="space-y-4 anim-enter">
                 {result.interpretation ? (
-                  <FeatureGate feature="AI简批（含古籍原文引用）">
-                    <div className="classical-quote">
-                      <p className="text-xs text-text-secondary mb-1">AI简批</p>
-                      <p className="text-sm text-text leading-relaxed whitespace-pre-line">
-                        {result.interpretation}
-                      </p>
-                    </div>
-                  </FeatureGate>
+                  <>
+                    <FeatureGate feature="AI简批（含古籍原文引用）">
+                      <div className="classical-quote">
+                        <p className="text-xs text-text-secondary mb-1">AI简批</p>
+                        <p className="text-sm text-text leading-relaxed whitespace-pre-line">
+                          {result.interpretation}
+                        </p>
+                      </div>
+                    </FeatureGate>
+                    {g?.pattern && (
+                      <Link
+                        href={`/xuetang?from=paipan&ref=${encodeURIComponent(g.pattern)}`}
+                        className="block text-center text-xs text-gold tap-active hover:underline py-2"
+                      >
+                        📚 想深入了解「{g.pattern}」？→ 学堂
+                      </Link>
+                    )}
+                  </>
                 ) : (
                   <div className="dao-card text-center py-8">
                     <p className="text-text-secondary text-sm">AI解读需要配置 DeepSeek API Key</p>

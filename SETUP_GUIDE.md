@@ -1,5 +1,7 @@
 # 台式机部署指南
 
+> ⚠️ **笔记本用户必读**：如果在笔记本上运行，请先看 [笔记本低配运行指南](#笔记本低配运行指南防卡死防黑屏) 部分，避免电脑卡死/黑屏。
+
 ## 前提条件
 
 台式机需要先装好：
@@ -131,6 +133,79 @@ npm run dev
 | `npm install` 失败 | 删掉 `node_modules` 文件夹重试 |
 | 端口被占用 | 换端口：`--port 3001` 或 `--port 8001` |
 | `python` 命令找不到 | 安装 Python 时没勾选 "Add to PATH"，重装或手动添加 |
+
+---
+
+## 笔记本低配运行指南（防卡死/防黑屏）
+
+如果你的笔记本只有 **4GB 或 8GB 内存**，之前运行时电脑卡死甚至黑屏，
+**这不是电脑坏了，是代码之前的内存策略有问题**。
+
+### 问题根因
+
+旧版 `SimpleSearcher` 会在内存中建立 n-gram 索引（660万+ 个词条），
+单进程吃掉 **~700MB-1GB 内存**。再加上：
+- Next.js dev server: ~500-800MB
+- FastAPI: ~200MB（含数据）
+- Windows 系统: ~2GB
+- 浏览器: ~300MB
+
+4GB 笔记本直接爆内存 → 触发磁盘换页 → 卡死 → 黑屏。
+
+### 现在的修复（v2 已应用）
+
+`SimpleSearcher` 已重写为流式扫描模式：
+- 内存占用从 ~700MB 降到 ~5-10MB
+- 搜索速度 4800 条 <100ms，完全不影响体验
+
+### 安全运行步骤
+
+**方案一：只跑后端（推荐，最安全）**
+
+```bash
+# 1. 启动后端
+cd d:\projects\创业项目
+python -m uvicorn api.server:app --port 8000
+# 不要加 --reload，reload 会额外开一个进程
+
+# 2. 浏览器打开 http://localhost:8000
+# API 直接能用，用 curl 或浏览器测试
+```
+
+**方案二：先后端再前端（8GB 以上）**
+
+```bash
+# 终端1：先启动后端（不加 --reload）
+python -m uvicorn api.server:app --port 8000
+
+# 等后端完全启动后，终端2：启动前端
+cd web
+# 用 --turbo=false 关掉实验性编译器，省 ~200MB
+npx next dev --turbo=false
+```
+
+**方案三：只跑前端（仅看页面，不求数据）**
+
+```bash
+cd web
+npx next dev --turbo=false
+```
+
+### 内存监控
+
+打开任务管理器（Ctrl+Shift+Esc），看"内存"列：
+- Python 进程应该 < 300MB
+- Node.js 进程应该 < 600MB
+- 两个加起来 > 80%（比如总共 8GB，用了 6.4GB+）→ 关掉一个
+
+### 如果你在笔记本上构建向量索引
+
+```bash
+# 只用小样本，不要跑全量！
+python -m api.rag.indexer --sample 200 --rebuild
+# 千万不要在笔记本上跑 --rebuild（不加 --sample），
+# ONNX 模型加载 + 向量化 会吃 2GB+ 内存
+```
 
 ---
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { getApiUrl } from "@/lib/api";
 import BottomNav from "@/components/BottomNav";
+import ProgressRing from "@/components/ProgressRing";
 import { checkAnswer, askMentor } from "@/lib/api";
 import { Loader2, BookOpen, ChevronRight, Lock, CheckCircle, ArrowLeft, Swords, Star, BookX, Trash2 } from "lucide-react";
 
@@ -104,6 +105,26 @@ export default function XuetangPage() {
     if (wrong) setWrongBook(JSON.parse(wrong));
     loadChapters();
   }, []);
+
+  // 场景跳转：从排盘/今日页面带参数跳过来 → 自动打开对应章节
+  useEffect(() => {
+    if (chapters.length === 0) return;
+    const params = new URLSearchParams(window.location.search);
+    const from = params.get("from");
+    const ref = params.get("ref");
+    if (from && ref) {
+      // 匹配包含关键词的章节
+      const matched = chapters.find(
+        (ch) =>
+          ch.title.includes(ref) ||
+          ch.subtitle.includes(ref) ||
+          ref.includes(ch.title)
+      );
+      if (matched) {
+        loadChapter(matched.id);
+      }
+    }
+  }, [chapters]);
 
   const saveWrongBook = (entries: WrongEntry[]) => {
     setWrongBook(entries);
@@ -302,6 +323,51 @@ export default function XuetangPage() {
                   className="px-4 py-2 bg-bg-subtle rounded-lg text-xs tap-active">
                   收起
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* 学习进度卡片 */}
+          {!loading && chapters.length > 0 && (
+            <div className="dao-card-warm mb-4 flex items-center gap-4 anim-scale-in">
+              <ProgressRing
+                progress={Math.round(
+                  (Object.values(passed).filter(Boolean).length /
+                    Math.max(chapters.length, 1)) *
+                    100
+                )}
+              />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-text">学习进度</p>
+                <p className="text-xs text-text-secondary mt-0.5">
+                  已完成 {Object.values(passed).filter(Boolean).length}/{chapters.length} 章
+                </p>
+                {(() => {
+                  const next = chapters.find(
+                    (ch) => !passed[ch.id] && isUnlocked(ch)
+                  );
+                  if (next) {
+                    return (
+                      <button
+                        onClick={() => loadChapter(next.id)}
+                        className="text-xs text-accent mt-1 font-medium tap-active"
+                      >
+                        继续学习 → {next.title}
+                      </button>
+                    );
+                  }
+                  if (
+                    Object.values(passed).filter(Boolean).length ===
+                    chapters.length
+                  ) {
+                    return (
+                      <p className="text-xs text-green mt-1">
+                        🎉 全部通关！
+                      </p>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
             </div>
           )}

@@ -4,16 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const tabs = [
-  { id: "mingli", label: "命理", icon: "☯", href: "/mingli" },
-  { id: "yiji", label: "择吉", icon: "☲", href: "/yiji" },
-  { id: "fengshui", label: "风水", icon: "☶", href: "/fengshui" },
-  { id: "zhouyi", label: "周易", icon: "☳", href: "/zhouyi" },
-  { id: "dianji", label: "典籍", icon: "☷", href: "/dianji" },
+  { id: "jinri", label: "今日", icon: "🏮", href: "/jinri" },
+  { id: "paipan", label: "排盘", icon: "☯", href: "/paipan" },
+  { id: "xuetang", label: "学堂", icon: "📚", href: "/xuetang" },
 ];
 
 export default function BottomNav() {
   const pathname = usePathname();
-  const isActive = (id: string) => pathname.startsWith(`/${id}`) || (id === "xuetang" && pathname === "/");
+  const isActive = (id: string) => pathname.startsWith(`/${id}`);
 
   return (
     <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px]

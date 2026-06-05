@@ -2,7 +2,11 @@
 
 /**
  * 功能分层组件
- * 灵感来源: 问真八字 Freemium 模式
+ * ============
+ * 当前阶段（内测推广期）：全部功能免费开放。
+ *
+ * 后续商业化时改回 Freemium 模式：
+ *   const [tier] = useState<Tier>("free");
  *
  * 免费功能: 排盘/今日宜忌/基础检索/断案录第一章
  * 付费功能: AI简批/深度命例/全部断案录/古籍溯源详细
@@ -27,7 +31,8 @@ export default function FeatureGate({
   feature: string;
   children: React.ReactNode;
 }) {
-  const [tier] = useState<Tier>("free"); // 默认免费，后续接用户系统
+  // 内测期全开 → 改回 "free" 即恢复 Freemium
+  const [tier] = useState<Tier>("premium");
 
   if (tier === "premium" || !PREMIUM_FEATURES.includes(feature)) {
     return <>{children}</>;

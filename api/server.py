@@ -139,18 +139,44 @@ class YijiRequest(BaseModel):
     gender: str = "男"
 
 
-# ===== 懒加载单例 =====
+# ===== 懒加载单例（真正懒惰，不触发数据加载）=====
 
 _searcher = None
 _interpreter = None
+_searcher_type = None  # 记录当前使用的检索器类型
 
 
 def get_searcher():
-    global _searcher
-    if _searcher is None:
-        # 笔记本ONNX有DLL问题，直接用关键词搜索
-        from api.rag.simple_search import SimpleSearcher
-        _searcher = SimpleSearcher()
+    """
+    获取检索器单例。
+
+    优先级：
+    1. ChromaDB 向量语义搜索（RAGSearcher）— 台式机首选
+       - 语义匹配："正官格"能搜到"正官者，乃甲见辛..."
+       - 需要 ONNX 运行时 + 已构建的向量索引
+    2. 关键词匹配（SimpleSearcher v2）— 保底方案
+       - 零依赖，纯 Python，内存 ~10MB
+       - ChromaDB 不可用时自动降级
+    """
+    global _searcher, _searcher_type
+    if _searcher is not None:
+        return _searcher
+
+    # 尝试 ChromaDB 语义搜索（台式机首选）
+    try:
+        from api.rag.searcher import RAGSearcher
+        _searcher = RAGSearcher()
+        _searcher.ensure_ready()  # 触发模型加载 + 索引连接
+        _searcher_type = "chromadb"
+        print(f"  [RAG] ChromaDB 语义搜索就绪 ({_searcher._collection.count()} 条索引)")
+        return _searcher
+    except Exception as e:
+        print(f"  [RAG] ChromaDB 不可用 ({e})，降级到关键词搜索")
+
+    # Fallback: 零依赖关键词搜索
+    from api.rag.simple_search import SimpleSearcher
+    _searcher = SimpleSearcher()
+    _searcher_type = "keyword"
     return _searcher
 
 
@@ -224,12 +250,11 @@ def api_full_analysis(req: PaipanRequest):
     # 用神
     yongshen = YongshenEngine().analyze(bazi)
 
-    # AI（可选）
+    # AI（可选，使用统一的检索器单例）
     interpretation = None
     ancient_refs = None
     try:
-        from api.rag.simple_search import SimpleSearcher
-        searcher = SimpleSearcher()
+        searcher = get_searcher()
         terms = f"{data['rizhu']}日主 {data['rizhu_wuxing']}"
         ancient_refs = searcher.search_for_ai(terms, top_k=2)
         from api.ai import AIInterpreter
