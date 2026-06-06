@@ -137,7 +137,7 @@ export default function JinriPage() {
           <div className="dao-card-warm relative">
             <p className="text-[10px] text-gold tracking-[0.1em] mb-2">📖 每日古籍</p>
             <div
-              className="text-sm text-text leading-loose cursor-pointer"
+              className="text-sm text-text leading-loose tracking-wide cursor-pointer"
               onClick={() => setShowFullText(true)}
             >
               <p className="line-clamp-3">{ancient.content}</p>

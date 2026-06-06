@@ -54,7 +54,7 @@ function PaipanContentInner() {
 
   return (
     <div className="flex flex-col min-h-dvh pb-20">
-      <header className="px-5 pt-10 pb-4">
+      <header className="px-5 pt-6 pb-3">
         <h1 className="text-2xl text-text font-[family-name:var(--font-display)] tracking-wider">
           八字排盘
         </h1>

@@ -25,10 +25,25 @@ export default function PWAInstallBanner() {
     useState<BeforeInstallPromptEvent | null>(null);
   const [showBanner, setShowBanner] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  const [isiOS, setIsiOS] = useState(false);
 
   useEffect(() => {
+    // 检测 iOS
+    const isIOSDevice =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    setIsiOS(isIOSDevice);
+
     // 检查是否已经被安装
     if (window.matchMedia("(display-mode: standalone)").matches) {
+      return;
+    }
+
+    // iOS 上直接显示手动指引（无 beforeinstallprompt）
+    if (isIOSDevice) {
+      const closed = localStorage.getItem("pwa-banner-closed");
+      if (!closed || Date.now() - parseInt(closed) > 7 * 24 * 60 * 60 * 1000) {
+        setShowBanner(true);
+      }
       return;
     }
 
@@ -36,7 +51,6 @@ export default function PWAInstallBanner() {
     const closed = localStorage.getItem("pwa-banner-closed");
     if (closed) {
       const closedTime = parseInt(closed);
-      // 7天后重新提示
       if (Date.now() - closedTime < 7 * 24 * 60 * 60 * 1000) {
         return;
       }
@@ -49,8 +63,6 @@ export default function PWAInstallBanner() {
     };
 
     window.addEventListener("beforeinstallprompt", handler);
-
-    // 如果已安装
     window.addEventListener("appinstalled", () => {
       setShowBanner(false);
       setDeferredPrompt(null);
@@ -95,23 +107,27 @@ export default function PWAInstallBanner() {
         {/* 文案 */}
         <div className="flex-1 min-w-0">
           <p className="text-white text-xs font-medium truncate">
-            添加到桌面
+            {isiOS ? "添加到桌面" : "添加到桌面"}
           </p>
           <p className="text-text-secondary text-[10px]">
-            即开即用 · 离线也能查
+            {isiOS
+              ? "点下方「分享」→ 「添加到主屏幕」"
+              : "即开即用 · 离线也能查"}
           </p>
         </div>
 
-        {/* 按钮 */}
-        <button
-          onClick={handleInstall}
-          className="px-3 py-1.5 bg-gold text-white text-xs rounded-full
-                     font-medium tap-active flex-shrink-0
-                     hover:bg-amber-600 transition-colors"
-        >
-          <Download size={12} className="inline mr-1" />
-          安装
-        </button>
+        {/* Android: 安装按钮 / iOS: 提示小图标 */}
+        {!isiOS && deferredPrompt && (
+          <button
+            onClick={handleInstall}
+            className="px-3 py-1.5 bg-gold text-white text-xs rounded-full
+                       font-medium tap-active flex-shrink-0
+                       hover:bg-amber-600 transition-colors"
+          >
+            <Download size={12} className="inline mr-1" />
+            安装
+          </button>
+        )}
 
         {/* 关闭 */}
         <button

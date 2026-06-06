@@ -7,6 +7,7 @@ const tabs = [
   { id: "jinri", label: "今日", icon: "🏮", href: "/jinri" },
   { id: "paipan", label: "排盘", icon: "☯", href: "/paipan" },
   { id: "xuetang", label: "学堂", icon: "📚", href: "/xuetang" },
+  { id: "my", label: "我的", icon: "☰", href: "/my" },
 ];
 
 export default function BottomNav() {
