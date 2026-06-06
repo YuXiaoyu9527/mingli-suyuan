@@ -137,7 +137,7 @@ function PaipanPanel() {
   const [form, setForm] = useState({year:1990,month:5,day:20,hour:12,minute:0,gender:"男",city:""});
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
-  const [tab, setTab] = useState<"overview"|"detail"|"ai">("overview");
+  const [tab, setTab] = useState<"overview"|"detail"|"ai"|"yuncheng">("overview");
 
   const update = (k:string,v:any)=>setForm({...form,[k]:v});
   const handle = async () => {
