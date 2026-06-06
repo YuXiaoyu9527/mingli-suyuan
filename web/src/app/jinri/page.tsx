@@ -4,12 +4,16 @@ import { useState, useEffect } from "react";
 import { getApiUrl } from "@/lib/api";
 import BottomNav from "@/components/BottomNav";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { X } from "lucide-react";
 
 export default function JinriPage() {
+  const router = useRouter();
   const [yiji, setYiji] = useState<any>(null);
   const [ancient, setAncient] = useState<any>(null);
   const [mingli, setMingli] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [showFullText, setShowFullText] = useState(false);
 
   useEffect(() => {
     loadToday();
@@ -45,6 +49,14 @@ export default function JinriPage() {
       console.error(e);
     }
     setLoading(false);
+  };
+
+  const handleMingliClick = (m: any) => {
+    if (!m?.birth_date) return;
+    const [year, month, day] = m.birth_date.split("-").map(Number);
+    router.push(
+      `/paipan?year=${year}&month=${month}&day=${day}&name=${encodeURIComponent(m.name)}`
+    );
   };
 
   const quickLinks = [
@@ -122,22 +134,40 @@ export default function JinriPage() {
 
         {/* 每日古籍 */}
         {ancient && (
-          <Link
-            href={`/xuetang?from=jinri&ref=${encodeURIComponent(ancient.section || ancient.source_name || "")}`}
-            className="block dao-card-warm tap-active hover:shadow-md transition-shadow"
-          >
+          <div className="dao-card-warm relative">
             <p className="text-[10px] text-gold tracking-[0.1em] mb-2">📖 每日古籍</p>
-            <p className="text-sm text-text leading-relaxed line-clamp-3">{ancient.content}</p>
+            <div
+              className="text-sm text-text leading-loose cursor-pointer"
+              onClick={() => setShowFullText(true)}
+            >
+              <p className="line-clamp-3">{ancient.content}</p>
+            </div>
             <p className="text-[11px] text-text-tertiary mt-2">
               ——《{ancient.source_name}》{ancient.volume}
             </p>
-          </Link>
+            {/* 研读按钮 */}
+            <button
+              onClick={() => setShowFullText(true)}
+              className="absolute bottom-3 right-3 text-[10px] text-gold/70 hover:text-gold
+                         border border-gold/30 rounded-full px-3 py-1 tap-active transition-colors"
+            >
+              研读全文 →
+            </button>
+          </div>
         )}
 
-        {/* 历史命例 */}
+        {/* 历史命例 — 可点击跳转排盘 */}
         {mingli && (
-          <div className="dao-card tap-active">
-            <p className="text-[10px] text-accent tracking-[0.1em] mb-2">🏛️ 历史命例</p>
+          <button
+            onClick={() => handleMingliClick(mingli)}
+            className="w-full text-left dao-card tap-active hover:border-accent/30 transition-colors group"
+          >
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] text-accent tracking-[0.1em] mb-2">🏛️ 历史命例</p>
+              <span className="text-[10px] text-text-tertiary opacity-0 group-hover:opacity-100 transition-opacity">
+                点击排盘 →
+              </span>
+            </div>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-bold text-text">{mingli.name}</p>
@@ -150,9 +180,9 @@ export default function JinriPage() {
               )}
             </div>
             <p className="text-[10px] text-text-tertiary mt-2">
-              {mingli.source_type || ""} · 可信度：{mingli.credibility || "中"}
+              {mingli.source_type || mingli.reliability || ""} · 可信度：{mingli.credibility || "中"}
             </p>
-          </div>
+          </button>
         )}
 
         {/* loading */}
@@ -169,6 +199,40 @@ export default function JinriPage() {
           无任何现实指导意义，不构成人生决策依据。
         </p>
       </div>
+
+      {/* 古籍全文弹窗 */}
+      {showFullText && ancient && (
+        <div
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center
+                     bg-black/40 backdrop-blur-sm"
+          onClick={() => setShowFullText(false)}
+        >
+          <div
+            className="bg-white w-full max-w-[430px] max-h-[70vh] overflow-y-auto
+                       rounded-t-2xl sm:rounded-2xl p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-xs text-gold tracking-[0.1em]">
+                📖 《{ancient.source_name}》{ancient.volume} · {ancient.section}
+              </p>
+              <button
+                onClick={() => setShowFullText(false)}
+                className="text-text-tertiary tap-active"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <p className="text-sm text-text leading-loose whitespace-pre-line">
+              {ancient.content}
+            </p>
+            <div className="gold-divider my-4" />
+            <p className="text-[10px] text-text-tertiary text-center">
+              古籍仅供参考，原文可能有OCR识别偏差
+            </p>
+          </div>
+        </div>
+      )}
 
       <BottomNav />
     </div>

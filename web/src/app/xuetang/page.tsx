@@ -255,7 +255,7 @@ export default function XuetangPage() {
           </div>
         </header>
 
-        <div className="px-5 flex-1 space-y-3">
+        <div className="px-5 flex-1 space-y-3 pb-32">
           {loading && (
             <div className="flex justify-center py-12">
               <Loader2 size={28} className="animate-spin text-gold" />

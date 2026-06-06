@@ -1,17 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { getApiUrl } from "@/lib/api";
 import BottomNav from "@/components/BottomNav";
 import ShareCard from "@/components/ShareCard";
 import FeatureGate from "@/components/FeatureGate";
 import { Loader2 } from "lucide-react";
 
-export default function PaipanPage() {
+function PaipanContentInner() {
+  const searchParams = useSearchParams();
   const [form, setForm] = useState({
     year: 1990, month: 5, day: 20, hour: 12, minute: 0, gender: "男", city: "",
   });
+  const [hintName, setHintName] = useState("");
+
+  // 从URL参数预填表单（历史命例跳转）
+  useEffect(() => {
+    const y = searchParams.get("year");
+    const m = searchParams.get("month");
+    const d = searchParams.get("day");
+    const n = searchParams.get("name");
+    if (y && m && d) {
+      setForm((prev) => ({ ...prev, year: +y, month: +m, day: +d }));
+    }
+    if (n) setHintName(n);
+  }, [searchParams]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState("");
@@ -44,38 +59,93 @@ export default function PaipanPage() {
           八字排盘
         </h1>
         <p className="text-text-secondary text-sm mt-1">lunar-python引擎 · 真太阳时 · 格局+用神</p>
+        {hintName && (
+          <p className="text-xs text-gold mt-1">
+            📋 已从命例导入「{hintName}」的出生日期
+          </p>
+        )}
       </header>
 
       <div className="px-5 flex-1 space-y-4">
-        {/* 输入 */}
+        {/* 输入区 — 精致网格 */}
         <div className="dao-card space-y-3">
-          <div className="flex gap-2">
-            <input type="number" value={form.year} onChange={e=>update("year",+e.target.value)}
-              className="flex-1 bg-bg-subtle border border-border rounded-lg px-3 py-2.5
-                         text-text text-sm focus:outline-none focus:border-gold" placeholder="年"/>
-            <input type="number" value={form.month} onChange={e=>update("month",+e.target.value)} min={1} max={12}
-              className="w-14 bg-bg-subtle border border-border rounded-lg px-2 py-2.5
-                         text-text text-sm text-center focus:outline-none focus:border-gold" placeholder="月"/>
-            <input type="number" value={form.day} onChange={e=>update("day",+e.target.value)} min={1} max={31}
-              className="w-14 bg-bg-subtle border border-border rounded-lg px-2 py-2.5
-                         text-text text-sm text-center focus:outline-none focus:border-gold" placeholder="日"/>
-            <input type="number" value={form.hour} onChange={e=>update("hour",+e.target.value)} min={0} max={23}
-              className="w-14 bg-bg-subtle border border-border rounded-lg px-2 py-2.5
-                         text-text text-sm text-center focus:outline-none focus:border-gold" placeholder="时"/>
-            <select value={form.gender} onChange={e=>update("gender",e.target.value)}
-              className="w-14 bg-bg-subtle border border-border rounded-lg px-1 py-2.5
-                         text-text text-sm focus:outline-none">
-              <option>男</option><option>女</option>
-            </select>
+          {/* 年月日时 */}
+          <div className="grid grid-cols-4 gap-2">
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] text-text-tertiary text-center">年</label>
+              <input
+                type="number" value={form.year}
+                onChange={e => update("year", +e.target.value)}
+                className="w-full bg-bg-subtle border border-border rounded-lg px-2 py-3
+                           text-text text-base text-center focus:outline-none focus:border-gold
+                           placeholder:text-text-tertiary/60"
+                placeholder="1990"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] text-text-tertiary text-center">月</label>
+              <input
+                type="number" value={form.month}
+                onChange={e => update("month", +e.target.value)}
+                min={1} max={12}
+                className="w-full bg-bg-subtle border border-border rounded-lg px-2 py-3
+                           text-text text-base text-center focus:outline-none focus:border-gold
+                           placeholder:text-text-tertiary/60"
+                placeholder="5"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] text-text-tertiary text-center">日</label>
+              <input
+                type="number" value={form.day}
+                onChange={e => update("day", +e.target.value)}
+                min={1} max={31}
+                className="w-full bg-bg-subtle border border-border rounded-lg px-2 py-3
+                           text-text text-base text-center focus:outline-none focus:border-gold
+                           placeholder:text-text-tertiary/60"
+                placeholder="20"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] text-text-tertiary text-center">时</label>
+              <input
+                type="number" value={form.hour}
+                onChange={e => update("hour", +e.target.value)}
+                min={0} max={23}
+                className="w-full bg-bg-subtle border border-border rounded-lg px-2 py-3
+                           text-text text-base text-center focus:outline-none focus:border-gold
+                           placeholder:text-text-tertiary/60"
+                placeholder="12"
+              />
+            </div>
           </div>
-          <div className="flex gap-2">
-            <input type="text" value={form.city} onChange={e=>update("city",e.target.value)}
-              placeholder="出生城市（可选，用于真太阳时）"
-              className="flex-1 bg-bg-subtle border border-border rounded-lg px-3 py-2
-                         text-text text-xs focus:outline-none focus:border-gold"/>
-            <button onClick={handleSubmit} disabled={loading}
-              className="bg-accent text-white px-5 rounded-lg text-sm font-medium tap-active flex items-center gap-1.5">
-              {loading ? <Loader2 size={16} className="animate-spin"/> : "排盘"}
+
+          {/* 性别 + 城市 + 按钮 */}
+          <div className="flex gap-2 items-center">
+            <label className="text-[10px] text-text-tertiary flex-shrink-0">性别</label>
+            <select
+              value={form.gender}
+              onChange={e => update("gender", e.target.value)}
+              className="w-14 bg-bg-subtle border border-border rounded-lg px-2 py-3
+                         text-text text-sm text-center focus:outline-none focus:border-gold"
+            >
+              <option>男</option>
+              <option>女</option>
+            </select>
+            <input
+              type="text" value={form.city}
+              onChange={e => update("city", e.target.value)}
+              placeholder="出生城市（真太阳时）"
+              className="flex-1 bg-bg-subtle border border-border rounded-lg px-3 py-3
+                         text-text text-xs focus:outline-none focus:border-gold placeholder:text-text-tertiary/60"
+            />
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="bg-accent text-white px-5 py-3 rounded-lg text-sm font-medium
+                         tap-active flex items-center gap-1.5 flex-shrink-0"
+            >
+              {loading ? <Loader2 size={16} className="animate-spin" /> : "排盘"}
             </button>
           </div>
           {error && <p className="text-xs text-accent text-center">{error}</p>}
@@ -275,5 +345,17 @@ export default function PaipanPage() {
 
       <BottomNav />
     </div>
+  );
+}
+
+export default function PaipanPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center py-20">
+        <Loader2 size={24} className="animate-spin text-gold" />
+      </div>
+    }>
+      <PaipanContentInner />
+    </Suspense>
   );
 }
