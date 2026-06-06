@@ -12,32 +12,17 @@ import PWAInstallBanner from "./PWAInstallBanner";
 
 export default function PWARegister() {
   useEffect(() => {
+    // 暂时禁用 Service Worker 以避免缓存锁死新版本
+    // 等部署稳定后再开启
     if (typeof window === "undefined" || !("serviceWorker" in navigator)) {
       return;
     }
 
-    navigator.serviceWorker
-      .register("/sw.js")
-      .then((registration) => {
-        console.log("[PWA] Service Worker 已注册:", registration.scope);
-
-        // 监听更新
-        registration.addEventListener("updatefound", () => {
-          const newWorker = registration.installing;
-          if (!newWorker) return;
-          newWorker.addEventListener("statechange", () => {
-            if (
-              newWorker.state === "installed" &&
-              navigator.serviceWorker.controller
-            ) {
-              console.log("[PWA] 新版本已就绪，刷新后生效");
-            }
-          });
-        });
-      })
-      .catch((err) => {
-        console.warn("[PWA] Service Worker 注册失败:", err);
-      });
+    // 先注销所有旧 SW，确保浏览器拿到最新内容
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((reg) => reg.unregister());
+      console.log("[PWA] 已清除旧 Service Worker");
+    });
   }, []);
 
   return <PWAInstallBanner />;
