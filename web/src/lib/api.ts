@@ -1,16 +1,32 @@
 /**
  * 后端 API 调用层
- * 自动检测环境：电脑用localhost，手机用局域网IP
+ *
+ * 自动检测环境：
+ * - 本地开发（localhost）→ http://localhost:8000
+ * - 线上部署（Netlify）→ Railway 后端 URL
+ * - 手机局域网测试 → 当前 host:8000
  */
 
-// 浏览器里运行时判断：如果是localhost访问就用localhost，否则用当前host
+// 生产环境后端地址（Railway 部署后生成）
+const PRODUCTION_API = "https://mingli-suyuan-production.up.railway.app";
+
 const getApiBase = () => {
-  if (typeof window === "undefined") return "http://localhost:8000";
+  if (typeof window === "undefined") {
+    // 服务端渲染：如果是生产构建用 Railway，否则用本地
+    if (process.env.NODE_ENV === "production") return PRODUCTION_API;
+    return "http://localhost:8000";
+  }
+
   const host = window.location.hostname;
+  // 本地开发
   if (host === "localhost" || host === "127.0.0.1") {
     return "http://localhost:8000";
   }
-  // 手机访问时用同样的host但端口8000
+  // Netlify 部署的域名 → 用 Railway
+  if (host.includes("netlify.app")) {
+    return PRODUCTION_API;
+  }
+  // 局域网手机测试
   return `http://${host}:8000`;
 };
 
