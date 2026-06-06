@@ -9,9 +9,11 @@
  * - API：Network First（保证数据最新，离线时用缓存兜底）
  */
 
-const CACHE_STATIC = "mingli-static-v1";
-const CACHE_PAGES = "mingli-pages-v1";
-const CACHE_API = "mingli-api-v1";
+// 版本号 — 每次部署改这里，浏览器自动刷新缓存
+const SW_VERSION = "v3";
+const CACHE_STATIC = `mingli-static-${SW_VERSION}`;
+const CACHE_PAGES = `mingli-pages-${SW_VERSION}`;
+const CACHE_API = `mingli-api-${SW_VERSION}`;
 
 const STATIC_ASSETS = [
   "/",
