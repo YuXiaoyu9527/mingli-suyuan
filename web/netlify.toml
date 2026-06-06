@@ -1,11 +1,9 @@
-# Netlify 部署配置
-# Next.js 16 项目自动识别，无需额外配置
+# Netlify 部署配置 — Next.js 16 + App Router
 
 [build]
   command = "npm run build"
   publish = ".next"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# 启用 Next.js 官方插件（处理 SSR、路由、图片优化）
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
