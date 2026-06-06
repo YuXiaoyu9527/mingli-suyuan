@@ -1,0 +1,54 @@
+<h2>宣纸书院 — 动效与质感</h2>
+<p class="subtitle">最后一个设计决策：页面切换和交互动效的风格。这决定了App的"气质"——是轻快现代还是沉稳古典。</p>
+
+<div class="cards">
+  <div class="card" data-choice="zen" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background: #F5F0E8; padding: 20px; border-radius: 8px; text-align: center; font-family: serif;">
+        <div style="font-size: 10px; color: #8B7D6B; letter-spacing: 2px; margin-bottom: 12px;">禅意 · 缓慢 · 呼吸感</div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center;">
+          <div style="width: 120px; height: 3px; background: linear-gradient(90deg, transparent, #C9A96E, transparent); border-radius: 2px; animation: none;"></div>
+          <div style="font-size: 11px; color: #2C2416;">页面淡入 + 元素依次浮现</div>
+          <div style="width: 80px; height: 3px; background: linear-gradient(90deg, transparent, #EDE5D5, transparent); border-radius: 2px;"></div>
+          <div style="font-size: 10px; color: #8B7D6B;">切换时长 600ms · ease-out</div>
+          <div style="width: 60px; height: 3px; background: linear-gradient(90deg, transparent, #E0D5C0, transparent); border-radius: 2px;"></div>
+          <div style="font-size: 9px; color: #8B7D6B;">像翻开一页宣纸</div>
+        </div>
+        <div style="margin-top: 12px; padding: 8px; background: white; border: 1px solid #E0D5C0; border-radius: 6px; font-size: 9px; color: #2C2416;">
+          卡片：fade-up · 交错延迟 80ms<br/>
+          数字：慢速计数动画<br/>
+          页面切换：淡入淡出
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>🍃 禅意节奏</h3>
+      <p>慢、柔、有呼吸感。页面淡入 + 卡片从下浮出 + 数字缓慢滚动。像潮汐App的冥想气质。给用户一种"不赶时间"的感觉。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="crisp" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background: #F5F0E8; padding: 20px; border-radius: 8px; text-align: center; font-family: serif;">
+        <div style="font-size: 10px; color: #8B7D6B; letter-spacing: 2px; margin-bottom: 12px;">利落 · 轻快 · 工具感</div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center;">
+          <div style="width: 120px; height: 3px; background: #C43A31; border-radius: 2px;"></div>
+          <div style="font-size: 11px; color: #2C2416;">即时响应 + 微弹跳</div>
+          <div style="width: 80px; height: 3px; background: #C43A31; border-radius: 2px; opacity:0.7;"></div>
+          <div style="font-size: 10px; color: #8B7D6B;">切换时长 250ms · spring</div>
+          <div style="width: 60px; height: 3px; background: #C43A31; border-radius: 2px; opacity:0.5;"></div>
+          <div style="font-size: 9px; color: #8B7D6B;">像翻一张卡片</div>
+        </div>
+        <div style="margin-top: 12px; padding: 8px; background: white; border: 1px solid #E0D5C0; border-radius: 6px; font-size: 9px; color: #2C2416;">
+          卡片：scale-in · spring弹跳<br/>
+          数字：即时切换<br/>
+          页面切换：slide-left/right
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>⚡ 利落工具感</h3>
+      <p>快、准、有弹性。信息即时呈现 + 微弹跳动画。像问真八字的工具气质。给用户"效率高、专业"的感觉。</p>
+    </div>
+  </div>
+</div>

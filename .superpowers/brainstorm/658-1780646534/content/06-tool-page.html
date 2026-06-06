@@ -1,0 +1,96 @@
+<h2>宣纸书院 — 排盘工具页设计</h2>
+<p class="subtitle">首页是日历Hero。现在设计核心工具页——排盘。参考问真八字：输入→结果，极简专注。但我们要加"格局+用神+AI古籍解读"的差异化。</p>
+
+<div class="cards">
+  <div class="card" data-choice="wenzhen-style" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background: #F5F0E8; padding: 16px; border-radius: 8px; font-family: serif; max-width: 300px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 12px;">
+          <div style="font-size: 16px; color: #2C2416; letter-spacing: 3px;">八字排盘</div>
+        </div>
+        <!-- 输入区 -->
+        <div style="background: white; border: 1px solid #E0D5C0; border-radius: 10px; padding: 12px; margin-bottom: 10px;">
+          <div style="display: flex; gap: 4px; justify-content: center; align-items: center;">
+            <input style="width:36px;height:28px;border:1px solid #E0D5C0;border-radius:6px;text-align:center;font-size:10px;background:#F5F0E8;" placeholder="年" value="1990">
+            <span style="font-size:10px;color:#8B7D6B;">年</span>
+            <input style="width:24px;height:28px;border:1px solid #E0D5C0;border-radius:6px;text-align:center;font-size:10px;background:#F5F0E8;" placeholder="月" value="5">
+            <span style="font-size:10px;color:#8B7D6B;">月</span>
+            <input style="width:24px;height:28px;border:1px solid #E0D5C0;border-radius:6px;text-align:center;font-size:10px;background:#F5F0E8;" placeholder="日" value="20">
+            <span style="font-size:10px;color:#8B7D6B;">日</span>
+          </div>
+          <div style="display: flex; gap: 4px; justify-content: center; align-items: center; margin-top: 6px;">
+            <input style="width:24px;height:28px;border:1px solid #E0D5C0;border-radius:6px;text-align:center;font-size:10px;background:#F5F0E8;" placeholder="时" value="12">
+            <span style="font-size:10px;color:#8B7D6B;">时</span>
+            <select style="height:28px;border:1px solid #E0D5C0;border-radius:6px;font-size:10px;background:#F5F0E8;padding:0 4px;"><option>男</option><option>女</option></select>
+          </div>
+          <div style="background:#C43A31;color:white;border-radius:6px;padding:8px;text-align:center;font-size:11px;margin-top:8px;">开始排盘</div>
+        </div>
+        <!-- 结果区 -->
+        <div style="background: white; border: 1px solid #E0D5C0; border-radius: 10px; padding: 12px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; text-align: center; margin-bottom: 10px;">
+            <div><div style="font-size:8px;color:#8B7D6B;">年柱</div><div style="font-size:14px;color:#2C2416;">庚午</div><div style="font-size:7px;color:#C9A96E;">路旁土</div></div>
+            <div><div style="font-size:8px;color:#8B7D6B;">月柱</div><div style="font-size:14px;color:#2C2416;">辛巳</div><div style="font-size:7px;color:#C9A96E;">白蜡金</div></div>
+            <div style="background:#C43A31/08; border-radius:4px; padding:2px;"><div style="font-size:8px;color:#C43A31;">日柱</div><div style="font-size:16px;color:#C43A31;font-weight:bold;">乙酉</div><div style="font-size:7px;color:#C9A96E;">泉中水</div></div>
+            <div><div style="font-size:8px;color:#8B7D6B;">时柱</div><div style="font-size:14px;color:#2C2416;">壬午</div><div style="font-size:7px;color:#C9A96E;">杨柳木</div></div>
+          </div>
+          <div style="display: flex; gap: 6px; justify-content: center; font-size: 9px;">
+            <span style="background:#EDE5D5;padding:2px 6px;border-radius:10px;color:#2C2416;">日主 乙木</span>
+            <span style="background:#C43A31/15;padding:2px 6px;border-radius:10px;color:#C43A31;">七杀格</span>
+            <span style="background:#EDE5D5;padding:2px 6px;border-radius:10px;color:#2C2416;">身弱</span>
+          </div>
+          <div style="font-size: 9px; color: #2C2416; margin-top: 8px; line-height: 1.6; border-top: 1px solid #EDE5D5; padding-top: 8px;">
+            用神：<b>水、木</b> &nbsp; 忌神：<b>金、土</b><br/>
+            传统命理认为，乙木生于巳月，火旺木焚，宜用水调候…
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>🎯 问真式：输入在上，结果在下</h3>
+      <p>一页到底。上区输入，下区结果。四柱+日主+格局+用神+解读都在同一屏。向下滚动看更多。问真八字的经典布局。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="step-style" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background: #F5F0E8; padding: 16px; border-radius: 8px; font-family: serif; max-width: 300px; margin: 0 auto;">
+        <!-- Step 1: 输入 -->
+        <div style="text-align: center; margin-bottom: 8px; font-size: 9px; color: #8B7D6B; letter-spacing: 1px;">STEP 1 · 输入生辰</div>
+        <div style="background: white; border: 1px solid #E0D5C0; border-radius: 10px; padding: 10px; margin-bottom: 6px;">
+          <div style="display: flex; gap: 3px; justify-content: center;">
+            <input style="width:30px;height:24px;border:1px solid #E0D5C0;border-radius:4px;text-align:center;font-size:9px;" value="1990">
+            <input style="width:20px;height:24px;border:1px solid #E0D5C0;border-radius:4px;text-align:center;font-size:9px;" value="5">
+            <input style="width:20px;height:24px;border:1px solid #E0D5C0;border-radius:4px;text-align:center;font-size:9px;" value="20">
+            <input style="width:20px;height:24px;border:1px solid #E0D5C0;border-radius:4px;text-align:center;font-size:9px;" value="12">
+          </div>
+        </div>
+        <!-- Step 2: 排盘结果 -->
+        <div style="text-align: center; margin-bottom: 6px; font-size: 9px; color: #8B7D6B; letter-spacing: 1px;">STEP 2 · 四柱八字</div>
+        <div style="background: white; border: 1px solid #E0D5C0; border-radius: 10px; padding: 10px; margin-bottom: 6px;">
+          <div style="display: flex; gap: 8px; justify-content: center; font-size: 12px; color: #2C2416; letter-spacing: 2px;">
+            <span>庚午</span><span>辛巳</span><span style="color:#C43A31;font-weight:bold;">乙酉</span><span>壬午</span>
+          </div>
+        </div>
+        <!-- Step 3: 分析 -->
+        <div style="text-align: center; margin-bottom: 6px; font-size: 9px; color: #8B7D6B; letter-spacing: 1px;">STEP 3 · 格局用神</div>
+        <div style="background: white; border: 1px solid #C9A96E; border-radius: 10px; padding: 10px; margin-bottom: 6px;">
+          <div style="font-size: 10px; color: #2C2416; line-height: 1.6;">
+            <b>七杀格</b> · 日主乙木 · 身弱<br/>
+            用神水木 · 忌神金土
+          </div>
+        </div>
+        <!-- Step 4: AI -->
+        <div style="text-align: center; margin-bottom: 6px; font-size: 9px; color: #8B7D6B; letter-spacing: 1px;">STEP 4 · 古籍参证</div>
+        <div style="background: white; border: 1px solid #E0D5C0; border-radius: 10px; padding: 10px;">
+          <div style="font-size: 9px; color: #2C2416; line-height: 1.6;">
+            《三命通會·卷五》："七杀者，偏官也。制伏得当，可为将帅之才…"
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>📋 分步渐进式</h3>
+      <p>四个卡片依次展开：①输入生辰 → ②八字排盘 → ③格局用神 → ④古籍解读。每一步独立成卡，像问真八字的三面板系统。渐进披露信息，学习路径清晰。</p>
+    </div>
+  </div>
+</div>

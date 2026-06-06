@@ -223,7 +223,7 @@ function PaipanPanel() {
           </div>
 
           <div className="flex gap-1 bg-bg-subtle rounded-lg p-1">
-            {[{id:"overview" as const,label:"概览"},{id:"detail" as const,label:"详情"},{id:"ai" as const,label:"AI"}].map(t=>(
+            {[{id:"overview" as const,label:"概览"},{id:"detail" as const,label:"详情"},{id:"yuncheng" as const,label:"运程"},{id:"ai" as const,label:"AI"}].map(t=>(
               <button key={t.id} onClick={()=>setTab(t.id)}
                 className={`flex-1 py-1.5 rounded-md text-xs ${tab===t.id?"bg-bg font-bold":"text-text-secondary"}`}>{t.label}</button>
             ))}
@@ -272,6 +272,71 @@ function PaipanPanel() {
               {result.interpretation?(
                 <FeatureGate feature="AI简批"><div className="classical-quote text-sm"><p className="text-xs text-text-secondary mb-1">AI简批</p><p className="leading-relaxed whitespace-pre-line">{result.interpretation}</p></div></FeatureGate>
               ):<div className="dao-card text-center py-6"><p className="text-text-secondary text-sm">AI需配置DeepSeek API Key</p></div>}
+            </div>
+          )}
+
+          {tab==="yuncheng"&&(
+            <div className="space-y-4 anim-enter">
+              {/* ===== 大运 ===== */}
+              <div className="dao-card py-4 px-4">
+                <p className="text-xs font-bold text-text mb-3">大运 · 十年一步</p>
+                <p className="text-[10px] text-text-tertiary mb-3">
+                  阳男阴女顺排，阴男阳女逆排。从月柱起运，起运年龄由出生日距节气天数决定。
+                </p>
+                <div className="overflow-x-auto -mx-1 px-1">
+                  <div className="flex gap-1.5 min-w-max pb-1">
+                    {(result.paipan.dayun || []).map((dy: any, i: number) => {
+                      const isCurrent = dy.start_age <= 30 && dy.end_age >= 30; // 简易高亮
+                      return (
+                        <div key={i}
+                          className={`flex-shrink-0 w-[72px] rounded-lg py-2.5 px-1.5 text-center border
+                            ${isCurrent
+                              ? "bg-accent/5 border-accent/30 shadow-sm"
+                              : "bg-bg-subtle border-border"}`}>
+                          <p className="text-[9px] text-text-tertiary mb-0.5">{dy.start_age}-{dy.end_age}岁</p>
+                          <p className={`text-sm font-[family-name:var(--font-display)] leading-tight
+                            ${isCurrent ? "text-accent" : "text-text"}`}>{dy.ganzhi}</p>
+                          <p className="text-[9px] text-text-tertiary mt-0.5">{dy.nayin}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* ===== 神煞 ===== */}
+              <div className="dao-card py-4 px-4">
+                <p className="text-xs font-bold text-text mb-3">神煞</p>
+                {result.paipan.shensha && Object.keys(result.paipan.shensha).length > 0 ? (
+                  <div className="space-y-2">
+                    {Object.entries(result.paipan.shensha as Record<string, string[]>).map(([name, positions]) => {
+                      const isJi = name.includes("贵人") || name.includes("将星") || name.includes("文昌");
+                      const isXiong = name.includes("羊刃") || name.includes("空亡");
+                      const colorClass = isJi ? "bg-green/10 text-green border-green/20" :
+                                         isXiong ? "bg-accent/8 text-accent/80 border-accent/20" :
+                                         "bg-bg-subtle text-text-secondary border-border";
+                      return (
+                        <div key={name} className="flex items-center gap-2">
+                          <span className={`text-[11px] px-2 py-0.5 rounded-full border font-medium min-w-[72px] text-center ${colorClass}`}>
+                            {name}
+                          </span>
+                          <span className="text-[10px] text-text-tertiary">
+                            {positions.map((p: string) => {
+                              const posMap: Record<string, string> = { "年": "年柱", "月": "月柱", "日": "日柱", "时": "时柱" };
+                              return posMap[p] || p;
+                            }).join(" · ")}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-xs text-text-tertiary">此八字无特殊神煞标注</p>
+                )}
+                <p className="text-[10px] text-text-tertiary mt-3 leading-relaxed">
+                  神煞仅供参考。古籍认为，神煞需结合格局与用神同看，不可单凭神煞断吉凶。
+                </p>
+              </div>
             </div>
           )}
 

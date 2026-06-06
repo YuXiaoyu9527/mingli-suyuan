@@ -1,0 +1,9 @@
+# Netlify 部署配置 — Next.js 16 + App Router
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# 启用 Next.js 官方插件（处理 SSR、路由、图片优化）
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

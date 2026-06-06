@@ -1,0 +1,92 @@
+<h2>宣纸书院 — 首页结构设计</h2>
+<p class="subtitle">现在决定打开 App 后第一眼看到什么。当前首页直接重定向到 /mingli，等于没有首页。一个好的首页能让视频推广时第一印象拉满。</p>
+
+<div class="cards">
+  <div class="card" data-choice="daily" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background: linear-gradient(180deg, #F5F0E8 0%, #EDE5D5 100%); padding: 20px; border-radius: 8px; min-height: 220px; font-family: serif;">
+        <!-- 顶部 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <div style="font-size: 22px; color: #2C2416; letter-spacing: 4px;">命理溯源</div>
+          <div style="font-size: 10px; color: #8B7D6B;">甲辰年 · 五月初十</div>
+        </div>
+        <!-- 今日卡片 -->
+        <div style="background: white; border: 1px solid #E0D5C0; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
+          <div style="font-size: 11px; color: #C43A31; letter-spacing: 3px; margin-bottom: 6px;">今 日 宜 忌</div>
+          <div style="font-size: 28px; color: #2C2416; letter-spacing: 2px; margin-bottom: 10px;">甲子日</div>
+          <div style="display: flex; gap: 16px; justify-content: center;">
+            <div>
+              <div style="font-size: 9px; color: #8B7D6B; margin-bottom: 2px;">宜</div>
+              <div style="font-size: 12px; color: #2C2416;">祭祀 · 祈福 · 出行</div>
+            </div>
+            <div style="width:1px;background:#E0D5C0;"></div>
+            <div>
+              <div style="font-size: 9px; color: #8B7D6B; margin-bottom: 2px;">忌</div>
+              <div style="font-size: 12px; color: #C43A31;">开市 · 动土</div>
+            </div>
+          </div>
+        </div>
+        <!-- 快捷入口 -->
+        <div style="display: flex; gap: 8px;">
+          <div style="flex:1; background: white; border: 1px solid #E0D5C0; border-radius: 8px; padding: 10px; text-align: center; font-size: 11px; color: #2C2416;">📅 排盘</div>
+          <div style="flex:1; background: white; border: 1px solid #E0D5C0; border-radius: 8px; padding: 10px; text-align: center; font-size: 11px; color: #2C2416;">🔮 占卜</div>
+          <div style="flex:1; background: white; border: 1px solid #E0D5C0; border-radius: 8px; padding: 10px; text-align: center; font-size: 11px; color: #2C2416;">📖 典籍</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>🏮 今日一览</h3>
+      <p>首页 = 今日黄历 + 快捷入口 · 打开即看今日宜忌 · 像潮汐App的"此时此刻" · 视频里第一帧就是一个漂亮的日历卡片</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>适合推广</h4><ul><li>第一眼就是信息量</li><li>每日变化，促使用户反复打开</li></ul></div>
+        <div class="cons"><h4>注意</h4><ul><li>需要后端返回今日数据</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="dashboard" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background: linear-gradient(180deg, #F5F0E8 0%, #EDE5D5 100%); padding: 20px; border-radius: 8px; min-height: 220px; font-family: serif;">
+        <!-- 顶部 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div style="font-size: 18px; color: #2C2416; letter-spacing: 3px;">命理溯源</div>
+          <div style="width: 28px; height: 28px; background: #F5F0E8; border: 1px solid #E0D5C0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">⚙</div>
+        </div>
+        <!-- 八字速查 -->
+        <div style="background: white; border: 1px solid #E0D5C0; border-radius: 10px; padding: 14px; margin-bottom: 8px;">
+          <div style="font-size: 10px; color: #8B7D6B; margin-bottom: 4px;">我的八字</div>
+          <div style="font-size: 18px; color: #2C2416; letter-spacing: 3px;">甲子 乙丑 丙寅 丁卯</div>
+        </div>
+        <!-- 功能宫格 -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+          <div style="background: white; border: 1px solid #E0D5C0; border-radius: 8px; padding: 14px 8px; text-align: center;">
+            <div style="font-size: 20px;">☯</div><div style="font-size: 10px; color: #2C2416; margin-top: 2px;">排盘</div>
+          </div>
+          <div style="background: white; border: 1px solid #E0D5C0; border-radius: 8px; padding: 14px 8px; text-align: center;">
+            <div style="font-size: 20px;">☲</div><div style="font-size: 10px; color: #2C2416; margin-top: 2px;">择吉</div>
+          </div>
+          <div style="background: white; border: 1px solid #E0D5C0; border-radius: 8px; padding: 14px 8px; text-align: center;">
+            <div style="font-size: 20px;">☶</div><div style="font-size: 10px; color: #2C2416; margin-top: 2px;">风水</div>
+          </div>
+          <div style="background: white; border: 1px solid #E0D5C0; border-radius: 8px; padding: 14px 8px; text-align: center;">
+            <div style="font-size: 20px;">☳</div><div style="font-size: 10px; color: #2C2416; margin-top: 2px;">周易</div>
+          </div>
+          <div style="background: white; border: 1px solid #E0D5C0; border-radius: 8px; padding: 14px 8px; text-align: center;">
+            <div style="font-size: 20px;">☷</div><div style="font-size: 10px; color: #2C2416; margin-top: 2px;">典籍</div>
+          </div>
+          <div style="background: white; border: 1px solid #E0D5C0; border-radius: 8px; padding: 14px 8px; text-align: center;">
+            <div style="font-size: 20px;">📚</div><div style="font-size: 10px; color: #2C2416; margin-top: 2px;">学堂</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>📱 功能面板</h3>
+      <p>首页 = 八字速查 + 六宫格入口 · 工具型产品经典布局 · 用户自己存的八字一目了然 · 像工具App首页</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>实用</h4><ul><li>功能一目了然</li><li>八字存本地后可快速查看</li></ul></div>
+        <div class="cons"><h4>注意</h4><ul><li>视觉冲击力不如日历方案</li><li>视频里看起来像工具而非内容App</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

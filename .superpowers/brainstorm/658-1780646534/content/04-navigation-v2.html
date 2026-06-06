@@ -1,0 +1,112 @@
+<h2>参考全历史 + 问真八字 — 导航方案 v2</h2>
+<p class="subtitle">吸取两个App的优点：全历史的"首页内容流+宫格入口"，问真八字的"工具页极简专注"</p>
+
+<div class="section">
+  <h3>核心洞察</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+    <div style="background: white; border: 1px solid #E0D5C0; border-radius: 8px; padding: 12px;">
+      <div style="font-size: 14px; color: #C43A31; font-weight: bold; margin-bottom: 4px;">全历史</div>
+      <div style="font-size: 11px; color: #2C2416; line-height: 1.6;">
+        首页 = 内容发现<br/>
+        宫格入口进工具<br/>
+        时间轴是核心交互<br/>
+        每个工具页独立沉浸
+      </div>
+    </div>
+    <div style="background: white; border: 1px solid #E0D5C0; border-radius: 8px; padding: 12px;">
+      <div style="font-size: 14px; color: #C43A31; font-weight: bold; margin-bottom: 4px;">问真八字</div>
+      <div style="font-size: 11px; color: #2C2416; line-height: 1.6;">
+        首页 = 立即排盘<br/>
+        三面板渐进展示<br/>
+        极简输入→专业输出<br/>
+        学堂是独立Tab
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cards">
+  <div class="card" data-choice="hybrid-card" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background: #F5F0E8; padding: 20px; border-radius: 8px; font-family: serif;">
+        <!-- 首页结构 -->
+        <div style="margin-bottom: 12px; text-align: center; font-size: 10px; color: #8B7D6B; letter-spacing: 2px;">▼ 首页（全历史风格） ▼</div>
+        <div style="background: white; border-radius: 12px; padding: 14px; border: 1px solid #E0D5C0; margin-bottom: 8px;">
+          <div style="font-size: 11px; color: #C43A31; letter-spacing: 2px; text-align: center; margin-bottom: 6px;">甲辰年 · 五月初十</div>
+          <div style="font-size: 24px; color: #2C2416; text-align: center; letter-spacing: 3px;">甲子日</div>
+          <div style="display: flex; gap: 12px; justify-content: center; margin-top: 8px; font-size: 10px;">
+            <span style="color:#2C2416">宜 祭祀·出行</span>
+            <span style="color:#C43A31">忌 动土·开市</span>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 4px;">
+          <div style="background: white; border: 1px solid #E0D5C0; border-radius: 8px; padding: 12px 6px; text-align: center; font-size: 10px;"><div style="font-size: 20px;">☯</div>排盘</div>
+          <div style="background: white; border: 1px solid #E0D5C0; border-radius: 8px; padding: 12px 6px; text-align: center; font-size: 10px;"><div style="font-size: 20px;">🔮</div>占卜</div>
+          <div style="background: white; border: 1px solid #E0D5C0; border-radius: 8px; padding: 12px 6px; text-align: center; font-size: 10px;"><div style="font-size: 20px;">📖</div>典籍</div>
+        </div>
+        <div style="text-align: center; font-size: 10px; color: #8B7D6B; letter-spacing: 2px; margin: 8px 0;">▼ 工具页（问真风格） ▼</div>
+        <div style="background: white; border: 1px solid #E0D5C0; border-radius: 8px; padding: 10px; text-align: center;">
+          <div style="font-size: 10px; color: #8B7D6B;">年 月 日 时 性别</div>
+          <div style="display: flex; gap: 3px; justify-content: center; margin: 6px 0;">
+            <div style="width:28px;height:22px;background:#F5F0E8;border:1px solid #E0D5C0;border-radius:4px;font-size:9px;line-height:22px;">1990</div>
+            <div style="width:20px;height:22px;background:#F5F0E8;border:1px solid #E0D5C0;border-radius:4px;font-size:9px;line-height:22px;">5</div>
+            <div style="width:20px;height:22px;background:#F5F0E8;border:1px solid #E0D5C0;border-radius:4px;font-size:9px;line-height:22px;">20</div>
+            <div style="width:20px;height:22px;background:#F5F0E8;border:1px solid #E0D5C0;border-radius:4px;font-size:9px;line-height:22px;">12</div>
+            <div style="width:20px;height:22px;background:#C43A31;border-radius:4px;font-size:9px;line-height:22px;color:white;">男</div>
+          </div>
+          <div style="background:#C43A31;color:white;border-radius:6px;padding:6px;font-size:10px;margin-top:4px;">排盘</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>🏮 首页卡片 + 工具沉浸</h3>
+      <p><b>借鉴全历史首页 + 问真工具页</b></p>
+      <p>底部 3 Tab：<b>今日 · 排盘 · 学堂</b>。今日 = 卡片流（黄历+宫格入口+古籍推荐）。排盘/周易/风水 = 二级独立工具页，进去后全屏沉浸（问真风格）。学堂 = 教材+题库。</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>视频效果</h4><ul><li>首页像内容App → 有格调</li><li>工具页像专业App → 有深度</li></ul></div>
+        <div class="cons"><h4>代价</h4><ul><li>需要做一个精致的首页</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="tool-first" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background: #F5F0E8; padding: 20px; border-radius: 8px; font-family: serif;">
+        <div style="text-align: center; font-size: 10px; color: #8B7D6B; letter-spacing: 2px; margin-bottom: 12px;">▼ 问真八字式 · 一打开就是排盘 ▼</div>
+        <div style="background: white; border: 1px solid #E0D5C0; border-radius: 10px; padding: 16px;">
+          <div style="font-size: 14px; color: #2C2416; text-align: center; letter-spacing: 2px; margin-bottom: 10px;">八字排盘</div>
+          <div style="display: flex; gap: 4px; justify-content: center; margin-bottom: 8px;">
+            <input style="width:32px;height:24px;border:1px solid #E0D5C0;border-radius:4px;text-align:center;font-size:9px;background:#F5F0E8;" placeholder="年">
+            <input style="width:20px;height:24px;border:1px solid #E0D5C0;border-radius:4px;text-align:center;font-size:9px;background:#F5F0E8;" placeholder="月">
+            <input style="width:20px;height:24px;border:1px solid #E0D5C0;border-radius:4px;text-align:center;font-size:9px;background:#F5F0E8;" placeholder="日">
+            <input style="width:20px;height:24px;border:1px solid #E0D5C0;border-radius:4px;text-align:center;font-size:9px;background:#F5F0E8;" placeholder="时">
+          </div>
+          <div style="background:#C43A31;color:white;border-radius:6px;padding:8px;text-align:center;font-size:11px;">开始排盘</div>
+        </div>
+        <div style="margin-top: 10px;">
+          <div style="display: flex; gap: 4px; justify-content: center;">
+            <div style="width:28px;height:28px;background:white;border:1px solid #E0D5C0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">☯</div>
+            <div style="width:28px;height:28px;background:white;border:1px solid #E0D5C0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">📅</div>
+            <div style="width:28px;height:28px;background:white;border:1px solid #E0D5C0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">☳</div>
+            <div style="width:28px;height:28px;background:white;border:1px solid #E0D5C0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">📖</div>
+            <div style="width:28px;height:28px;background:white;border:1px solid #E0D5C0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">👤</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>🎯 工具优先（问真路线）</h3>
+      <p><b>打开App = 排盘页，核心功能一步直达</b></p>
+      <p>5 Tab：排盘 · 黄历 · 占卜 · 典籍 · 我的。首页就是排盘工具，输入区在上、结果在下。黄历/占卜各自独立。没有"内容首页"的概念。</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>工具感</h4><ul><li>目的明确，打开就用</li><li>问真已验证的成熟模式</li></ul></div>
+        <div class="cons"><h4>视频推广</h4><ul><li>工具页做视频不够"好看"</li><li>缺少内容App的氛围感</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>💡 推荐：A（首页卡片 + 工具沉浸）</h3>
+  <p>你的项目有古籍内容 + 排盘工具双重属性。A方案让你视频推广时第一帧就是漂亮的黄历卡片（氛围感拉满），用户点进排盘后又像问真一样专业。全历史证明了"内容首页+工具入口"在文化类App中非常成功。</p>
+</div>

@@ -1,0 +1,6 @@
+{
+  "total_chunks": 3951,
+  "total_records": 2843,
+  "avg_chunk_len": 237,
+  "embedding": "ONNX-all-MiniLM-L6-v2"
+}
