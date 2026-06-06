@@ -1,0 +1,8 @@
+# Railway 部署配置
+# 告诉 Railway 怎么启动你的后端
+
+[build]
+  builder = "nixpacks"
+
+[deploy]
+  startCommand = "uvicorn api.server:app --host 0.0.0.0 --port $PORT"
