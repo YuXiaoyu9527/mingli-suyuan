@@ -77,10 +77,10 @@ export default function JinriPage() {
   };
 
   const quickLinks = [
-    { icon: "☯", label: "排盘", href: "/paipan" },
-    { icon: "🔮", label: "占卜", href: "/zhouyi" },
-    { icon: "🏠", label: "风水", href: "/fengshui" },
-    { icon: "📖", label: "典籍", href: "/xuetang" },
+    { icon: "📖", label: "古籍检索", href: "/dianji", desc: "三命通會·滴天髓" },
+    { icon: "💑", label: "合婚配对", href: "/hehun",   desc: "八字缘分分析" },
+    { icon: "✏️", label: "八字起名", href: "/mingli?sub=qiming", desc: "用神推荐佳名" },
+    { icon: "🔮", label: "周易占卜", href: "/zhouyi",  desc: "六爻·梅花易数" },
   ];
 
   return (
@@ -136,15 +136,18 @@ export default function JinriPage() {
         )}
 
         {/* 四宫格 */}
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           {quickLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="dao-card flex flex-col items-center gap-1.5 py-4 tap-active hover:border-gold/40 transition-colors"
+              className="dao-card flex flex-col items-center gap-2 py-5 tap-active hover:border-gold/40 transition-colors"
             >
               <span className="text-2xl">{link.icon}</span>
-              <span className="text-xs text-text">{link.label}</span>
+              <div className="text-center">
+                <p className="text-sm font-bold text-text">{link.label}</p>
+                <p className="text-[10px] text-text-tertiary mt-0.5">{link.desc}</p>
+              </div>
             </Link>
           ))}
         </div>
