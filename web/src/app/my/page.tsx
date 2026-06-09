@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import BottomNav from "@/components/BottomNav";
 import {
-  User, Bookmark, BookOpen, FileText, Settings, Shield,
+  User, Bookmark, BookOpen, Settings, Shield,
   MessageCircle, Plus, Trash2, ChevronRight,
 } from "lucide-react";
 
@@ -20,22 +20,35 @@ interface BaziProfile {
   createdAt: string;
 }
 
+/** 安全读写 localStorage — SSR 环境下返回 fallback 值 */
+function safeGet<T>(key: string, fallback: T): T {
+  if (typeof window === "undefined") return fallback;
+  try { return JSON.parse(localStorage.getItem(key) || "null") ?? fallback; }
+  catch { return fallback; }
+}
+function safeSet(key: string, value: unknown) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
 export default function MyPage() {
   const router = useRouter();
   const [profiles, setProfiles] = useState<BaziProfile[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [wrongCount, setWrongCount] = useState(0);
   const [newProfile, setNewProfile] = useState({
     name: "", year: 1990, month: 5, day: 20, hour: 12, gender: "男",
   });
 
+  // 所有浏览器 API 调用全部收敛在 useEffect 中
   useEffect(() => {
-    const saved = localStorage.getItem("bazi_profiles");
-    if (saved) setProfiles(JSON.parse(saved));
+    setProfiles(safeGet<BaziProfile[]>("bazi_profiles", []));
+    setWrongCount(safeGet<unknown[]>("xuetang_wrong_book", []).length);
   }, []);
 
   const saveProfiles = (list: BaziProfile[]) => {
     setProfiles(list);
-    localStorage.setItem("bazi_profiles", JSON.stringify(list));
+    safeSet("bazi_profiles", list);
   };
 
   const addProfile = () => {
@@ -64,8 +77,6 @@ export default function MyPage() {
       `/paipan?year=${p.year}&month=${p.month}&day=${p.day}&hour=${p.hour}&name=${encodeURIComponent(p.name)}`
     );
   };
-
-  const wrongCount = JSON.parse(localStorage.getItem("xuetang_wrong_book") || "[]").length;
 
   return (
     <div className="flex flex-col min-h-dvh pb-24">
