@@ -16,13 +16,30 @@ function safeGet<T>(key: string, fallback: T): T {
   catch { return fallback; }
 }
 
-/* ===== 经典命例（空白期推荐） ===== */
+/* ===== 莫兰迪五行色（用于四柱干支着色） ===== */
+const WX_HEX: Record<string, string> = {
+  "金": "#B8A88A", "木": "#7A9A7E", "水": "#5B7B8A", "火": "#B5544A", "土": "#C4A882",
+};
+
+/* ===== 经典命例（空白期推荐·随机展示4个） ===== */
 const FEATURED_CASES = [
-  { name: "司马光", year: 1019, month: 11, day: 17, hour: 8,  desc: "北宋名臣 · 正官格",   emoji: "🏛️" },
-  { name: "范蠡",   year: -536, month: 1,  day: 1,  hour: 6,  desc: "商圣 · 财旺身强",     emoji: "💰" },
-  { name: "诸葛亮", year: 181,  month: 7,  day: 23, hour: 12, desc: "蜀汉丞相 · 杀印相生",   emoji: "🎯" },
-  { name: "苏轼",   year: 1037, month: 1,  day: 8,  hour: 10, desc: "东坡居士 · 食神生财",   emoji: "📜" },
+  { name: "司马光", year: 1019, month: 11, day: 17, hour: 8,  desc: "北宋名臣 · 正官格",    emoji: "🏛️" },
+  { name: "范蠡",   year: -536, month: 1,  day: 1,  hour: 6,  desc: "商圣 · 财旺身强",      emoji: "💰" },
+  { name: "诸葛亮", year: 181,  month: 7,  day: 23, hour: 12, desc: "蜀汉丞相 · 杀印相生",    emoji: "🎯" },
+  { name: "苏轼",   year: 1037, month: 1,  day: 8,  hour: 10, desc: "东坡居士 · 食神生财",    emoji: "📜" },
+  { name: "李白",   year: 701,  month: 2,  day: 8,  hour: 10, desc: "诗仙 · 食伤泄秀",       emoji: "🍷" },
+  { name: "康熙",   year: 1654, month: 5,  day: 4,  hour: 10, desc: "清圣祖 · 七杀有制",      emoji: "👑" },
+  { name: "岳飞",   year: 1103, month: 3,  day: 24, hour: 12, desc: "武穆 · 杀刃两显",        emoji: "⚔️" },
+  { name: "王阳明", year: 1472, month: 10, day: 31, hour: 6,  desc: "心学宗师 · 伤官配印",    emoji: "🧘" },
+  { name: "张居正", year: 1525, month: 5,  day: 24, hour: 8,  desc: "大明首辅 · 正印制伤",    emoji: "📋" },
+  { name: "武则天", year: 624,  month: 2,  day: 17, hour: 12, desc: "则天女皇 · 杀印相生",    emoji: "👸" },
 ];
+
+/** 从命例数组中随机选取 n 个不重复的 */
+function pickRandom<T>(arr: T[], n: number): T[] {
+  const shuffled = [...arr].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, n);
+}
 
 interface BaziProfile {
   id: string; name: string;
@@ -42,6 +59,8 @@ function PaipanContentInner() {
   const [showTab, setShowTab] = useState<"overview" | "detail" | "ai">("overview");
   const [profiles, setProfiles] = useState<BaziProfile[]>([]);
   const [showProfilePicker, setShowProfilePicker] = useState(false);
+  // 每次进入页面随机选 4 个经典命例（会话内稳定）
+  const [featuredCases] = useState(() => pickRandom(FEATURED_CASES, 4));
 
   // 读取亲友档案
   useEffect(() => {
@@ -234,7 +253,7 @@ function PaipanContentInner() {
               — 经典命例 · 点击一键体验 —
             </p>
             <div className="grid grid-cols-2 gap-3">
-              {FEATURED_CASES.map((c) => (
+              {featuredCases.map((c) => (
                 <button
                   key={c.name}
                   onClick={() => fillFromCase(c.year, c.month, c.day, c.hour, c.name)}
@@ -279,8 +298,10 @@ function PaipanContentInner() {
                   return (
                     <div key={pos} className={`${isDay?"ring-2 ring-dao-red/20":""} bg-bg-subtle/50 rounded-lg py-4`}>
                       <p className="text-[10px] text-text-secondary mb-1">{labels[i]}</p>
-                      <p className="text-xl font-[family-name:var(--font-display)] text-text leading-tight">{gz[0]}</p>
-                      <p className="text-xl font-[family-name:var(--font-display)] text-accent leading-tight">{gz[1]}</p>
+                      <p className="text-xl font-[family-name:var(--font-display)] leading-tight"
+                        style={{color: WX_HEX[p[pos].gan_wuxing] || "#1C1814"}}>{gz[0]}</p>
+                      <p className="text-xl font-[family-name:var(--font-display)] leading-tight"
+                        style={{color: WX_HEX[p[pos].zhi_wuxing] || "#1C1814"}}>{gz[1]}</p>
                       <p className="text-[9px] text-text-tertiary mt-1">{p[pos].nayin}</p>
                     </div>
                   );

@@ -1,11 +1,51 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { getApiUrl } from "@/lib/api";
 import BottomNav from "@/components/BottomNav";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
+
+/* ===== 节气检测 ===== */
+const SOLAR_TERMS: { name: string; month: number; day: number; element: string; color: string; emoji: string }[] = [
+  { name:"立春",month:2,day:4,element:"木",color:"#7A9A7E",emoji:"🌱"},
+  { name:"雨水",month:2,day:19,element:"木",color:"#7A9A7E",emoji:"💧"},
+  { name:"惊蛰",month:3,day:6,element:"木",color:"#7A9A7E",emoji:"⚡"},
+  { name:"春分",month:3,day:21,element:"木",color:"#7A9A7E",emoji:"🌸"},
+  { name:"清明",month:4,day:5,element:"木",color:"#93A87A",emoji:"🍃"},
+  { name:"谷雨",month:4,day:20,element:"木",color:"#93A87A",emoji:"🌾"},
+  { name:"立夏",month:5,day:6,element:"火",color:"#B5544A",emoji:"☀️"},
+  { name:"小满",month:5,day:21,element:"火",color:"#B5544A",emoji:"🌿"},
+  { name:"芒种",month:6,day:6,element:"火",color:"#C43A31",emoji:"🌾"},
+  { name:"夏至",month:6,day:21,element:"火",color:"#C43A31",emoji:"🔥"},
+  { name:"小暑",month:7,day:7,element:"火",color:"#C06050",emoji:"🌡️"},
+  { name:"大暑",month:7,day:23,element:"火",color:"#C06050",emoji:"☀️"},
+  { name:"立秋",month:8,day:7,element:"金",color:"#B8A88A",emoji:"🍂"},
+  { name:"处暑",month:8,day:23,element:"金",color:"#B8A88A",emoji:"🍃"},
+  { name:"白露",month:9,day:8,element:"金",color:"#C4B89A",emoji:"💎"},
+  { name:"秋分",month:9,day:23,element:"金",color:"#C4B89A",emoji:"🌕"},
+  { name:"寒露",month:10,day:8,element:"金",color:"#B8A88A",emoji:"❄️"},
+  { name:"霜降",month:10,day:23,element:"金",color:"#B8A88A",emoji:"🍁"},
+  { name:"立冬",month:11,day:7,element:"水",color:"#5B7B8A",emoji:"🌬️"},
+  { name:"小雪",month:11,day:22,element:"水",color:"#5B7B8A",emoji:"❄️"},
+  { name:"大雪",month:12,day:7,element:"水",color:"#4A6B7A",emoji:"⛄"},
+  { name:"冬至",month:12,day:22,element:"水",color:"#4A6B7A",emoji:"🌑"},
+  { name:"小寒",month:1,day:5,element:"水",color:"#5B7B8A",emoji:"🥶"},
+  { name:"大寒",month:1,day:20,element:"水",color:"#5B7B8A",emoji:"🧊"},
+];
+
+function getCurrentSolarTerm(): typeof SOLAR_TERMS[number] {
+  const now = new Date();
+  const m = now.getMonth() + 1;
+  const d = now.getDate();
+  // 从最后一个节气往前找，找到第一个已经过去的节气
+  for (let i = SOLAR_TERMS.length - 1; i >= 0; i--) {
+    const t = SOLAR_TERMS[i];
+    if (m > t.month || (m === t.month && d >= t.day)) return t;
+  }
+  return SOLAR_TERMS[SOLAR_TERMS.length - 1]; // 兜底：大寒
+}
 
 export default function JinriPage() {
   const router = useRouter();
@@ -14,6 +54,8 @@ export default function JinriPage() {
   const [mingli, setMingli] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showFullText, setShowFullText] = useState(false);
+
+  const solarTerm = useMemo(() => getCurrentSolarTerm(), []);
 
   useEffect(() => {
     loadToday();
@@ -44,9 +86,8 @@ export default function JinriPage() {
       setAncient(aData.results?.[0] || null);
       const mData = await mResp.json();
       const cases = mData.cases || [];
-      // 按日期固定选取（同日显示同一人，每日轮换）
-      const idx = new Date().getDate() % Math.max(cases.length, 1);
-      setMingli(cases[idx] || null);
+      // 真正随机选取，每次刷新不同
+      setMingli(cases[Math.floor(Math.random() * cases.length)] || null);
     } catch (e) {
       console.error(e);
     }
@@ -76,25 +117,34 @@ export default function JinriPage() {
     );
   };
 
+  // 四宫格暗合四象 — 青龙东·朱雀南·白虎西·玄武北
   const quickLinks = [
-    { icon: "📖", label: "古籍检索", href: "/dianji", desc: "三命通會·滴天髓" },
-    { icon: "💑", label: "合婚配对", href: "/hehun",   desc: "八字缘分分析" },
-    { icon: "✏️", label: "八字起名", href: "/mingli?sub=qiming", desc: "用神推荐佳名" },
-    { icon: "🔮", label: "周易占卜", href: "/zhouyi",  desc: "六爻·梅花易数" },
+    { icon: "🔮", label: "周易占卜", href: "/zhouyi",  desc: "六爻·梅花易数",
+      siXiang: "朱雀", direction: "南", element: "火", elColor: "#C43A31" },
+    { icon: "💑", label: "合婚配对", href: "/hehun",   desc: "八字缘分分析",
+      siXiang: "青龙", direction: "东", element: "木", elColor: "#7A9A7E" },
+    { icon: "✏️", label: "八字起名", href: "/mingli?sub=qiming", desc: "用神推荐佳名",
+      siXiang: "白虎", direction: "西", element: "金", elColor: "#B8A88A" },
+    { icon: "🏠", label: "阳宅风水", href: "/fengshui", desc: "八宅·九宫飞星",
+      siXiang: "玄武", direction: "北", element: "水", elColor: "#5B7B8A" },
   ];
 
   return (
     <div className="flex flex-col min-h-dvh pb-20">
-      {/* Calendar Hero */}
+      {/* Calendar Hero — 日柱随节气变色 */}
       <header className="px-5 pt-8 pb-2 text-center anim-page-enter">
         {yiji && (
           <>
+            {/* 节气指示 — 当前节气的五行归属 */}
             <p className="text-xs text-text-secondary tracking-[0.2em]">
-              甲辰年 · {yiji.lunar_date?.replace(/年|月/g, (m: string) => (m === "年" ? " · " : " · ")) || ""}
+              {solarTerm.emoji} {solarTerm.name} · 五行属{solarTerm.element}
             </p>
             <h1
-              className="text-[52px] font-[family-name:var(--font-display)] text-text leading-none mt-2"
-              style={{ animation: "countUp 0.6s 0.2s cubic-bezier(0.22,1,0.36,1) both" }}
+              className="text-[52px] font-[family-name:var(--font-display)] leading-none mt-2"
+              style={{
+                color: solarTerm.color,
+                animation: "countUp 0.6s 0.2s cubic-bezier(0.22,1,0.36,1) both",
+              }}
             >
               {yiji.day_ganzhi?.[0] || "——"}
             </h1>
@@ -135,18 +185,30 @@ export default function JinriPage() {
           </p>
         )}
 
-        {/* 四宫格 */}
+        {/* 四宫格 — 四象方位暗合（青龙东·朱雀南·白虎西·玄武北） */}
         <div className="grid grid-cols-2 gap-3">
           {quickLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="dao-card flex flex-col items-center gap-2 py-5 tap-active hover:border-gold/40 transition-colors"
+              className="dao-card flex flex-col items-center gap-2 py-5 tap-active
+                         hover:shadow-md transition-all relative overflow-hidden group"
             >
+              {/* 方位色条 — 卡片顶部微妙的五行色带 */}
+              <div
+                className="absolute top-0 left-0 right-0 h-0.5 opacity-40"
+                style={{ backgroundColor: link.elColor }}
+              />
               <span className="text-2xl">{link.icon}</span>
               <div className="text-center">
                 <p className="text-sm font-bold text-text">{link.label}</p>
                 <p className="text-[10px] text-text-tertiary mt-0.5">{link.desc}</p>
+              </div>
+              {/* 四象 + 方位 + 五行 标注 */}
+              <div className="flex items-center gap-1.5 mt-1">
+                <span className="text-[9px] text-text-tertiary/70">
+                  {link.siXiang} · {link.direction} · {link.element}
+                </span>
               </div>
             </Link>
           ))}
