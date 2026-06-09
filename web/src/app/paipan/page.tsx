@@ -89,7 +89,7 @@ function PaipanContentInner() {
 
   return (
     <div className="flex flex-col min-h-dvh pb-20">
-      <header className="px-5 pt-6 pb-3">
+      <header className="px-6 pt-6 pb-3">
         <h1 className="text-2xl text-text font-[family-name:var(--font-display)] tracking-wider">
           八字排盘
         </h1>
@@ -103,7 +103,7 @@ function PaipanContentInner() {
         )}
       </header>
 
-      <div className="px-5 flex-1 space-y-4">
+      <div className="px-6 flex-1 space-y-6">
         {/* ===== 档案导入入口 ===== */}
         {profiles.length > 0 && (
           <div className="relative">
@@ -345,15 +345,17 @@ function PaipanContentInner() {
                 <div className="dao-card">
                   <h3 className="text-xs font-bold text-text mb-3">五行分布</h3>
                   {Object.entries(result.paipan.wuxing_scores as Record<string,number>).map(([wx,score])=>{
-                    const colors:Record<string,string>={金:"bg-yellow-500",木:"bg-green-600",水:"bg-blue-500",火:"bg-red-500",土:"bg-amber-600"};
+                    // 莫兰迪五行色 — 低饱和度古典色卡
+                    const wxColors:Record<string,string>={金:"var(--color-wx-gold)",木:"var(--color-wx-wood)",水:"var(--color-wx-water)",火:"var(--color-wx-fire)",土:"var(--color-wx-earth)"};
+                    const wxLabels:Record<string,string>={金:"金",木:"木",水:"水",火:"火",土:"土"};
                     const total=Math.max(1,Object.values(result.paipan.wuxing_scores as number[]).reduce((a,b)=>a+b,0));
                     const pct=Math.round((score/total)*100);
                     return (
-                      <div key={wx} className="flex items-center gap-2 mb-1.5">
-                        <span className="text-[11px] text-text-secondary w-4">{wx}</span>
+                      <div key={wx} className="flex items-center gap-3 mb-2">
+                        <span className="text-xs text-text-secondary w-4 font-[family-name:var(--font-display)]">{wxLabels[wx]||wx}</span>
                         <div className="flex-1 h-3 bg-bg-subtle rounded-full overflow-hidden">
-                          <div className={`h-full ${colors[wx]||"bg-gray-400"} rounded-full transition-all`}
-                            style={{width:`${pct}%`}}/>
+                          <div className="h-full rounded-full transition-all duration-700"
+                            style={{width:`${pct}%`, backgroundColor:wxColors[wx]||"#999"}}/>
                         </div>
                         <span className="text-[11px] text-text-tertiary w-8 text-right">{score}</span>
                       </div>

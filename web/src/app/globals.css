@@ -14,6 +14,14 @@
   --color-green: #5B8C5A;
   --color-gold: #B8860B;
   --color-gold-light: #D4A843;
+
+  /* === 莫兰迪五行色（低饱和度古典色系） === */
+  /* 天干地支在排盘结果中按五行着色，色值暗合古籍朱批传统 */
+  --color-wx-gold: #B8A88A;   /* 金 · 秋麦金 — 少阴之气 */
+  --color-wx-wood: #7A9A7E;   /* 木 · 苍岭绿 — 少阳之气 */
+  --color-wx-water: #5B7B8A;  /* 水 · 黛蓝   — 太阴之气 */
+  --color-wx-fire: #B5544A;   /* 火 · 朱砂红 — 太阳之气 */
+  --color-wx-earth: #C4A882;  /* 土 · 琥珀黄 — 中央中和 */
   --font-display: var(--font-dao-display);
   --font-body: "Songti SC", "STSong", "Noto Serif SC", "KaiTi", serif;
   --shadow-card: 0 1px 4px rgba(28,24,20,0.06), 0 4px 12px rgba(28,24,20,0.04);
