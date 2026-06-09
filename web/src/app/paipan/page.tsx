@@ -48,14 +48,19 @@ function PaipanContentInner() {
     setProfiles(safeGet<BaziProfile[]>("bazi_profiles", []));
   }, []);
 
-  // 从URL参数预填表单（历史命例跳转）
+  // 从URL参数预填表单（历史命例/亲友档案跳转）
   useEffect(() => {
     const y = searchParams.get("year");
     const m = searchParams.get("month");
     const d = searchParams.get("day");
+    const h = searchParams.get("hour");
     const n = searchParams.get("name");
     if (y && m && d) {
-      setForm((prev) => ({ ...prev, year: +y, month: +m, day: +d }));
+      setForm((prev) => ({
+        ...prev,
+        year: +y, month: +m, day: +d,
+        hour: h ? +h : prev.hour,
+      }));
     }
     if (n) setHintName(n);
   }, [searchParams]);

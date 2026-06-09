@@ -44,18 +44,35 @@ export default function JinriPage() {
       setAncient(aData.results?.[0] || null);
       const mData = await mResp.json();
       const cases = mData.cases || [];
-      setMingli(cases[Math.floor(Math.random() * cases.length)] || null);
+      // 按日期固定选取（同日显示同一人，每日轮换）
+      const idx = new Date().getDate() % Math.max(cases.length, 1);
+      setMingli(cases[idx] || null);
     } catch (e) {
       console.error(e);
     }
     setLoading(false);
   };
 
+  /** 从历史命例跳转排盘 — 自动提取八字中的时柱推算小时 */
   const handleMingliClick = (m: any) => {
     if (!m?.birth_date) return;
     const [year, month, day] = m.birth_date.split("-").map(Number);
+    // 尝试从八字字符串提取时柱地支，推算出生小时
+    let hour = 12; // 默认午时
+    if (m.bazi) {
+      const parts = m.bazi.split(/[\s　]+/).filter(Boolean);
+      if (parts.length >= 4) {
+        const timePillar = parts[3]; // 时柱（如"庚寅"）
+        const zhi = timePillar[1];    // 地支（第二个字符）
+        const zhiHour: Record<string, number> = {
+          "子":0,"丑":2,"寅":4,"卯":6,"辰":8,"巳":10,
+          "午":12,"未":14,"申":16,"酉":18,"戌":20,"亥":22,
+        };
+        hour = zhiHour[zhi] ?? 12;
+      }
+    }
     router.push(
-      `/paipan?year=${year}&month=${month}&day=${day}&name=${encodeURIComponent(m.name)}`
+      `/paipan?year=${year}&month=${month}&day=${day}&hour=${hour}&name=${encodeURIComponent(m.name)}`
     );
   };
 
@@ -180,7 +197,7 @@ export default function JinriPage() {
               )}
             </div>
             <p className="text-[10px] text-text-tertiary mt-2">
-              {mingli.source_type || mingli.reliability || ""} · 可信度：{mingli.credibility || "中"}
+              {mingli.reliability || ""}{mingli.source ? ` · ${mingli.source}` : ""}
             </p>
           </button>
         )}
