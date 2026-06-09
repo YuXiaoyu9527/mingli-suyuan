@@ -2,7 +2,7 @@
   "name": "命理溯源 · 道藏秘卷",
   "short_name": "命理溯源",
   "description": "古籍考据 · 八字排盘 · 择吉黄历 · 命理学习",
-  "start_url": "/paipan",
+  "start_url": "/jinri",
   "display": "standalone",
   "background_color": "#1C1814",
   "theme_color": "#1C1814",

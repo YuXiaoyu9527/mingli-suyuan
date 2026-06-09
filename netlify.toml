@@ -1,6 +1,8 @@
 # Netlify 部署配置 — Next.js 16 + App Router
+# 项目在 web/ 子目录，必须指定 base
 
 [build]
+  base = "web/"
   command = "npm run build"
   publish = ".next"
 

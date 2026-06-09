@@ -17,12 +17,17 @@ const CACHE_API = `mingli-api-${SW_VERSION}`;
 
 const STATIC_ASSETS = [
   "/",
+  "/jinri",
   "/paipan",
   "/yiji",
   "/fengshui",
   "/zhouyi",
   "/dianji",
   "/mingli",
+  "/hehun",
+  "/duanan",
+  "/xuetang",
+  "/my",
   "/manifest.json",
   "/icon.svg",
 ];
