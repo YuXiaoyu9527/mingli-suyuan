@@ -7,14 +7,46 @@ import { getApiUrl } from "@/lib/api";
 import BottomNav from "@/components/BottomNav";
 import ShareCard from "@/components/ShareCard";
 import FeatureGate from "@/components/FeatureGate";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sun, Moon, Users, ChevronDown, Heart, PenLine } from "lucide-react";
+
+/* ===== 安全 localStorage 工具 ===== */
+function safeGet<T>(key: string, fallback: T): T {
+  if (typeof window === "undefined") return fallback;
+  try { return JSON.parse(localStorage.getItem(key) || "null") ?? fallback; }
+  catch { return fallback; }
+}
+
+/* ===== 经典命例（空白期推荐） ===== */
+const FEATURED_CASES = [
+  { name: "司马光", year: 1019, month: 11, day: 17, hour: 8,  desc: "北宋名臣 · 正官格",   emoji: "🏛️" },
+  { name: "范蠡",   year: -536, month: 1,  day: 1,  hour: 6,  desc: "商圣 · 财旺身强",     emoji: "💰" },
+  { name: "诸葛亮", year: 181,  month: 7,  day: 23, hour: 12, desc: "蜀汉丞相 · 杀印相生",   emoji: "🎯" },
+  { name: "苏轼",   year: 1037, month: 1,  day: 8,  hour: 10, desc: "东坡居士 · 食神生财",   emoji: "📜" },
+];
+
+interface BaziProfile {
+  id: string; name: string;
+  year: number; month: number; day: number; hour: number; gender: string;
+}
 
 function PaipanContentInner() {
   const searchParams = useSearchParams();
   const [form, setForm] = useState({
     year: 1990, month: 5, day: 20, hour: 12, minute: 0, gender: "男", city: "",
   });
+  const [calendarType, setCalendarType] = useState<"solar" | "lunar">("solar");
   const [hintName, setHintName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState("");
+  const [showTab, setShowTab] = useState<"overview" | "detail" | "ai">("overview");
+  const [profiles, setProfiles] = useState<BaziProfile[]>([]);
+  const [showProfilePicker, setShowProfilePicker] = useState(false);
+
+  // 读取亲友档案
+  useEffect(() => {
+    setProfiles(safeGet<BaziProfile[]>("bazi_profiles", []));
+  }, []);
 
   // 从URL参数预填表单（历史命例跳转）
   useEffect(() => {
@@ -27,17 +59,13 @@ function PaipanContentInner() {
     }
     if (n) setHintName(n);
   }, [searchParams]);
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
-  const [error, setError] = useState("");
-  const [showTab, setShowTab] = useState<"overview"|"detail"|"ai">("overview");
 
   const handleSubmit = async () => {
     setLoading(true); setError(""); setShowTab("overview");
     try {
       const resp = await fetch(`${getApiUrl()}/api/full-analysis`, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, calendar_type: calendarType }),
       });
       if (!resp.ok) throw new Error(`${resp.status}`);
       setResult(await resp.json());
@@ -47,10 +75,17 @@ function PaipanContentInner() {
     setLoading(false);
   };
 
+  /** 从经典命例或亲友档案预填表单 */
+  const fillFromCase = (y: number, m: number, d: number, h?: number, n?: string) => {
+    setForm({ ...form, year: y, month: m, day: d, hour: h ?? 12, minute: 0 });
+    if (n) setHintName(n);
+    setShowProfilePicker(false);
+  };
+
   const update = (k: string, v: any) => setForm({ ...form, [k]: v });
   const p = result?.paipan?.pillars;
   const g = result?.geju;
-  const y = result?.yongshen;
+  const y_ = result?.yongshen;
 
   return (
     <div className="flex flex-col min-h-dvh pb-20">
@@ -58,66 +93,102 @@ function PaipanContentInner() {
         <h1 className="text-2xl text-text font-[family-name:var(--font-display)] tracking-wider">
           八字排盘
         </h1>
-        <p className="text-text-secondary text-sm mt-1">lunar-python引擎 · 真太阳时 · 格局+用神</p>
+        <p className="text-text-secondary text-sm mt-1">
+          lunar-python引擎 · 真太阳时校正 · 格局+用神自动判定
+        </p>
         {hintName && (
           <p className="text-xs text-gold mt-1">
-            📋 已从命例导入「{hintName}」的出生日期
+            📋 已导入「{hintName}」的出生日期
           </p>
         )}
       </header>
 
       <div className="px-5 flex-1 space-y-4">
-        {/* 输入区 — 精致网格 */}
+        {/* ===== 档案导入入口 ===== */}
+        {profiles.length > 0 && (
+          <div className="relative">
+            <button
+              onClick={() => setShowProfilePicker(!showProfilePicker)}
+              className="w-full flex items-center justify-between gap-2 px-4 py-2.5
+                         bg-bg-subtle border border-border rounded-xl text-xs text-text-secondary
+                         hover:border-gold/40 transition-colors tap-active"
+            >
+              <span className="flex items-center gap-2">
+                <Users size={14} className="text-gold" />
+                从亲友档案库导入
+              </span>
+              <ChevronDown
+                size={14}
+                className={`transition-transform ${showProfilePicker ? "rotate-180" : ""}`}
+              />
+            </button>
+            {showProfilePicker && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-border
+                             rounded-xl shadow-lg z-30 max-h-48 overflow-y-auto anim-enter">
+                {profiles.map((pro) => (
+                  <button
+                    key={pro.id}
+                    onClick={() => fillFromCase(pro.year, pro.month, pro.day, pro.hour, pro.name)}
+                    className="w-full text-left px-4 py-3 hover:bg-bg-subtle transition-colors
+                               flex items-center justify-between border-b border-border/50 last:border-0"
+                  >
+                    <span className="text-sm text-text">{pro.name}</span>
+                    <span className="text-[10px] text-text-tertiary">
+                      {pro.year}.{pro.month}.{pro.day} · {pro.gender}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ===== 输入区 ===== */}
         <div className="dao-card space-y-3">
-          {/* 年月日时 */}
-          <div className="grid grid-cols-4 gap-2">
-            <div className="flex flex-col gap-1">
-              <label className="text-[10px] text-text-tertiary text-center">年</label>
-              <input
-                type="number" value={form.year}
-                onChange={e => update("year", +e.target.value)}
-                className="w-full bg-bg-subtle border border-border rounded-lg px-2 py-3
-                           text-text text-base text-center focus:outline-none focus:border-gold
-                           placeholder:text-text-tertiary/60"
-                placeholder="1990"
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-[10px] text-text-tertiary text-center">月</label>
-              <input
-                type="number" value={form.month}
-                onChange={e => update("month", +e.target.value)}
-                min={1} max={12}
-                className="w-full bg-bg-subtle border border-border rounded-lg px-2 py-3
-                           text-text text-base text-center focus:outline-none focus:border-gold
-                           placeholder:text-text-tertiary/60"
-                placeholder="5"
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-[10px] text-text-tertiary text-center">日</label>
-              <input
-                type="number" value={form.day}
-                onChange={e => update("day", +e.target.value)}
-                min={1} max={31}
-                className="w-full bg-bg-subtle border border-border rounded-lg px-2 py-3
-                           text-text text-base text-center focus:outline-none focus:border-gold
-                           placeholder:text-text-tertiary/60"
-                placeholder="20"
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-[10px] text-text-tertiary text-center">时</label>
-              <input
-                type="number" value={form.hour}
-                onChange={e => update("hour", +e.target.value)}
-                min={0} max={23}
-                className="w-full bg-bg-subtle border border-border rounded-lg px-2 py-3
-                           text-text text-base text-center focus:outline-none focus:border-gold
-                           placeholder:text-text-tertiary/60"
-                placeholder="12"
-              />
-            </div>
+          {/* 公历/农历切换 */}
+          <div className="flex gap-1 bg-bg-subtle rounded-lg p-1">
+            {([
+              { id: "solar" as const, label: "公历", icon: Sun, desc: "阳历" },
+              { id: "lunar" as const, label: "农历", icon: Moon, desc: "阴历" },
+            ]).map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setCalendarType(t.id)}
+                className={`flex-1 py-2 rounded-md text-sm transition-all flex items-center justify-center gap-1.5
+                  ${calendarType === t.id
+                    ? "bg-white text-text font-bold shadow-sm"
+                    : "text-text-tertiary"}`}
+              >
+                <t.icon size={14} />
+                {t.label}
+                <span className="text-[9px] opacity-50 hidden sm:inline">{t.desc}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* 年月日时分 5列 */}
+          <div className="grid grid-cols-5 gap-2">
+            {([
+              { k: "year",   label: calendarType === "solar" ? "年" : "农年", ph: "1990",  min: 1900, max: 2100 },
+              { k: "month",  label: "月",  ph: "5",   min: 1,    max: calendarType === "lunar" ? 12 : 12 },
+              { k: "day",    label: "日",  ph: "20",  min: 1,    max: calendarType === "lunar" ? 30 : 31 },
+              { k: "hour",   label: "时",  ph: "12",  min: 0,    max: 23 },
+              { k: "minute", label: "分",  ph: "00",  min: 0,    max: 59 },
+            ]).map(({ k, label, ph, min, max }) => (
+              <div key={k} className="flex flex-col gap-1">
+                <label className="text-[10px] text-text-tertiary text-center">{label}</label>
+                <input
+                  type="number"
+                  value={(form as any)[k]}
+                  onChange={(e) => update(k, +e.target.value)}
+                  min={min} max={max}
+                  className="w-full bg-bg-subtle border border-border rounded-lg px-1 py-3
+                             text-text text-base text-center focus:outline-none focus:border-gold
+                             placeholder:text-text-tertiary/60"
+                  placeholder={ph}
+                />
+              </div>
+            ))}
           </div>
 
           {/* 性别 + 城市 + 按钮 */}
@@ -125,7 +196,7 @@ function PaipanContentInner() {
             <label className="text-[10px] text-text-tertiary flex-shrink-0">性别</label>
             <select
               value={form.gender}
-              onChange={e => update("gender", e.target.value)}
+              onChange={(e) => update("gender", e.target.value)}
               className="w-14 bg-bg-subtle border border-border rounded-lg px-2 py-3
                          text-text text-sm text-center focus:outline-none focus:border-gold"
             >
@@ -134,7 +205,7 @@ function PaipanContentInner() {
             </select>
             <input
               type="text" value={form.city}
-              onChange={e => update("city", e.target.value)}
+              onChange={(e) => update("city", e.target.value)}
               placeholder="出生城市（真太阳时）"
               className="flex-1 bg-bg-subtle border border-border rounded-lg px-3 py-3
                          text-text text-xs focus:outline-none focus:border-gold placeholder:text-text-tertiary/60"
@@ -151,7 +222,33 @@ function PaipanContentInner() {
           {error && <p className="text-xs text-accent text-center">{error}</p>}
         </div>
 
-        {/* 结果 */}
+        {/* ===== 未排盘：推荐经典命例 ===== */}
+        {!result && (
+          <div className="space-y-3 anim-enter">
+            <p className="text-xs text-text-tertiary text-center tracking-wider">
+              — 经典命例 · 点击一键体验 —
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              {FEATURED_CASES.map((c) => (
+                <button
+                  key={c.name}
+                  onClick={() => fillFromCase(c.year, c.month, c.day, c.hour, c.name)}
+                  className="dao-card py-4 px-4 text-left tap-active hover:border-gold/40
+                             transition-all group"
+                >
+                  <span className="text-2xl">{c.emoji}</span>
+                  <p className="text-sm font-bold text-text mt-2">{c.name}</p>
+                  <p className="text-[10px] text-text-tertiary mt-0.5 leading-relaxed">{c.desc}</p>
+                  <p className="text-[9px] text-gold/60 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    点击导入排盘 →
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ===== 已排盘：结果展示 ===== */}
         {result && p && (
           <div className="space-y-4 anim-enter">
             {/* 日期 + 八字总览 */}
@@ -194,19 +291,19 @@ function PaipanContentInner() {
                   {g?.pattern || ""}
                 </span>
                 <span className="text-[10px] text-text-secondary px-2 py-0.5 bg-dao-indigo/10 rounded-full">
-                  {y?.wangshuai || ""}
+                  {y_?.wangshuai || ""}
                 </span>
               </div>
 
               {/* 用神 */}
-              {y && (
+              {y_ && (
                 <div className="flex items-center justify-center gap-2 mt-3 text-xs">
                   <span className="text-text-secondary">用神：</span>
-                  {(y.recommended||[]).map((wx:string)=>(
+                  {(y_.recommended||[]).map((wx:string)=>(
                     <span key={wx} className="text-green font-medium">{wx}</span>
                   ))}
                   <span className="text-text-tertiary ml-1">忌：</span>
-                  {(y.jishen||[]).map((wx:string)=>(
+                  {(y_.jishen||[]).map((wx:string)=>(
                     <span key={wx} className="text-accent/70">{wx}</span>
                   ))}
                 </div>
@@ -231,7 +328,6 @@ function PaipanContentInner() {
             {/* Tab: 概览 */}
             {showTab==="overview" && (
               <div className="space-y-4 anim-enter">
-                {/* 格局分析 */}
                 {g && (
                   <div className="dao-card">
                     <h3 className="text-xs font-bold text-text mb-2">格局</h3>
@@ -240,14 +336,12 @@ function PaipanContentInner() {
                     {g.reasons?.length>0 && <p className="text-[11px] text-accent mt-1">⚠ {g.reasons.join("；")}</p>}
                   </div>
                 )}
-                {/* 用神分析 */}
-                {y && (
+                {y_ && (
                   <div className="dao-card">
                     <h3 className="text-xs font-bold text-text mb-2">用神</h3>
-                    <p className="text-sm text-text leading-relaxed">{y.analysis}</p>
+                    <p className="text-sm text-text leading-relaxed">{y_.analysis}</p>
                   </div>
                 )}
-                {/* 五行条 */}
                 <div className="dao-card">
                   <h3 className="text-xs font-bold text-text mb-3">五行分布</h3>
                   {Object.entries(result.paipan.wuxing_scores as Record<string,number>).map(([wx,score])=>{
@@ -326,6 +420,26 @@ function PaipanContentInner() {
                 )}
               </div>
             )}
+
+            {/* ===== 功能卡片：合婚 + 起名 ===== */}
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              <Link
+                href={`/hehun?m_year=${form.year}&m_month=${form.month}&m_day=${form.day}&m_hour=${form.hour}`}
+                className="dao-card p-4 text-center tap-active hover:border-accent/30 transition-all group"
+              >
+                <Heart size={20} className="text-accent mx-auto mb-2 group-hover:scale-110 transition-transform" />
+                <p className="text-sm font-bold text-text">合婚配对</p>
+                <p className="text-[10px] text-text-tertiary mt-1">输入对方八字 · 缘分分析</p>
+              </Link>
+              <Link
+                href={`/mingli?sub=qiming&year=${form.year}&month=${form.month}&day=${form.day}`}
+                className="dao-card p-4 text-center tap-active hover:border-gold/40 transition-all group"
+              >
+                <PenLine size={20} className="text-gold mx-auto mb-2 group-hover:scale-110 transition-transform" />
+                <p className="text-sm font-bold text-text">八字起名</p>
+                <p className="text-[10px] text-text-tertiary mt-1">基于用神 · 推荐佳名</p>
+              </Link>
+            </div>
 
             {/* 分享卡片 */}
             <ShareCard

@@ -63,7 +63,7 @@ export default function JinriPage() {
     { icon: "☯", label: "排盘", href: "/paipan" },
     { icon: "🔮", label: "占卜", href: "/zhouyi" },
     { icon: "🏠", label: "风水", href: "/fengshui" },
-    { icon: "📖", label: "典籍", href: "/dianji" },
+    { icon: "📖", label: "典籍", href: "/xuetang" },
   ];
 
   return (

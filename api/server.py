@@ -39,7 +39,8 @@ class PaipanRequest(BaseModel):
     hour: int = 12
     minute: int = 0
     gender: str = "男"
-    city: str = ""  # 出生城市（用于真太阳时校正）
+    city: str = ""           # 出生城市（用于真太阳时校正）
+    calendar_type: str = "solar"  # "solar" 公历 / "lunar" 农历
 
 
 class JianpiRequest(BaseModel):
@@ -238,6 +239,14 @@ def api_full_analysis(req: PaipanRequest):
     from api.paipan.geju import GejuEngine
     from api.paipan.yongshen import YongshenEngine
 
+    # 农历→公历转换（由后端 lunar_python 统一处理）
+    year, month, day = req.year, req.month, req.day
+    if req.calendar_type == "lunar":
+        from lunar_python import Lunar
+        lunar = Lunar.fromYmd(req.year, req.month, req.day)
+        solar = lunar.getSolar()
+        year, month, day = solar.getYear(), solar.getMonth(), solar.getDay()
+
     # 真太阳时
     hour, minute = req.hour, req.minute
     tz_info = None
@@ -247,7 +256,7 @@ def api_full_analysis(req: PaipanRequest):
         tz_info = {"city": req.city, "offset": tz_offset,
                    "corrected": f"{hour:02d}:{minute:02d}"}
 
-    bazi = paipan(req.year, req.month, req.day, hour, minute, req.gender)
+    bazi = paipan(year, month, day, hour, minute, req.gender)
     data = to_dict(bazi)
 
     # 格局
