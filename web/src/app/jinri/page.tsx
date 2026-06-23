@@ -140,11 +140,26 @@ export default function JinriPage() {
       <header className="px-5 pt-8 pb-2 text-center anim-page-enter">
         {yiji && (
           <>
-            {/* 节气指示 — 当前节气的五行归属 */}
+            {/* 节气指示 */}
             <p className="text-xs text-text-secondary tracking-[0.2em]">
               {solarTerm.emoji} {solarTerm.name} · 五行属{solarTerm.element}
-              {yiji.lunar_date && <> · {yiji.lunar_date.replace(/年|月/g, (m: string) => (m === "年" ? "年" : "月")).replace(/日.*/, "日")}</>}
             </p>
+            {/* 公历日期（主） */}
+            {yiji.date && (
+              <p className="text-sm text-text mt-2 font-medium">
+                {(() => {
+                  const d = new Date(yiji.date);
+                  return `${d.getMonth() + 1}月${d.getDate()}日 · ${yiji.week || ""}`;
+                })()}
+              </p>
+            )}
+            {/* 农历日期（辅） */}
+            {yiji.lunar_date && (
+              <p className="text-xs text-text-tertiary mt-0.5">
+                农历{yiji.lunar_date.replace(/年|月/g, (m: string) => (m === "年" ? "年" : "月")).replace(/日.*/, "日")}
+                {yiji.shengxiao ? ` · 肖${yiji.shengxiao}` : ""}
+              </p>
+            )}
             <h1
               className="text-[52px] font-[family-name:var(--font-display)] leading-none mt-2"
               style={{
