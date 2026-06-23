@@ -158,7 +158,8 @@ export default function JinriPage() {
               className="text-sm text-text-secondary tracking-wider mt-1"
               style={{ animation: "countUp 0.6s 0.4s cubic-bezier(0.22,1,0.36,1) both" }}
             >
-              {yiji.week || ""} · {yiji.day_ganzhi || ""}日 · {yiji.shengxiao || ""}
+              {yiji.week || ""} · {yiji.day_ganzhi || ""}日
+              {yiji.shengxiao ? ` · 肖${yiji.shengxiao}` : ""}
             </p>
           </>
         )}

@@ -136,7 +136,7 @@ class DailyYiji:
             day_ganzhi=lunar.getDayInGanZhi(),
             day_gan=day_gan,
             day_zhi=day_zhi,
-            shengxiao=lunar.getDayShengXiao(),
+            shengxiao=lunar.getYearShengXiao(),
             xiu=lunar.getXiu(),
             xiu_luck=lunar.getXiuLuck(),
             jianchu=lunar.getZhiXing(),
