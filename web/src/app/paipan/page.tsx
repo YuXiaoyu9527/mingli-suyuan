@@ -349,7 +349,7 @@ function PaipanContentInner() {
               )}
             </div>
 
-            {/* ===== 生活应用层 — 基于主用神的五行调和 ===== */}
+            {/* ===== 生活应用层 ===== */}
             {y_ && y_.recommended?.length > 0 && (() => {
               const mainWx = y_.recommended[0];
               const adv = WX_ADVICE[mainWx];
@@ -357,12 +357,19 @@ function PaipanContentInner() {
               const shengKe: Record<string, string> = { "木":"金","火":"水","土":"木","金":"火","水":"土" };
               const mainJi = shengKe[mainWx];
               const hasJi = y_.jishen?.includes(mainJi);
-              const wxWhy: Record<string, string> = {
-                "金": "金主决断，金的能量帮你在混乱中做出清晰选择",
-                "木": "木主生长，木的能量给你持续向上的动力和创造力",
-                "水": "水主智慧，水的能量让你在压力下保持冷静和洞察",
-                "火": "火主热情，火的能量让你更有感染力和行动力",
-                "土": "土主稳定，土的能量帮你脚踏实地、不被外界干扰",
+              const wxRole: Record<string, string> = {
+                "金": "你的命局中金的能量偏弱。金代表决断力和原则——补足它能帮你在关键时刻果断选择，不拖泥带水。",
+                "木": "你的命局中木的能量偏弱。木代表生长和创造力——补足它能让你更有冲劲，做事更有长性。",
+                "水": "你的命局中水的能量偏弱。水代表智慧和冷静——补足它能让你在压力下保持清醒，不容易被情绪带着走。",
+                "火": "你的命局中火的能量偏弱。火代表热情和感染力——补足它能让你更自信、更敢表达自己。",
+                "土": "你的命局中土的能量偏弱。土代表稳定和踏实——补足它能让你沉得住气，不被外界变化带着跑。",
+              };
+              const avoidReason: Record<string, string> = {
+                "金": "金会砍伐木，消耗你的生发之气。少穿白色银灰色，少用金属饰品。",
+                "水": "水会浇灭火，压住你的热情。少穿黑色深蓝色，避免长时间待在寒冷环境。",
+                "木": "木会吸收土的营养。少穿绿色青色，避免过度消耗精力在太多事情上。",
+                "火": "火会熔化金，破坏你的边界感。少穿红色紫色，避免暴躁和冲动决策。",
+                "土": "土会堵住水的流动，让你思维变钝。少穿黄棕色，避免长时间待在潮湿环境。",
               };
               return (
                 <div className="dao-card space-y-3" style={{ borderColor: "rgba(201,169,110,0.3)" }}>
@@ -372,39 +379,39 @@ function PaipanContentInner() {
                       主{mainWx}{y_.recommended.length > 1 ? `辅${y_.recommended.slice(1).join("、")}` : ""}
                     </span>
                   </p>
-                  <p className="text-[10px] text-text-tertiary leading-relaxed">{wxWhy[mainWx]}</p>
+                  <p className="text-xs text-text-secondary leading-relaxed">{wxRole[mainWx]}</p>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="bg-bg-subtle rounded-lg p-3">
-                      <p className="text-[10px] text-text-tertiary mb-1">👔 穿衣颜色</p>
+                      <p className="text-[10px] text-text-tertiary mb-1">👔 多穿这些颜色</p>
                       <p className="text-xs text-text font-medium">{adv.colors.slice(0, 3).join("、")}色</p>
-                      <p className="text-[9px] text-text-tertiary mt-1 leading-relaxed">{mainWx}属色补八字{mainWx}弱之不足</p>
+                      <p className="text-[9px] text-text-tertiary mt-1 leading-relaxed">这些颜色五行属{mainWx}，能帮你补{mainWx}的能量</p>
                     </div>
                     <div className="bg-bg-subtle rounded-lg p-3">
-                      <p className="text-[10px] text-text-tertiary mb-1">🧭 有利方位</p>
+                      <p className="text-[10px] text-text-tertiary mb-1">🧭 多往这边走</p>
                       <p className="text-xs text-text font-medium">{adv.direction}方</p>
-                      <p className="text-[9px] text-text-tertiary mt-1 leading-relaxed">{adv.direction}方属{mainWx}，与用神同气</p>
+                      <p className="text-[9px] text-text-tertiary mt-1 leading-relaxed">{adv.direction}方在五行中对应{mainWx}，跟你最有缘</p>
                     </div>
                     <div className="bg-bg-subtle rounded-lg p-3">
-                      <p className="text-[10px] text-text-tertiary mb-1">🎒 随身搭配</p>
+                      <p className="text-[10px] text-text-tertiary mb-1">🎒 带着出门</p>
                       <p className="text-xs text-text font-medium">{adv.items.slice(0, 2).join(" · ")}</p>
-                      <p className="text-[9px] text-text-tertiary mt-1 leading-relaxed">随身带{mainWx}属性物品增强{mainWx}能量</p>
+                      <p className="text-[9px] text-text-tertiary mt-1 leading-relaxed">身上带有{mainWx}属性的东西，等于随时给自己充电</p>
                     </div>
                     <div className="bg-bg-subtle rounded-lg p-3">
-                      <p className="text-[10px] text-text-tertiary mb-1">⚠️ 少碰</p>
+                      <p className="text-[10px] text-text-tertiary mb-1">⚠️ 尽量少碰</p>
                       <p className="text-xs text-text font-medium leading-relaxed">
                         {hasJi ? `${mainJi}属性的事物` : "无特别禁忌"}
                       </p>
                       <p className="text-[9px] text-text-tertiary mt-1 leading-relaxed">
-                        {hasJi ? `${mainJi}克${mainWx}，会削弱用神力量` : "保持平衡即可"}
+                        {hasJi ? avoidReason[mainJi] : "你的五行比较平衡，正常生活即可"}
                       </p>
                     </div>
                   </div>
                   <div className="bg-bg-subtle rounded-lg p-3">
-                    <p className="text-[10px] text-text-tertiary mb-1">📋 建议尝试</p>
+                    <p className="text-[10px] text-text-tertiary mb-1">📋 今天可以试试</p>
                     {adv.actions.map((a: string, i: number) => (
                       <p key={i} className="text-xs text-text leading-relaxed mt-1">{i + 1}. {a}</p>
                     ))}
-                    <p className="text-[9px] text-text-tertiary mt-2 leading-relaxed">以上行动意在增强{mainWx}的能量，帮助五行趋于平衡</p>
+                    <p className="text-[9px] text-text-tertiary mt-2 leading-relaxed">都是在帮你补充{mainWx}的能量，让五行回到平衡状态</p>
                   </div>
                 </div>
               );
