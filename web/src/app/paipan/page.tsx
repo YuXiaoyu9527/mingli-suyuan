@@ -21,6 +21,16 @@ const WX_HEX: Record<string, string> = {
   "金": "#B8A88A", "木": "#7A9A7E", "水": "#5B7B8A", "火": "#B5544A", "土": "#C4A882",
 };
 
+/* ===== 五行调和知识库（排盘生活应用层） ===== */
+const WX_ADVICE: Record<string, { colors: string[]; items: string[]; actions: string[]; direction: string }> = {
+  "金": { colors: ["白","银","浅灰","米白"], items: ["金属饰品","银质项链","白色手表","圆形镜子"], actions: ["整理桌面/断舍离","制定清晰的时间表","早上7-9点做重要决策"], direction: "西北" },
+  "木": { colors: ["绿","青","翠绿","浅蓝"], items: ["绿植盆栽","木质手串","棉麻衣物","植物精油"], actions: ["早起锻炼舒展身体","养一盆绿植放在东方位","制定长期规划"], direction: "东" },
+  "水": { colors: ["黑","深蓝","藏青","深灰"], items: ["黑色水杯","蓝色水晶","黑曜石手链","流水摆件"], actions: ["多喝水/泡茶","冥想静坐10分钟","重要洽谈安排在下午"], direction: "北" },
+  "火": { colors: ["红","紫","玫红","橙红"], items: ["红色围巾","南红玛瑙","红绳手链","暖光灯"], actions: ["主动社交联系三人","重要电话在中午11-1点打","点燃香薰蜡烛"], direction: "南" },
+  "土": { colors: ["黄","棕","卡其","米色"], items: ["黄水晶","陶瓷茶具","黄玉貔貅","棕色皮具"], actions: ["脚踏实地做好手头事","每工作45分钟休息5分钟","周末去公园踩踩泥土"], direction: "西南" },
+};
+const WX_AVOID: Record<string, string> = { "金":"忌红色（火克金）","木":"忌白色（金克木）","水":"忌黄色（土克水）","火":"忌黑色（水克火）","土":"忌绿色（木克土）" };
+
 /* ===== 经典命例（空白期推荐·随机展示4个） ===== */
 const FEATURED_CASES = [
   { name: "司马光", year: 1019, month: 11, day: 17, hour: 8,  desc: "北宋名臣 · 正官格",    emoji: "🏛️" },
@@ -313,9 +323,12 @@ function PaipanContentInner() {
                 <span className="text-text-secondary">日主</span>
                 <span className="text-accent font-bold text-lg font-[family-name:var(--font-display)]">{result.paipan.rizhu}</span>
                 <span className="text-text-tertiary">({result.paipan.rizhu_wuxing})</span>
-                <span className="text-[10px] text-gold px-2 py-0.5 bg-gold/10 rounded-full">
+                <Link
+                  href={`/dianji?q=${encodeURIComponent(g?.pattern || "")}`}
+                  className="text-[10px] text-gold px-2 py-0.5 bg-gold/10 rounded-full hover:bg-gold/20 transition-colors"
+                >
                   {g?.pattern || ""}
-                </span>
+                </Link>
                 <span className="text-[10px] text-text-secondary px-2 py-0.5 bg-dao-indigo/10 rounded-full">
                   {y_?.wangshuai || ""}
                 </span>
@@ -335,6 +348,49 @@ function PaipanContentInner() {
                 </div>
               )}
             </div>
+
+            {/* ===== 生活应用层 — 五行调和具体举措 ===== */}
+            {y_ && y_.recommended?.length > 0 && (() => {
+              const mainWx = y_.recommended[0]; // 首选用神
+              const adv = WX_ADVICE[mainWx];
+              const jiWx = y_.jishen?.[0];
+              if (!adv) return null;
+              return (
+                <div className="dao-card space-y-3" style={{ borderColor: "rgba(201,169,110,0.3)" }}>
+                  <p className="text-xs font-bold text-text flex items-center gap-1.5">
+                    🧭 五行调和 · 生活应用
+                    <span className="text-[10px] text-text-tertiary font-normal">（基于用神{mainWx}）</span>
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {/* 穿衣颜色 */}
+                    <div className="bg-bg-subtle rounded-lg p-3">
+                      <p className="text-[10px] text-text-tertiary mb-1">👔 穿衣颜色</p>
+                      <p className="text-xs text-text font-medium">{adv.colors.slice(0,3).join("、")}色</p>
+                    </div>
+                    {/* 有利方位 */}
+                    <div className="bg-bg-subtle rounded-lg p-3">
+                      <p className="text-[10px] text-text-tertiary mb-1">🧭 有利方位</p>
+                      <p className="text-xs text-text font-medium">{adv.direction}方</p>
+                    </div>
+                    {/* 随身物品 */}
+                    <div className="bg-bg-subtle rounded-lg p-3">
+                      <p className="text-[10px] text-text-tertiary mb-1">🎒 随身物品</p>
+                      <p className="text-xs text-text font-medium">{adv.items.slice(0,2).join(" · ")}</p>
+                    </div>
+                    {/* 忌 */}
+                    <div className="bg-bg-subtle rounded-lg p-3">
+                      <p className="text-[10px] text-text-tertiary mb-1">⚠️ 需要注意</p>
+                      <p className="text-xs text-text font-medium">{jiWx ? WX_AVOID[jiWx] : "保持平衡"}</p>
+                    </div>
+                  </div>
+                  {/* 具体行动 */}
+                  <div className="bg-bg-subtle rounded-lg p-3">
+                    <p className="text-[10px] text-text-tertiary mb-1">📋 具体行动建议</p>
+                    <p className="text-xs text-text leading-relaxed">{adv.actions.join("；")}</p>
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Tab切换: 概览/详情/AI解读 */}
             <div className="flex gap-1 bg-bg-subtle rounded-lg p-1">

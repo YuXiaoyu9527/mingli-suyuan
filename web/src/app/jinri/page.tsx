@@ -214,6 +214,21 @@ export default function JinriPage() {
           ))}
         </div>
 
+        {/* 今日引导 — 基于日柱五行 */}
+        {yiji?.day_gan && (
+          <div className="dao-card flex items-center gap-3 py-3 px-4">
+            <span className="text-2xl">🧭</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold text-text">
+                今日{yiji.day_ganzhi}日 · 日柱属{solarTerm.element}
+              </p>
+              <p className="text-[11px] text-text-secondary mt-0.5 leading-relaxed">
+                宜：了解自己的八字格局 · 学习五行基础知识 · 阅读一篇古籍原文
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* 每日古籍 */}
         {ancient && (
           <div className="dao-card-warm relative">

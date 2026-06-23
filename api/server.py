@@ -911,6 +911,35 @@ def api_xuetang_chapter(chapter_id: str):
     }
 
 
+class TranslateRequest(BaseModel):
+    text: str
+
+@app.post("/api/translate-classical")
+def api_translate_classical(req: TranslateRequest):
+    """文言文→白话翻译（AI）"""
+    ai = get_ai()
+    translation = None
+    try:
+        if ai.api_key:
+            import openai
+            client = openai.OpenAI(api_key=ai.api_key, base_url=ai.base_url)
+            resp = client.chat.completions.create(
+                model=ai.model,
+                messages=[{
+                    "role": "system",
+                    "content": "你是古籍白话翻译专家。请将以下文言文古籍内容翻译成通俗易懂的现代汉语白话文，保留原文的文化内涵和专业术语。不需要额外解释，只输出翻译结果。"
+                }, {
+                    "role": "user",
+                    "content": f"请翻译这段古籍：{req.text[:800]}"
+                }],
+                temperature=0.3, max_tokens=500,
+            )
+            translation = resp.choices[0].message.content
+    except Exception:
+        translation = "（AI翻译服务暂不可用，请确认已配置 DeepSeek API Key）"
+    return {"translation": translation}
+
+
 @app.get("/health")
 def health():
     return {"status": "healthy"}

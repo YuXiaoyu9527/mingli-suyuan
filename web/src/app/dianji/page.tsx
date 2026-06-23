@@ -43,6 +43,14 @@ function SearchPanel() {
   const [q,setQ]=useState("");
   const [res,setRes]=useState<any[]>([]);
   const [load,setLoad]=useState(false);
+  const [translating,setTranslating]=useState<Record<number,string>>({});
+
+  // 从 URL 参数自动搜索（从排盘页格局名跳过来）
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const qParam = params.get("q");
+    if (qParam) { setQ(qParam); go(qParam); }
+  }, []);
 
   const go = async (query?: string) => {
     const sq = query || q; if(!sq.trim()) return;
@@ -53,6 +61,19 @@ function SearchPanel() {
         body:JSON.stringify({query:sq,top_k:10})});
       const d = await r.json(); setRes(d.results||[]);
     }catch(e){} setLoad(false);
+  };
+
+  /** AI 白话翻译古籍原文 */
+  const translateText = async (idx: number, content: string) => {
+    setTranslating(prev => ({...prev, [idx]: "..."}));
+    try {
+      const r = await fetch(`${getApiUrl()}/api/translate-classical`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: content.slice(0, 500) }),
+      });
+      const d = await r.json();
+      setTranslating(prev => ({...prev, [idx]: d.translation || "翻译失败"}));
+    } catch { setTranslating(prev => ({...prev, [idx]: "翻译失败，请确认后端已启动"})); }
   };
 
   return (
@@ -95,7 +116,21 @@ function SearchPanel() {
             <span className="text-[11px] text-gold">{Math.round(r.score*100)}%</span>
           </div>
           <p className="text-[11px] text-text-secondary mb-1">{r.volume} · {r.section}</p>
-          <p className="text-xs text-text leading-relaxed line-clamp-4">{r.content}</p>
+          <p className="text-xs text-text leading-relaxed">{r.content}</p>
+          {/* 白话翻译 */}
+          {translating[i] ? (
+            <div className="mt-2 p-3 bg-gold/5 rounded-lg border border-gold/20">
+              <p className="text-[10px] text-gold mb-1">📖 白话解读</p>
+              <p className="text-xs text-text-secondary leading-relaxed">{translating[i]}</p>
+            </div>
+          ) : (
+            <button
+              onClick={() => translateText(i, r.content)}
+              className="mt-2 text-[10px] text-gold/70 hover:text-gold tap-active transition-colors"
+            >
+              💡 查看白话解读
+            </button>
+          )}
           <div className="flex gap-1 mt-1.5">
             {(r.tags||[]).filter((t:string)=>t!=="其他").slice(0,4).map((t:string)=>
               <span key={t} className="text-[10px] px-1.5 py-0.5 bg-gold/10 text-text-secondary rounded">{t}</span>
