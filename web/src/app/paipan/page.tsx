@@ -371,6 +371,7 @@ function PaipanContentInner() {
                 "火": "火会熔化金，破坏你的边界感。少穿红色紫色，避免暴躁和冲动决策。",
                 "土": "土会堵住水的流动，让你思维变钝。少穿黄棕色，避免长时间待在潮湿环境。",
               };
+              const today = result?.daily_influence;
               return (
                 <div className="dao-card space-y-3" style={{ borderColor: "rgba(201,169,110,0.3)" }}>
                   <p className="text-xs font-bold text-text">
@@ -379,6 +380,17 @@ function PaipanContentInner() {
                       主{mainWx}{y_.recommended.length > 1 ? `辅${y_.recommended.slice(1).join("、")}` : ""}
                     </span>
                   </p>
+                  {/* 今日流日影响 — 每天动态变化 */}
+                  {today && (
+                    <div className="bg-bg-subtle rounded-lg p-3 flex items-start gap-2"
+                      style={{ borderLeft: `3px solid ${today.relation === "good" ? "#7A9A7E" : today.relation === "bad" ? "#C43A31" : "#C9A96E"}` }}>
+                      <span className="text-sm flex-shrink-0">{today.relation === "good" ? "✅" : today.relation === "bad" ? "⚠️" : "📌"}</span>
+                      <div>
+                        <p className="text-[10px] text-text-tertiary mb-0.5">今天 {today.day_ganzhi} 日 · 对你来说</p>
+                        <p className="text-xs text-text leading-relaxed">{today.summary}</p>
+                      </div>
+                    </div>
+                  )}
                   <p className="text-xs text-text-secondary leading-relaxed">{wxRole[mainWx]}</p>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="bg-bg-subtle rounded-lg p-3">

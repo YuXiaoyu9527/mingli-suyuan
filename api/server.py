@@ -266,6 +266,59 @@ def api_full_analysis(req: PaipanRequest):
     # 用神
     yongshen = YongshenEngine().analyze(bazi)
 
+    # 今日流日影响 — 今天的干支 vs 用户八字
+    daily_influence = None
+    try:
+        from datetime import datetime, timezone, timedelta
+        from lunar_python import Solar as SolarToday
+        tz_cn = timezone(timedelta(hours=8))
+        now = datetime.now(tz_cn)
+        today_solar = SolarToday.fromYmdHms(now.year, now.month, now.day, 12, 0, 0)
+        today_lunar = today_solar.getLunar()
+        today_gan = today_lunar.getDayGan()
+        today_zhi = today_lunar.getDayZhi()
+        today_ganzhi = f"{today_gan}{today_zhi}"
+        # 天干地支→五行
+        gan_wx = {"甲":"木","乙":"木","丙":"火","丁":"火","戊":"土","己":"土","庚":"金","辛":"金","壬":"水","癸":"水"}
+        zhi_wx = {"寅":"木","卯":"木","巳":"火","午":"火","申":"金","酉":"金","亥":"水","子":"水","辰":"土","戌":"土","丑":"土","未":"土"}
+        today_wx = gan_wx.get(today_gan, "")
+        user_zhi_list = [bazi.year.zhi, bazi.month.zhi, bazi.day.zhi, bazi.hour.zhi]
+        zhi_positions = ["年柱","月柱","日柱","时柱"]
+        # 日支冲四柱
+        zhi_chong_map = {"子":"午","午":"子","丑":"未","未":"丑","寅":"申","申":"寅","卯":"酉","酉":"卯","辰":"戌","戌":"辰","巳":"亥","亥":"巳"}
+        clashes = [zhi_positions[i] for i, z in enumerate(user_zhi_list) if zhi_chong_map.get(today_zhi) == z]
+        # 今天五行对用神的关系
+        ys_list = yongshen.recommended
+        js_list = yongshen.jishen
+        # 生克关系
+        wx_sheng = {"木":"火","火":"土","土":"金","金":"水","水":"木"}
+        wx_ke = {"木":"土","土":"水","水":"火","火":"金","金":"木"}
+        if today_wx in ys_list:
+            rel = "good"
+            rel_text = f"生扶你的用神，今天对你是好日子"
+        elif today_wx in js_list:
+            rel = "bad"
+            rel_text = f"跟你的忌神同气，今天需要多加注意"
+        elif any(today_wx == wx_sheng.get(w, "") for w in ys_list):
+            rel = "goodish"
+            rel_text = f"能生你的用神，整体有利"
+        elif any(today_wx == wx_ke.get(w, "") for w in ys_list):
+            rel = "badish"
+            rel_text = f"会克制你的用神，今天宜低调谨慎"
+        else:
+            rel = "neutral"
+            rel_text = "对你的五行影响不大，按平常节奏走即可"
+        clash_text = f"注意{'、'.join(clashes)}受冲" if clashes else "四柱安稳无冲"
+        daily_influence = {
+            "day_ganzhi": today_ganzhi,
+            "day_wuxing": today_wx,
+            "relation": rel,
+            "summary": f"今天{today_ganzhi}日，日主属{today_wx}。{rel_text}。{clash_text}。",
+            "clashes": clashes,
+        }
+    except Exception:
+        pass
+
     # AI（可选，使用统一的检索器单例）
     interpretation = None
     ancient_refs = None
@@ -313,6 +366,7 @@ def api_full_analysis(req: PaipanRequest):
             },
             "interpretation": interpretation,
             "ancient_refs": ancient_refs,
+            "daily_influence": daily_influence,
         }
 
     return {
@@ -335,6 +389,7 @@ def api_full_analysis(req: PaipanRequest):
         },
         "interpretation": interpretation,
         "ancient_refs": ancient_refs,
+        "daily_influence": daily_influence,
     }
 
 
