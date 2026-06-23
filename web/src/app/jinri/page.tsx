@@ -35,6 +35,21 @@ const SOLAR_TERMS: { name: string; month: number; day: number; element: string; 
   { name:"大寒",month:1,day:20,element:"水",color:"#5B7B8A",emoji:"🧊"},
 ];
 
+/* ===== 五行调和知识库（首页每日建议） ===== */
+const WX_COLORS: Record<string, string[]> = {
+  "金": ["白","银","浅灰","米白"], "木": ["绿","青","翠绿","浅蓝"], "水": ["黑","深蓝","藏青","深灰"],
+  "火": ["红","紫","玫红","橙红"], "土": ["黄","棕","卡其","米色"],
+};
+const WX_HEX_MAP: Record<string, string> = { "金":"#B8A88A","木":"#7A9A7E","水":"#5B7B8A","火":"#B5544A","土":"#C4A882" };
+const WX_DIRECTION: Record<string, string> = { "金":"西北","木":"东","水":"北","火":"南","土":"西南" };
+const WX_ITEMS: Record<string, string[]> = {
+  "金": ["银色项链或耳钉","金属框眼镜","白色运动鞋"],
+  "木": ["绿色T恤或衬衫","木质手串","帆布包"],
+  "水": ["黑色镜框或墨镜","深蓝色背包","黑色手表"],
+  "火": ["红色围巾或丝巾","红绳手链","红色棒球帽"],
+  "土": ["棕色皮带或手表带","卡其色外套","米色运动鞋"],
+};
+
 function getCurrentSolarTerm(): typeof SOLAR_TERMS[number] {
   const now = new Date();
   const m = now.getMonth() + 1;
@@ -59,8 +74,17 @@ export default function JinriPage() {
   const [mingli, setMingli] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showFullText, setShowFullText] = useState(false);
+  const [myProfile, setMyProfile] = useState<any>(null);
 
   const solarTerm = useMemo(() => getCurrentSolarTerm(), []);
+
+  // 读取已保存的八字用神（从排盘页保存的）
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("my_bazi_profile");
+      if (saved) setMyProfile(JSON.parse(saved));
+    } catch {}
+  }, []);
 
   useEffect(() => {
     loadToday();
@@ -235,6 +259,51 @@ export default function JinriPage() {
             </Link>
           ))}
         </div>
+
+        {/* 每日穿搭建议 — 基于你的八字用神 + 今天日柱 */}
+        {myProfile?.yongshen?.recommended?.length > 0 && yiji?.day_gan && (() => {
+          const mainWx = myProfile.yongshen.recommended[0];
+          const colors = WX_COLORS[mainWx] || [];
+          const items = WX_ITEMS[mainWx] || [];
+          const dir = WX_DIRECTION[mainWx] || "";
+          const wxHex = WX_HEX_MAP[mainWx] || "#999";
+          // 今天日柱五行vs用神
+          const ganWx: Record<string, string> = { "甲":"木","乙":"木","丙":"火","丁":"火","戊":"土","己":"土","庚":"金","辛":"金","壬":"水","癸":"水" };
+          const todayWx = ganWx[yiji.day_gan] || "";
+          const isGood = todayWx === mainWx || myProfile.yongshen.recommended.includes(todayWx);
+          const isBad = myProfile.yongshen.jishen?.includes(todayWx);
+          return (
+            <div className="dao-card space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-bold text-text">🧭 今日穿搭</p>
+                <Link href="/paipan" className="text-[10px] text-gold tap-active">调整八字→</Link>
+              </div>
+              {yiji.day_ganzhi && (
+                <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs ${isGood ? "bg-green/10" : isBad ? "bg-accent/10" : "bg-gold/10"}`}>
+                  <span>{isGood ? "✅" : isBad ? "⚠️" : "📌"}</span>
+                  <span className="text-text-secondary">
+                    今天{yiji.day_ganzhi}日{todayWx && `属${todayWx}`}{isGood ? "，生扶你的用神" : isBad ? "，跟你的忌神同气，注意规避" : "，对你的五行影响不大"}
+                  </span>
+                </div>
+              )}
+              <div>
+                <p className="text-[10px] text-text-tertiary mb-2">多穿这些</p>
+                <div className="flex gap-3 items-center">
+                  {colors.map((c: string, i: number) => (
+                    <div key={i} className="flex flex-col items-center gap-1.5">
+                      <div className="w-9 h-9 rounded-full shadow-sm" style={{ background: wxHex, opacity: 1 - i * 0.12 }} />
+                      <span className="text-[10px] text-text-tertiary">{c}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center gap-4 text-xs text-text-secondary">
+                <span>🧭 {dir}方有利</span>
+                <span>🎒 {items.slice(0, 2).join(" · ")}</span>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* 今日引导 — 基于日柱天干五行动态生成 */}
         {yiji?.day_gan && (() => {

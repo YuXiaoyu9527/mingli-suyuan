@@ -102,7 +102,18 @@ function PaipanContentInner() {
         body: JSON.stringify({ ...form, calendar_type: calendarType }),
       });
       if (!resp.ok) throw new Error(`${resp.status}`);
-      setResult(await resp.json());
+      const data = await resp.json();
+      setResult(data);
+      // 保存用神到本地，首页每日建议需要
+      if (data.yongshen?.recommended?.length > 0) {
+        const myInfo = {
+          yongshen: data.yongshen,
+          rizhu: data.paipan?.rizhu,
+          rizhu_wuxing: data.paipan?.rizhu_wuxing,
+          savedAt: new Date().toISOString(),
+        };
+        localStorage.setItem("my_bazi_profile", JSON.stringify(myInfo));
+      }
     } catch (e: any) {
       setError(e.message || "请求失败，请确认后端已启动");
     }
