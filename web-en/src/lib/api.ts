@@ -16,7 +16,7 @@ export function getBlueprint(params: {
   year: number; month: number; day: number; hour: number;
   minute?: number; gender?: string; city?: string;
 }) {
-  return fetchAPI("/api/full-analysis", params as Record<string, unknown>);
+  return fetchAPI("/api/full-analysis", { ...params, language: "en", calendar_type: "solar" } as Record<string, unknown>);
 }
 
 /** Daily almanac + personalized tips */

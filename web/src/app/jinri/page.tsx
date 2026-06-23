@@ -214,20 +214,35 @@ export default function JinriPage() {
           ))}
         </div>
 
-        {/* 今日引导 — 基于日柱五行 */}
-        {yiji?.day_gan && (
-          <div className="dao-card flex items-center gap-3 py-3 px-4">
-            <span className="text-2xl">🧭</span>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold text-text">
-                今日{yiji.day_ganzhi}日 · 日柱属{solarTerm.element}
-              </p>
-              <p className="text-[11px] text-text-secondary mt-0.5 leading-relaxed">
-                宜：了解自己的八字格局 · 学习五行基础知识 · 阅读一篇古籍原文
-              </p>
+        {/* 今日引导 — 基于日柱天干五行动态生成 */}
+        {yiji?.day_gan && (() => {
+          // 天干地支→五行映射
+          const ganWx: Record<string, string> = { "甲":"木","乙":"木","丙":"火","丁":"火","戊":"土","己":"土","庚":"金","辛":"金","壬":"水","癸":"水" };
+          const dayWx = ganWx[yiji.day_gan] || solarTerm.element;
+          const wxGuide: Record<string, { yi: string[]; ji: string; color: string }> = {
+            "木": { yi: ["学习新知识","制定长期计划","早起锻炼身体","亲近大自然"], ji: "忌犹豫不决、拖延", color: "#7A9A7E" },
+            "火": { yi: ["主动社交沟通","展示你的想法","推进重要项目","表达热情"], ji: "忌急躁冲动、言语伤人", color: "#B5544A" },
+            "土": { yi: ["脚踏实地做事","整理收纳空间","帮助身边的人","稳扎稳打"], ji: "忌胡思乱想、过度担忧", color: "#C4A882" },
+            "金": { yi: ["做决断和取舍","清理不需要的东西","制定规则边界","专注一件事"], ji: "忌优柔寡断、贪多嚼不烂", color: "#B8A88A" },
+            "水": { yi: ["静心冥想思考","倾听内心直觉","深度学习研究","保存精力"], ji: "忌过度消耗、四处奔波", color: "#5B7B8A" },
+          };
+          const guide = wxGuide[dayWx] || wxGuide["木"];
+          return (
+            <div className="dao-card flex items-center gap-3 py-3 px-4">
+              <span className="text-2xl">🧭</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold text-text">
+                  今日{yiji.day_ganzhi}日 · 日主属{dayWx}
+                  <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded-full" style={{color: guide.color, background: guide.color + "18"}}>{dayWx}气当令</span>
+                </p>
+                <p className="text-[11px] text-text-secondary mt-1 leading-relaxed">
+                  宜：{guide.yi.slice(0, 3).join(" · ")}
+                </p>
+                <p className="text-[10px] text-text-tertiary mt-0.5">{guide.ji}</p>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* 每日古籍 */}
         {ancient && (

@@ -114,6 +114,48 @@ class AIInterpreter:
         prompt = build_jianpi_prompt(paipan_str, ancient_refs)
         return self._call(SYSTEM_ROLE.strip(), prompt, max_tokens=600)
 
+    def jianpi_en(
+        self,
+        paipan_json: dict,
+        ancient_refs: str,
+    ) -> str:
+        """English BaZi blueprint interpretation"""
+        wx_en = {"金":"Metal","木":"Wood","水":"Water","火":"Fire","土":"Earth"}
+        key_data = {
+            "Four Pillars": (
+                f"{paipan_json['pillars']['year']['ganzhi']} "
+                f"{paipan_json['pillars']['month']['ganzhi']} "
+                f"{paipan_json['pillars']['day']['ganzhi']} "
+                f"{paipan_json['pillars']['hour']['ganzhi']}"
+            ),
+            "Day Master": f"{paipan_json['rizhu']} ({wx_en.get(paipan_json['rizhu_wuxing'], paipan_json['rizhu_wuxing'])})",
+            "Element Scores": {wx_en.get(k,k): v for k,v in paipan_json.get("wuxing_scores", {}).items()},
+            "Day Pillar Nayin": paipan_json['pillars']['day']['nayin'],
+        }
+        paipan_str = json.dumps(key_data, ensure_ascii=False, indent=2)
+
+        en_system = (
+            "You are a BaZi (Chinese Four Pillars) interpreter for a Western audience. "
+            "Write in clear, engaging English. "
+            "Explain what the user's Day Master element means for their personality, strengths, and life path. "
+            "Use MBTI-like language and modern self-discovery framing. "
+            "Avoid technical Chinese terms unless you explain them. "
+            "Keep it warm, insightful, and under 250 words. "
+            "Never make absolute predictions — use 'tends to', 'may', 'often'."
+        )
+        en_prompt = (
+            "Based on this BaZi chart, write a 'Personal Element Blueprint' for the user:\n\n"
+            f"{paipan_str}\n\n"
+            "If ancient text references are available, incorporate them naturally:\n"
+            f"{ancient_refs}\n\n"
+            "Structure your response as:\n"
+            "1. Your Element Type (1-2 sentences — e.g. 'You are a Wood person...')\n"
+            "2. Personality & Strengths (3-4 bullet-like sentences)\n"
+            "3. Life Path & Growth Areas (2-3 sentences)\n"
+            "4. Ancient Wisdom Note (1 sentence connecting to classical Chinese text, if available)"
+        )
+        return self._call(en_system, en_prompt, max_tokens=600)
+
     def daily_yiji(
         self,
         day_ganzhi: str,

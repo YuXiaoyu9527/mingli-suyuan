@@ -349,44 +349,52 @@ function PaipanContentInner() {
               )}
             </div>
 
-            {/* ===== 生活应用层 — 五行调和具体举措 ===== */}
+            {/* ===== 生活应用层 — 五行调和具体举措（展示所有用神） ===== */}
             {y_ && y_.recommended?.length > 0 && (() => {
-              const mainWx = y_.recommended[0]; // 首选用神
-              const adv = WX_ADVICE[mainWx];
-              const jiWx = y_.jishen?.[0];
-              if (!adv) return null;
+              // 展示所有用神的综合建议
+              const allColors: string[] = [], allItems: string[] = [], allActions: string[] = [];
+              const directions: string[] = [];
+              y_.recommended.forEach((wx: string) => {
+                const adv = WX_ADVICE[wx];
+                if (adv) {
+                  allColors.push(...adv.colors.slice(0, 2));
+                  allItems.push(...adv.items.slice(0, 1));
+                  allActions.push(...adv.actions.slice(0, 1));
+                  directions.push(adv.direction);
+                }
+              });
+              const jiAll = (y_.jishen || []).map((wx: string) => WX_AVOID[wx]).filter(Boolean);
               return (
                 <div className="dao-card space-y-3" style={{ borderColor: "rgba(201,169,110,0.3)" }}>
                   <p className="text-xs font-bold text-text flex items-center gap-1.5">
                     🧭 五行调和 · 生活应用
-                    <span className="text-[10px] text-text-tertiary font-normal">（基于用神{mainWx}）</span>
+                    <span className="text-[10px] text-text-tertiary font-normal">
+                      （用神 {y_.recommended.join("、")}{y_.jishen?.length ? `，忌 ${y_.jishen.join("、")}` : ""}）
+                    </span>
                   </p>
                   <div className="grid grid-cols-2 gap-2">
-                    {/* 穿衣颜色 */}
                     <div className="bg-bg-subtle rounded-lg p-3">
                       <p className="text-[10px] text-text-tertiary mb-1">👔 穿衣颜色</p>
-                      <p className="text-xs text-text font-medium">{adv.colors.slice(0,3).join("、")}色</p>
+                      <p className="text-xs text-text font-medium">{[...new Set(allColors)].slice(0, 4).join("、")}色</p>
                     </div>
-                    {/* 有利方位 */}
                     <div className="bg-bg-subtle rounded-lg p-3">
                       <p className="text-[10px] text-text-tertiary mb-1">🧭 有利方位</p>
-                      <p className="text-xs text-text font-medium">{adv.direction}方</p>
+                      <p className="text-xs text-text font-medium">{[...new Set(directions)].join("、")}方</p>
                     </div>
-                    {/* 随身物品 */}
                     <div className="bg-bg-subtle rounded-lg p-3">
                       <p className="text-[10px] text-text-tertiary mb-1">🎒 随身物品</p>
-                      <p className="text-xs text-text font-medium">{adv.items.slice(0,2).join(" · ")}</p>
+                      <p className="text-xs text-text font-medium">{[...new Set(allItems)].slice(0, 3).join(" · ")}</p>
                     </div>
-                    {/* 忌 */}
                     <div className="bg-bg-subtle rounded-lg p-3">
                       <p className="text-[10px] text-text-tertiary mb-1">⚠️ 需要注意</p>
-                      <p className="text-xs text-text font-medium">{jiWx ? WX_AVOID[jiWx] : "保持平衡"}</p>
+                      <p className="text-xs text-text font-medium leading-relaxed">
+                        {jiAll.length > 0 ? jiAll.join("；") : "保持平衡即可"}
+                      </p>
                     </div>
                   </div>
-                  {/* 具体行动 */}
                   <div className="bg-bg-subtle rounded-lg p-3">
                     <p className="text-[10px] text-text-tertiary mb-1">📋 具体行动建议</p>
-                    <p className="text-xs text-text leading-relaxed">{adv.actions.join("；")}</p>
+                    <p className="text-xs text-text leading-relaxed">{[...new Set(allActions)].slice(0, 3).join("；") + "。"}</p>
                   </div>
                 </div>
               );

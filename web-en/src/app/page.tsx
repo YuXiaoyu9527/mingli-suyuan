@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { getBlueprint } from "@/lib/api";
-import { Sparkles, ChevronRight, Shirt, MapPin, Compass } from "lucide-react";
+import { Sparkles, ChevronRight, Shirt, MapPin, Compass, Share2, Check } from "lucide-react";
 
 const WX_COLORS: Record<string, { hex: string; emoji: string; trait: string }> = {
   Wood: { hex: "#7A9A7E", emoji: "🌿", trait: "Growth-oriented, creative, flexible" },
@@ -25,6 +25,16 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = () => {
+    const text = `🔮 I'm a ${element} person — ${wxInfo.trait}\n\nAccording to DestinyScroll, a BaZi-based self-discovery tool. My birth chart says: ${g?.pattern || "unique pattern"}. Today's alignment: ${advice.action}\n\nDiscover your element at destinyscroll.app`;
+    if (navigator.share) {
+      navigator.share({ title: "DestinyScroll — My Element Blueprint", text });
+    } else {
+      navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
+    }
+  };
 
   const handleSubmit = async () => {
     setLoading(true); setError("");
@@ -148,6 +158,15 @@ export default function Home() {
               </p>
             )}
           </div>
+
+          {/* Share Button */}
+          <button onClick={handleShare}
+            className="w-full py-3 rounded-2xl border border-[var(--color-accent-dim)]/40
+                       text-sm text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10
+                       transition-colors flex items-center justify-center gap-2">
+            {copied ? <Check size={16} /> : <Share2 size={16} />}
+            {copied ? "Copied to clipboard!" : "Share My Element"}
+          </button>
 
           {/* Personality Snapshot */}
           <div className="card">

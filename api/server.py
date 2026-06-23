@@ -41,6 +41,7 @@ class PaipanRequest(BaseModel):
     gender: str = "男"
     city: str = ""           # 出生城市（用于真太阳时校正）
     calendar_type: str = "solar"  # "solar" 公历 / "lunar" 农历
+    language: str = "zh"     # "zh" 中文 / "en" English
 
 
 class JianpiRequest(BaseModel):
@@ -268,15 +269,51 @@ def api_full_analysis(req: PaipanRequest):
     # AI（可选，使用统一的检索器单例）
     interpretation = None
     ancient_refs = None
+    en_mode = req.language == "en"
     try:
         searcher = get_searcher()
-        terms = f"{data['rizhu']}日主 {data['rizhu_wuxing']}"
+        if en_mode:
+            wx_en = {"金":"Metal","木":"Wood","水":"Water","火":"Fire","土":"Earth"}
+            day_master_en = wx_en.get(data["rizhu_wuxing"], data["rizhu_wuxing"])
+            terms = f"{data['rizhu']} Day Master {day_master_en} BaZi"
+        else:
+            terms = f"{data['rizhu']}日主 {data['rizhu_wuxing']}"
         ancient_refs = searcher.search_for_ai(terms, top_k=2)
         from api.ai import AIInterpreter
         ai = AIInterpreter()
-        interpretation = ai.jianpi(data, ancient_refs)
+        if en_mode:
+            interpretation = ai.jianpi_en(data, ancient_refs)
+        else:
+            interpretation = ai.jianpi(data, ancient_refs)
     except Exception:
         pass
+
+    if en_mode:
+        # 翻译格局/用神相关字段到英文
+        wx_en = {"金":"Metal","木":"Wood","水":"Water","火":"Fire","土":"Earth"}
+        return {
+            "paipan": data,
+            "true_solar": tz_info,
+            "geju": {
+                "pattern": geju.pattern,
+                "pattern_type": geju.pattern_type,
+                "is_chengge": geju.is_chengge,
+                "conditions": geju.chengge_conditions,
+                "reasons": geju.baige_reasons,
+                "analysis": geju.analysis,
+            },
+            "yongshen": {
+                "wangshuai": yongshen.wangshuai,
+                "wangshuai_reason": yongshen.wangshuai_reason,
+                "recommended": [wx_en.get(w, w) for w in yongshen.recommended],
+                "recommended_zh": yongshen.recommended,
+                "jishen": [wx_en.get(w, w) for w in yongshen.jishen],
+                "jishen_zh": yongshen.jishen,
+                "analysis": yongshen.analysis,
+            },
+            "interpretation": interpretation,
+            "ancient_refs": ancient_refs,
+        }
 
     return {
         "paipan": data,

@@ -126,7 +126,9 @@ function SearchPanel() {
           ) : (
             <button
               onClick={() => translateText(i, r.content)}
-              className="mt-2 text-[10px] text-gold/70 hover:text-gold tap-active transition-colors"
+              className="mt-2 w-full flex items-center justify-center gap-1.5 py-2
+                         bg-gold/8 border border-gold/20 rounded-lg
+                         text-xs text-gold hover:bg-gold/15 tap-active transition-colors"
             >
               💡 查看白话解读
             </button>
