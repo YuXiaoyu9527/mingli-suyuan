@@ -349,108 +349,6 @@ function PaipanContentInner() {
               )}
             </div>
 
-            {/* ===== 生活应用层 — 双卡设计：速览 + 深度 ===== */}
-            {y_ && y_.recommended?.length > 0 && (() => {
-              const mainWx = y_.recommended[0];
-              const adv = WX_ADVICE[mainWx];
-              if (!adv) return null;
-              const shengKe: Record<string, string> = { "木":"金","火":"水","土":"木","金":"火","水":"土" };
-              const mainJi = shengKe[mainWx];
-              const hasJi = y_.jishen?.includes(mainJi);
-              const wxRole: Record<string, string> = {
-                "金": "你的命局中金的能量偏弱。金代表决断力和原则——补足它能帮你在关键时刻果断选择，不拖泥带水。",
-                "木": "你的命局中木的能量偏弱。木代表生长和创造力——补足它能让你更有冲劲，做事更有长性。",
-                "水": "你的命局中水的能量偏弱。水代表智慧和冷静——补足它能让你在压力下保持清醒，不容易被情绪带着走。",
-                "火": "你的命局中火的能量偏弱。火代表热情和感染力——补足它能让你更自信、更敢表达自己。",
-                "土": "你的命局中土的能量偏弱。土代表稳定和踏实——补足它能让你沉得住气，不被外界变化带着跑。",
-              };
-              const avoidReason: Record<string, string> = {
-                "金": "金会砍伐木，消耗你的生发之气。少穿白色银灰色，少用金属饰品。",
-                "水": "水会浇灭火，压住你的热情。少穿黑色深蓝色，避免长时间待在寒冷环境。",
-                "木": "木会吸收土的营养。少穿绿色青色，避免过度消耗精力在太多事情上。",
-                "火": "火会熔化金，破坏你的边界感。少穿红色紫色，避免暴躁和冲动决策。",
-                "土": "土会堵住水的流动，让你思维变钝。少穿黄棕色，避免长时间待在潮湿环境。",
-              };
-              const today = result?.daily_influence;
-              const wxColorHex: Record<string, string> = { "金":"#B8A88A","木":"#7A9A7E","水":"#5B7B8A","火":"#B5544A","土":"#C4A882" };
-              return (
-                <>
-                  {/* ===== 卡片 1：视觉速览 ===== */}
-                  <div className="dao-card space-y-4" style={{ borderColor: "rgba(201,169,110,0.35)" }}>
-                    {/* 标题行 */}
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-bold text-text">🧭 今天怎么穿</p>
-                      <span className="text-[10px] text-text-tertiary">
-                        用神{mainWx}{y_.recommended.length > 1 ? `+${y_.recommended.slice(1).join("")}` : ""}
-                      </span>
-                    </div>
-
-                    {/* 流日状态条 */}
-                    {today && (
-                      <div className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs"
-                        style={{ background: today.relation === "good" ? "#7A9A7E15" : today.relation === "bad" ? "#C43A3112" : "#C9A96E12" }}>
-                        <span>{today.relation === "good" ? "✅" : today.relation === "bad" ? "⚠️" : "📌"}</span>
-                        <span className="text-text-secondary">{today.summary}</span>
-                      </div>
-                    )}
-
-                    {/* 色块 — 核心视觉 */}
-                    <div>
-                      <p className="text-[11px] text-text-tertiary mb-2">多穿这些</p>
-                      <div className="flex gap-3 items-center">
-                        {adv.colors.slice(0, 4).map((c: string, i: number) => (
-                          <div key={i} className="flex flex-col items-center gap-1.5">
-                            <div className="w-10 h-10 rounded-full shadow-sm"
-                              style={{ background: wxColorHex[mainWx] || "#999", opacity: 1 - i * 0.15 }} />
-                            <span className="text-[10px] text-text-tertiary">{c}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* 方位 + 物品 单行 */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">🧭</span>
-                        <div>
-                          <p className="text-[10px] text-text-tertiary">有利方位</p>
-                          <p className="text-sm font-medium text-text">{adv.direction}方</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">🎒</span>
-                        <div>
-                          <p className="text-[10px] text-text-tertiary">随身搭配</p>
-                          <p className="text-xs text-text">{adv.items.slice(0, 2).join(" · ")}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* ===== 卡片 2：理解原理 ===== */}
-                  <div className="dao-card space-y-3">
-                    <p className="text-xs font-bold text-text">💡 为什么这样建议</p>
-                    <p className="text-xs text-text-secondary leading-relaxed">{wxRole[mainWx]}</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="bg-bg-subtle rounded-lg p-3">
-                        <p className="text-[10px] text-text-tertiary mb-1">📋 今天试试</p>
-                        {adv.actions.slice(0, 2).map((a: string, i: number) => (
-                          <p key={i} className="text-xs text-text leading-relaxed mt-1">{i + 1}. {a}</p>
-                        ))}
-                      </div>
-                      <div className="rounded-lg p-3" style={{ background: "rgba(196,58,49,0.04)" }}>
-                        <p className="text-[10px] text-text-tertiary mb-1">⚠️ 暂时放一放</p>
-                        {hasJi ? (
-                          <p className="text-xs text-text-secondary leading-relaxed">{avoidReason[mainJi]}</p>
-                        ) : (
-                          <p className="text-xs text-text-secondary">没有特别需要避免的</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </>
-              );
-            })()}
 
             {/* Tab切换: 概览/详情/AI解读 */}
             <div className="flex gap-1 bg-bg-subtle rounded-lg p-1">
@@ -564,6 +462,95 @@ function PaipanContentInner() {
                 )}
               </div>
             )}
+
+            {/* ===== 生活应用层 — 双卡：速览 + 深度 ===== */}
+            {y_ && y_.recommended?.length > 0 && (() => {
+              const mainWx = y_.recommended[0];
+              const adv = WX_ADVICE[mainWx];
+              if (!adv) return null;
+              const shengKe: Record<string, string> = { "木":"金","火":"水","土":"木","金":"火","水":"土" };
+              const mainJi = shengKe[mainWx];
+              const hasJi = y_.jishen?.includes(mainJi);
+              const wxRole: Record<string, string> = {
+                "金": "你的命局中金的能量偏弱。金代表决断力和原则——补足它能帮你在关键时刻果断选择，不拖泥带水。",
+                "木": "你的命局中木的能量偏弱。木代表生长和创造力——补足它能让你更有冲劲，做事更有长性。",
+                "水": "你的命局中水的能量偏弱。水代表智慧和冷静——补足它能让你在压力下保持清醒，不容易被情绪带着走。",
+                "火": "你的命局中火的能量偏弱。火代表热情和感染力——补足它能让你更自信、更敢表达自己。",
+                "土": "你的命局中土的能量偏弱。土代表稳定和踏实——补足它能让你沉得住气，不被外界变化带着跑。",
+              };
+              const avoidReason: Record<string, string> = {
+                "金": "金会砍伐木，消耗你的生发之气。少穿白色银灰色，少用金属饰品。",
+                "水": "水会浇灭火，压住你的热情。少穿黑色深蓝色，避免长时间待在寒冷环境。",
+                "木": "木会吸收土的营养。少穿绿色青色，避免过度消耗精力在太多事情上。",
+                "火": "火会熔化金，破坏你的边界感。少穿红色紫色，避免暴躁和冲动决策。",
+                "土": "土会堵住水的流动，让你思维变钝。少穿黄棕色，避免长时间待在潮湿环境。",
+              };
+              const today = result?.daily_influence;
+              const wxColorHex: Record<string, string> = { "金":"#B8A88A","木":"#7A9A7E","水":"#5B7B8A","火":"#B5544A","土":"#C4A882" };
+              return (
+                <>
+                  {/* 卡片 1：视觉速览 */}
+                  <div className="dao-card space-y-4" style={{ borderColor: "rgba(201,169,110,0.35)" }}>
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-bold text-text">🧭 今天怎么穿</p>
+                      <span className="text-[10px] text-text-tertiary">
+                        用神{mainWx}{y_.recommended.length > 1 ? `+${y_.recommended.slice(1).join("")}` : ""}
+                      </span>
+                    </div>
+                    {today && (
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs"
+                        style={{ background: today.relation === "good" ? "#7A9A7E15" : today.relation === "bad" ? "#C43A3112" : "#C9A96E12" }}>
+                        <span>{today.relation === "good" ? "✅" : today.relation === "bad" ? "⚠️" : "📌"}</span>
+                        <span className="text-text-secondary">{today.summary}</span>
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-[11px] text-text-tertiary mb-2">多穿这些</p>
+                      <div className="flex gap-3 items-center">
+                        {adv.colors.slice(0, 4).map((c: string, i: number) => (
+                          <div key={i} className="flex flex-col items-center gap-1.5">
+                            <div className="w-10 h-10 rounded-full shadow-sm"
+                              style={{ background: wxColorHex[mainWx] || "#999", opacity: 1 - i * 0.15 }} />
+                            <span className="text-[10px] text-text-tertiary">{c}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🧭</span>
+                        <div><p className="text-[10px] text-text-tertiary">有利方位</p><p className="text-sm font-medium text-text">{adv.direction}方</p></div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🎒</span>
+                        <div><p className="text-[10px] text-text-tertiary">随身搭配</p><p className="text-xs text-text">{adv.items.slice(0, 2).join(" · ")}</p></div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* 卡片 2：理解原理 */}
+                  <div className="dao-card space-y-3">
+                    <p className="text-xs font-bold text-text">💡 为什么这样建议</p>
+                    <p className="text-xs text-text-secondary leading-relaxed">{wxRole[mainWx]}</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-bg-subtle rounded-lg p-3">
+                        <p className="text-[10px] text-text-tertiary mb-1">📋 今天试试</p>
+                        {adv.actions.slice(0, 2).map((a: string, i: number) => (
+                          <p key={i} className="text-xs text-text leading-relaxed mt-1">{i + 1}. {a}</p>
+                        ))}
+                      </div>
+                      <div className="rounded-lg p-3" style={{ background: "rgba(196,58,49,0.04)" }}>
+                        <p className="text-[10px] text-text-tertiary mb-1">⚠️ 暂时放一放</p>
+                        {hasJi ? (
+                          <p className="text-xs text-text-secondary leading-relaxed">{avoidReason[mainJi]}</p>
+                        ) : (
+                          <p className="text-xs text-text-secondary">没有特别需要避免的</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
 
             {/* ===== 功能卡片：合婚 + 起名 ===== */}
             <div className="grid grid-cols-2 gap-3 pt-2">
