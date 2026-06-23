@@ -144,12 +144,12 @@ export default function JinriPage() {
             <p className="text-xs text-text-secondary tracking-[0.2em]">
               {solarTerm.emoji} {solarTerm.name} · 五行属{solarTerm.element}
             </p>
-            {/* 公历日期（主） */}
+            {/* 公历日期（主）— 后端返回中文格式，正则提取月日 */}
             {yiji.date && (
               <p className="text-sm text-text mt-2 font-medium">
                 {(() => {
-                  const d = new Date(yiji.date);
-                  return `${d.getMonth() + 1}月${d.getDate()}日 · ${yiji.week || ""}`;
+                  const m = yiji.date.match(/(\d+)月(\d+)日/);
+                  return m ? `${m[1]}月${m[2]}日 · ${yiji.week || ""}` : `${yiji.date} · ${yiji.week || ""}`;
                 })()}
               </p>
             )}
