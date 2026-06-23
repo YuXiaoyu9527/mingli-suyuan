@@ -354,41 +354,57 @@ function PaipanContentInner() {
               const mainWx = y_.recommended[0];
               const adv = WX_ADVICE[mainWx];
               if (!adv) return null;
-              // 只展示跟主用神相克的那个忌神（避免列一堆禁忌制造焦虑）
               const shengKe: Record<string, string> = { "木":"金","火":"水","土":"木","金":"火","水":"土" };
-              const mainJi = shengKe[mainWx]; // 克主用神的那个五行
+              const mainJi = shengKe[mainWx];
               const hasJi = y_.jishen?.includes(mainJi);
+              const wxWhy: Record<string, string> = {
+                "金": "金主决断，金的能量帮你在混乱中做出清晰选择",
+                "木": "木主生长，木的能量给你持续向上的动力和创造力",
+                "水": "水主智慧，水的能量让你在压力下保持冷静和洞察",
+                "火": "火主热情，火的能量让你更有感染力和行动力",
+                "土": "土主稳定，土的能量帮你脚踏实地、不被外界干扰",
+              };
               return (
                 <div className="dao-card space-y-3" style={{ borderColor: "rgba(201,169,110,0.3)" }}>
-                  <p className="text-xs font-bold text-text flex items-center gap-1.5">
+                  <p className="text-xs font-bold text-text">
                     🧭 五行调和 · 生活应用
-                    <span className="text-[10px] text-text-tertiary font-normal">
-                      主用神{mainWx}{y_.recommended.length > 1 ? `，辅${y_.recommended.slice(1).join("、")}` : ""}
+                    <span className="text-[10px] text-text-tertiary font-normal ml-1">
+                      主{mainWx}{y_.recommended.length > 1 ? `辅${y_.recommended.slice(1).join("、")}` : ""}
                     </span>
                   </p>
+                  <p className="text-[10px] text-text-tertiary leading-relaxed">{wxWhy[mainWx]}</p>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="bg-bg-subtle rounded-lg p-3">
                       <p className="text-[10px] text-text-tertiary mb-1">👔 穿衣颜色</p>
                       <p className="text-xs text-text font-medium">{adv.colors.slice(0, 3).join("、")}色</p>
+                      <p className="text-[9px] text-text-tertiary mt-1 leading-relaxed">{mainWx}属色补八字{mainWx}弱之不足</p>
                     </div>
                     <div className="bg-bg-subtle rounded-lg p-3">
                       <p className="text-[10px] text-text-tertiary mb-1">🧭 有利方位</p>
                       <p className="text-xs text-text font-medium">{adv.direction}方</p>
+                      <p className="text-[9px] text-text-tertiary mt-1 leading-relaxed">{adv.direction}方属{mainWx}，与用神同气</p>
                     </div>
                     <div className="bg-bg-subtle rounded-lg p-3">
-                      <p className="text-[10px] text-text-tertiary mb-1">🎒 随身物品</p>
+                      <p className="text-[10px] text-text-tertiary mb-1">🎒 随身搭配</p>
                       <p className="text-xs text-text font-medium">{adv.items.slice(0, 2).join(" · ")}</p>
+                      <p className="text-[9px] text-text-tertiary mt-1 leading-relaxed">随身带{mainWx}属性物品增强{mainWx}能量</p>
                     </div>
                     <div className="bg-bg-subtle rounded-lg p-3">
-                      <p className="text-[10px] text-text-tertiary mb-1">⚠️ 需要注意</p>
+                      <p className="text-[10px] text-text-tertiary mb-1">⚠️ 少碰</p>
                       <p className="text-xs text-text font-medium leading-relaxed">
-                        {hasJi ? `少用${mainJi}性颜色，${mainJi === "火" ? "避免急躁冲动" : mainJi === "水" ? "保持温暖干燥" : mainJi === "金" ? "多些包容弹性" : mainJi === "木" ? "专注少分散" : "保持心态稳定"}` : "保持平衡即可"}
+                        {hasJi ? `${mainJi}属性的事物` : "无特别禁忌"}
+                      </p>
+                      <p className="text-[9px] text-text-tertiary mt-1 leading-relaxed">
+                        {hasJi ? `${mainJi}克${mainWx}，会削弱用神力量` : "保持平衡即可"}
                       </p>
                     </div>
                   </div>
                   <div className="bg-bg-subtle rounded-lg p-3">
-                    <p className="text-[10px] text-text-tertiary mb-1">📋 具体行动建议</p>
-                    <p className="text-xs text-text leading-relaxed">{adv.actions.join("；") + "。"}</p>
+                    <p className="text-[10px] text-text-tertiary mb-1">📋 建议尝试</p>
+                    {adv.actions.map((a: string, i: number) => (
+                      <p key={i} className="text-xs text-text leading-relaxed mt-1">{i + 1}. {a}</p>
+                    ))}
+                    <p className="text-[9px] text-text-tertiary mt-2 leading-relaxed">以上行动意在增强{mainWx}的能量，帮助五行趋于平衡</p>
                   </div>
                 </div>
               );
