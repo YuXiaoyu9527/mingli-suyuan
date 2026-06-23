@@ -349,7 +349,7 @@ function PaipanContentInner() {
               )}
             </div>
 
-            {/* ===== 生活应用层 ===== */}
+            {/* ===== 生活应用层 — 双卡设计：速览 + 深度 ===== */}
             {y_ && y_.recommended?.length > 0 && (() => {
               const mainWx = y_.recommended[0];
               const adv = WX_ADVICE[mainWx];
@@ -372,60 +372,83 @@ function PaipanContentInner() {
                 "土": "土会堵住水的流动，让你思维变钝。少穿黄棕色，避免长时间待在潮湿环境。",
               };
               const today = result?.daily_influence;
+              const wxColorHex: Record<string, string> = { "金":"#B8A88A","木":"#7A9A7E","水":"#5B7B8A","火":"#B5544A","土":"#C4A882" };
               return (
-                <div className="dao-card space-y-3" style={{ borderColor: "rgba(201,169,110,0.3)" }}>
-                  <p className="text-xs font-bold text-text">
-                    🧭 五行调和 · 生活应用
-                    <span className="text-[10px] text-text-tertiary font-normal ml-1">
-                      主{mainWx}{y_.recommended.length > 1 ? `辅${y_.recommended.slice(1).join("、")}` : ""}
-                    </span>
-                  </p>
-                  {/* 今日流日影响 — 每天动态变化 */}
-                  {today && (
-                    <div className="bg-bg-subtle rounded-lg p-3 flex items-start gap-2"
-                      style={{ borderLeft: `3px solid ${today.relation === "good" ? "#7A9A7E" : today.relation === "bad" ? "#C43A31" : "#C9A96E"}` }}>
-                      <span className="text-sm flex-shrink-0">{today.relation === "good" ? "✅" : today.relation === "bad" ? "⚠️" : "📌"}</span>
-                      <div>
-                        <p className="text-[10px] text-text-tertiary mb-0.5">今天 {today.day_ganzhi} 日 · 对你来说</p>
-                        <p className="text-xs text-text leading-relaxed">{today.summary}</p>
+                <>
+                  {/* ===== 卡片 1：视觉速览 ===== */}
+                  <div className="dao-card space-y-4" style={{ borderColor: "rgba(201,169,110,0.35)" }}>
+                    {/* 标题行 */}
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-bold text-text">🧭 今天怎么穿</p>
+                      <span className="text-[10px] text-text-tertiary">
+                        用神{mainWx}{y_.recommended.length > 1 ? `+${y_.recommended.slice(1).join("")}` : ""}
+                      </span>
+                    </div>
+
+                    {/* 流日状态条 */}
+                    {today && (
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs"
+                        style={{ background: today.relation === "good" ? "#7A9A7E15" : today.relation === "bad" ? "#C43A3112" : "#C9A96E12" }}>
+                        <span>{today.relation === "good" ? "✅" : today.relation === "bad" ? "⚠️" : "📌"}</span>
+                        <span className="text-text-secondary">{today.summary}</span>
+                      </div>
+                    )}
+
+                    {/* 色块 — 核心视觉 */}
+                    <div>
+                      <p className="text-[11px] text-text-tertiary mb-2">多穿这些</p>
+                      <div className="flex gap-3 items-center">
+                        {adv.colors.slice(0, 4).map((c: string, i: number) => (
+                          <div key={i} className="flex flex-col items-center gap-1.5">
+                            <div className="w-10 h-10 rounded-full shadow-sm"
+                              style={{ background: wxColorHex[mainWx] || "#999", opacity: 1 - i * 0.15 }} />
+                            <span className="text-[10px] text-text-tertiary">{c}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  )}
-                  <p className="text-xs text-text-secondary leading-relaxed">{wxRole[mainWx]}</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-bg-subtle rounded-lg p-3">
-                      <p className="text-[10px] text-text-tertiary mb-1">👔 多穿这些颜色</p>
-                      <p className="text-xs text-text font-medium">{adv.colors.slice(0, 3).join("、")}色</p>
-                      <p className="text-[9px] text-text-tertiary mt-1 leading-relaxed">这些颜色五行属{mainWx}，能帮你补{mainWx}的能量</p>
-                    </div>
-                    <div className="bg-bg-subtle rounded-lg p-3">
-                      <p className="text-[10px] text-text-tertiary mb-1">🧭 多往这边走</p>
-                      <p className="text-xs text-text font-medium">{adv.direction}方</p>
-                      <p className="text-[9px] text-text-tertiary mt-1 leading-relaxed">{adv.direction}方在五行中对应{mainWx}，跟你最有缘</p>
-                    </div>
-                    <div className="bg-bg-subtle rounded-lg p-3">
-                      <p className="text-[10px] text-text-tertiary mb-1">🎒 带着出门</p>
-                      <p className="text-xs text-text font-medium">{adv.items.slice(0, 2).join(" · ")}</p>
-                      <p className="text-[9px] text-text-tertiary mt-1 leading-relaxed">身上带有{mainWx}属性的东西，等于随时给自己充电</p>
-                    </div>
-                    <div className="bg-bg-subtle rounded-lg p-3">
-                      <p className="text-[10px] text-text-tertiary mb-1">⚠️ 尽量少碰</p>
-                      <p className="text-xs text-text font-medium leading-relaxed">
-                        {hasJi ? `${mainJi}属性的事物` : "无特别禁忌"}
-                      </p>
-                      <p className="text-[9px] text-text-tertiary mt-1 leading-relaxed">
-                        {hasJi ? avoidReason[mainJi] : "你的五行比较平衡，正常生活即可"}
-                      </p>
+
+                    {/* 方位 + 物品 单行 */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🧭</span>
+                        <div>
+                          <p className="text-[10px] text-text-tertiary">有利方位</p>
+                          <p className="text-sm font-medium text-text">{adv.direction}方</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🎒</span>
+                        <div>
+                          <p className="text-[10px] text-text-tertiary">随身搭配</p>
+                          <p className="text-xs text-text">{adv.items.slice(0, 2).join(" · ")}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="bg-bg-subtle rounded-lg p-3">
-                    <p className="text-[10px] text-text-tertiary mb-1">📋 今天可以试试</p>
-                    {adv.actions.map((a: string, i: number) => (
-                      <p key={i} className="text-xs text-text leading-relaxed mt-1">{i + 1}. {a}</p>
-                    ))}
-                    <p className="text-[9px] text-text-tertiary mt-2 leading-relaxed">都是在帮你补充{mainWx}的能量，让五行回到平衡状态</p>
+
+                  {/* ===== 卡片 2：理解原理 ===== */}
+                  <div className="dao-card space-y-3">
+                    <p className="text-xs font-bold text-text">💡 为什么这样建议</p>
+                    <p className="text-xs text-text-secondary leading-relaxed">{wxRole[mainWx]}</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-bg-subtle rounded-lg p-3">
+                        <p className="text-[10px] text-text-tertiary mb-1">📋 今天试试</p>
+                        {adv.actions.slice(0, 2).map((a: string, i: number) => (
+                          <p key={i} className="text-xs text-text leading-relaxed mt-1">{i + 1}. {a}</p>
+                        ))}
+                      </div>
+                      <div className="rounded-lg p-3" style={{ background: "rgba(196,58,49,0.04)" }}>
+                        <p className="text-[10px] text-text-tertiary mb-1">⚠️ 暂时放一放</p>
+                        {hasJi ? (
+                          <p className="text-xs text-text-secondary leading-relaxed">{avoidReason[mainJi]}</p>
+                        ) : (
+                          <p className="text-xs text-text-secondary">没有特别需要避免的</p>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </>
               );
             })()}
 
