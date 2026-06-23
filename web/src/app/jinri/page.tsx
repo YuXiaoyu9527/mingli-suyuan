@@ -39,12 +39,17 @@ function getCurrentSolarTerm(): typeof SOLAR_TERMS[number] {
   const now = new Date();
   const m = now.getMonth() + 1;
   const d = now.getDate();
-  // 从最后一个节气往前找，找到第一个已经过去的节气
+  // 转换为年内天数，1月节气跨年：补 365 天
+  const todayDOY = m * 100 + d; // 简单比较：月*100+日
+  // 对 1 月节气做跨年处理
   for (let i = SOLAR_TERMS.length - 1; i >= 0; i--) {
     const t = SOLAR_TERMS[i];
-    if (m > t.month || (m === t.month && d >= t.day)) return t;
+    const termDOY = t.month * 100 + t.day;
+    const adjusted = t.month <= 2 ? termDOY + 1200 : termDOY; // 1-2月节气视为下一年的，补1200
+    const todayAdjusted = m <= 2 ? todayDOY + 1200 : todayDOY;
+    if (todayAdjusted >= adjusted) return t;
   }
-  return SOLAR_TERMS[SOLAR_TERMS.length - 1]; // 兜底：大寒
+  return SOLAR_TERMS[SOLAR_TERMS.length - 1];
 }
 
 export default function JinriPage() {
@@ -138,6 +143,7 @@ export default function JinriPage() {
             {/* 节气指示 — 当前节气的五行归属 */}
             <p className="text-xs text-text-secondary tracking-[0.2em]">
               {solarTerm.emoji} {solarTerm.name} · 五行属{solarTerm.element}
+              {yiji.lunar_date && <> · {yiji.lunar_date.replace(/年|月/g, (m: string) => (m === "年" ? "年" : "月")).replace(/日.*/, "日")}</>}
             </p>
             <h1
               className="text-[52px] font-[family-name:var(--font-display)] leading-none mt-2"

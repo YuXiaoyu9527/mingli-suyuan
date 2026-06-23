@@ -349,52 +349,46 @@ function PaipanContentInner() {
               )}
             </div>
 
-            {/* ===== 生活应用层 — 五行调和具体举措（展示所有用神） ===== */}
+            {/* ===== 生活应用层 — 基于主用神的五行调和 ===== */}
             {y_ && y_.recommended?.length > 0 && (() => {
-              // 展示所有用神的综合建议
-              const allColors: string[] = [], allItems: string[] = [], allActions: string[] = [];
-              const directions: string[] = [];
-              y_.recommended.forEach((wx: string) => {
-                const adv = WX_ADVICE[wx];
-                if (adv) {
-                  allColors.push(...adv.colors.slice(0, 2));
-                  allItems.push(...adv.items.slice(0, 1));
-                  allActions.push(...adv.actions.slice(0, 1));
-                  directions.push(adv.direction);
-                }
-              });
-              const jiAll = (y_.jishen || []).map((wx: string) => WX_AVOID[wx]).filter(Boolean);
+              const mainWx = y_.recommended[0];
+              const adv = WX_ADVICE[mainWx];
+              if (!adv) return null;
+              // 只展示跟主用神相克的那个忌神（避免列一堆禁忌制造焦虑）
+              const shengKe: Record<string, string> = { "木":"金","火":"水","土":"木","金":"火","水":"土" };
+              const mainJi = shengKe[mainWx]; // 克主用神的那个五行
+              const hasJi = y_.jishen?.includes(mainJi);
               return (
                 <div className="dao-card space-y-3" style={{ borderColor: "rgba(201,169,110,0.3)" }}>
                   <p className="text-xs font-bold text-text flex items-center gap-1.5">
                     🧭 五行调和 · 生活应用
                     <span className="text-[10px] text-text-tertiary font-normal">
-                      （用神 {y_.recommended.join("、")}{y_.jishen?.length ? `，忌 ${y_.jishen.join("、")}` : ""}）
+                      主用神{mainWx}{y_.recommended.length > 1 ? `，辅${y_.recommended.slice(1).join("、")}` : ""}
                     </span>
                   </p>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="bg-bg-subtle rounded-lg p-3">
                       <p className="text-[10px] text-text-tertiary mb-1">👔 穿衣颜色</p>
-                      <p className="text-xs text-text font-medium">{[...new Set(allColors)].slice(0, 4).join("、")}色</p>
+                      <p className="text-xs text-text font-medium">{adv.colors.slice(0, 3).join("、")}色</p>
                     </div>
                     <div className="bg-bg-subtle rounded-lg p-3">
                       <p className="text-[10px] text-text-tertiary mb-1">🧭 有利方位</p>
-                      <p className="text-xs text-text font-medium">{[...new Set(directions)].join("、")}方</p>
+                      <p className="text-xs text-text font-medium">{adv.direction}方</p>
                     </div>
                     <div className="bg-bg-subtle rounded-lg p-3">
                       <p className="text-[10px] text-text-tertiary mb-1">🎒 随身物品</p>
-                      <p className="text-xs text-text font-medium">{[...new Set(allItems)].slice(0, 3).join(" · ")}</p>
+                      <p className="text-xs text-text font-medium">{adv.items.slice(0, 2).join(" · ")}</p>
                     </div>
                     <div className="bg-bg-subtle rounded-lg p-3">
                       <p className="text-[10px] text-text-tertiary mb-1">⚠️ 需要注意</p>
                       <p className="text-xs text-text font-medium leading-relaxed">
-                        {jiAll.length > 0 ? jiAll.join("；") : "保持平衡即可"}
+                        {hasJi ? `少用${mainJi}性颜色，${mainJi === "火" ? "避免急躁冲动" : mainJi === "水" ? "保持温暖干燥" : mainJi === "金" ? "多些包容弹性" : mainJi === "木" ? "专注少分散" : "保持心态稳定"}` : "保持平衡即可"}
                       </p>
                     </div>
                   </div>
                   <div className="bg-bg-subtle rounded-lg p-3">
                     <p className="text-[10px] text-text-tertiary mb-1">📋 具体行动建议</p>
-                    <p className="text-xs text-text leading-relaxed">{[...new Set(allActions)].slice(0, 3).join("；") + "。"}</p>
+                    <p className="text-xs text-text leading-relaxed">{adv.actions.join("；") + "。"}</p>
                   </div>
                 </div>
               );
